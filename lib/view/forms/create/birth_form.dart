@@ -1,0 +1,383 @@
+import 'dart:developer';
+
+import 'package:flutter/material.dart';
+
+import 'package:intl/intl.dart';
+
+import 'package:integrazoo/base.dart';
+
+import 'package:integrazoo/view/components/button.dart';
+import 'package:integrazoo/view/components/unexpected_error_alert_dialog.dart';
+
+import 'package:integrazoo/view/components/bovine/single_bovine_selector.dart';
+import 'package:integrazoo/view/components/bovine/earring_controller.dart';
+
+import 'package:integrazoo/control/bovine_controller.dart';
+import 'package:integrazoo/control/birth_controller.dart';
+import 'package:integrazoo/control/pregnancy_controller.dart';
+import 'package:integrazoo/control/reproduction_controller.dart';
+import 'package:integrazoo/control/parents_controller.dart';
+
+import 'package:integrazoo/database/database.dart';
+
+import 'package:integrazoo/globals.dart';
+
+
+class BirthForm extends StatefulWidget {
+  const BirthForm({ super.key });
+
+  @override
+  State<BirthForm> createState() => _BirthForm();
+}
+
+class _BirthForm extends State<BirthForm> {
+  final _formKey = GlobalKey<FormState>();
+
+  final motherEarringController = EarringController();
+
+  final newBornEarringController = TextEditingController();
+  final newBornNameController = TextEditingController();
+  final newBornWeightController = TextEditingController();
+  Sex? newBornSex;
+  BodyConditionScore? newBornBCS;
+
+  final observationController = TextEditingController();
+
+  late final TextEditingController dateBirthController;
+  DateTime dateBirth = DateTime.now();
+
+  final DateFormat formatter = DateFormat('dd/MM/yyyy');
+
+  Exception? exception;
+
+  @override
+  void initState() {
+    super.initState();
+    dateBirthController = TextEditingController(text: formatter.format(dateBirth));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (exception != null) {
+      return UnexpectedErrorAlertDialog(title: 'Erro Inesperado',
+                                        message: 'Algo de inespearado aconteceu durante a execução do aplicativo.',
+                                        onPressed: () => setState(() => exception = null));
+    }
+
+    final addButton = Button(text: "Confirmar", color: Colors.green, onPressed: saveBirth);
+
+    final cowSelector = SingleBovineSelector(
+      sex: Sex.female,
+      wasDiscarded: false,
+      isReproducing: false,
+      isPregnant: true,
+      label: "Vaca",
+      earringController: motherEarringController,
+    );
+
+    final dateBirthPicker = TextFormField(
+      controller: dateBirthController,
+      decoration: const InputDecoration(border: OutlineInputBorder(),
+                                        label: Text("Data do Parto"),
+                                        floatingLabelBehavior: FloatingLabelBehavior.always),
+      readOnly: true,
+      onTap: () async {
+        DateTime? pickedDate = await showDatePicker(
+          context: context,
+          initialDate: dateBirth,
+          firstDate: DateTime(2000),
+          lastDate: DateTime.now(),
+        );
+        if (pickedDate != null) {
+          setState(() {
+            dateBirth = pickedDate;
+            dateBirthController.text = formatter.format(pickedDate);
+          });
+        }
+      },
+    );
+
+    final newBornNameField = TextFormField(
+      keyboardType: TextInputType.number,
+      decoration: const InputDecoration(border: OutlineInputBorder(),
+                                        label: Text("Nome do Novo Animal (Opcional)"),
+                                        hintText: "Digite o nome do animal que nasceu.",
+                                        floatingLabelBehavior: FloatingLabelBehavior.always),
+      controller: newBornNameController
+    );
+
+    final newBornEarringField = TextFormField(
+      keyboardType: TextInputType.number,
+      decoration: const InputDecoration(border: OutlineInputBorder(),
+                                        label: Text("Brinco do Novo Animal"),
+                                        hintText: "Digite o brinco do animal que nasceu.",
+                                        floatingLabelBehavior: FloatingLabelBehavior.always),
+      controller: newBornEarringController,
+      validator: (String? value) {
+        if (value == null) {
+          return null;
+        }
+
+        if (value.isNotEmpty && int.tryParse(value) == null) {
+          return "Por favor, digite um número válido.";
+        }
+
+        return null;
+      },
+    );
+
+    final newBornWeightField = TextFormField(
+      keyboardType: TextInputType.number,
+      decoration: const InputDecoration(border: OutlineInputBorder(),
+                                        label: Text("Peso ao Nascer do Novo Animal"),
+                                        hintText: "Digite o peso do animal que nasceu.",
+                                        floatingLabelBehavior: FloatingLabelBehavior.always),
+      controller: newBornWeightController,
+      validator: (String? value) {
+        if (value == null) {
+          return null;
+        }
+
+        if (value.isNotEmpty && double.tryParse(value) == null) {
+          return "Por favor, digite um número válido.";
+        }
+
+        return null;
+      },
+    );
+
+    final newBornSexDropdown = DropdownMenu<Sex>(
+      label: const Text("Sexo"),
+      dropdownMenuEntries: Sex.values.map((sex) => DropdownMenuEntry(value: sex, label: sex.toString())).toList(),
+      onSelected: (value) => newBornSex = value!,
+      expandedInsets: EdgeInsets.zero,
+    );
+
+    final newBornBCSDropdown = DropdownMenu<BodyConditionScore>(
+      label: const Text("Avaliação Corporal"),
+      dropdownMenuEntries: BodyConditionScore.values.map((bcs) => DropdownMenuEntry(value: bcs, label: bcs.toString())).toList(),
+      onSelected: (value) => newBornBCS = value!,
+      expandedInsets: EdgeInsets.zero,
+    );
+
+    final observationField = TextFormField(
+      keyboardType: TextInputType.text,
+      controller: observationController,
+      decoration: const InputDecoration(hintText: 'Exemplo: Veterinario indicou riscos na prenhez.',
+                                        border: OutlineInputBorder(),
+                                        label: Text("Observação"),
+                                        floatingLabelBehavior: FloatingLabelBehavior.always),
+    );
+
+    Divider divider = const Divider(color: Colors.transparent);
+
+    final column = <Widget>[
+      cowSelector,
+      divider,
+      dateBirthPicker,
+      divider,
+      newBornEarringField,
+      divider,
+      newBornNameField,
+      divider,
+      newBornWeightField,
+      divider,
+      newBornSexDropdown,
+      divider,
+      newBornBCSDropdown,
+      divider,
+      observationField,
+      divider,
+      addButton
+    ];
+
+    return IntegrazooBaseApp(
+      title: "REGISTRAR PRENHES",
+      body: SingleChildScrollView(child:
+        Form(
+          autovalidateMode: AutovalidateMode.always,
+          key: _formKey,
+          child: Container(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: column)
+          )
+        )
+      )
+    );
+  }
+
+  void saveBirth() async {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState?.save();
+
+      String? error = validateAllFields();
+
+      if (error != null) {
+        if (context.mounted) {
+          SnackBar snackBar = SnackBar(
+            content: Text(error),
+            backgroundColor: Colors.red,
+            showCloseIcon: true
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+        return;
+      }
+
+      final newBornEarring = int.parse(newBornEarringController.text);
+
+      if (await BovineController.doesEarringExists(newBornEarring)) {
+        if (context.mounted) {
+          SnackBar snackBar = const SnackBar(
+            content: Text("O brinco selsecionado para o novo animal ja foi utilizado."),
+            backgroundColor: Colors.red,
+            showCloseIcon: true
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+        return;
+      }
+
+      final pregnancy = await PregnancyController.getActivePregnancy(motherEarringController.earring!);
+
+      await database.transaction(() async {
+        if (pregnancy != null) {
+          final updatePregnancy = pregnancy.copyWith(hasEnded: true);
+
+          await PregnancyController.savePregnancy(updatePregnancy);
+        }
+
+        await updateMother();
+
+        await createAnimal();
+
+        final reproductionId = pregnancy?.reproduction;
+
+        final reproduction = await ReproductionController.getById(reproductionId ?? 0);
+
+        if (reproduction != null) {
+          createParents(motherEarringController.earring!, reproduction.bull, reproduction.breeder);
+        } else {
+          createParents(motherEarringController.earring!, null, null);
+        }
+
+        await saveBirthInfo(pregnancy?.id);
+
+        SnackBar snackBar = const SnackBar(
+          content: Text("Parto registrado com sucesso"),
+          backgroundColor: Colors.green,
+          showCloseIcon: true
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+        clearForm();
+      });
+    }
+  }
+
+  Future<int> updateMother() {
+    return BovineController.getBovine(motherEarringController.earring!).then(
+      (cow) {
+        if (cow == null) {
+          throw Exception("Could not find bovine ${motherEarringController.earring}");
+        }
+
+        final cowUpdate = cow.copyWith(isReproducing: false, isPregnant: false);
+
+        return BovineController.saveBovine(cowUpdate);
+      }
+    );
+  }
+
+  Future<int> createAnimal() {
+    final newBornEarring = int.parse(newBornEarringController.text);
+
+    final bovine = Bovine.fromJson({
+      'name': newBornNameController.text.isEmpty ? null : newBornNameController.text,
+      'sex': newBornSex!.index,
+      'earring': newBornEarring,
+      'wasDiscarded': false,
+      'isReproducing': false,
+      'isPregnant': false,
+      'hasBeenWeaned': false,
+      'isBreeder': false
+    });
+
+    return BovineController.saveBovine(bovine);
+  }
+
+  Future<int> createParents(int cow, int? bull, String? breeder) {
+    final newBornEarring = int.parse(newBornEarringController.text);
+
+    final parents = Parents.fromJson({
+      'bovine': newBornEarring,
+      'cow': cow,
+      'bull': bull,
+      'breeder': breeder
+    });
+
+    return ParentsController.saveParents(parents).then(
+      (value) {
+        return Future.value(value);
+      },
+      onError: (err) {
+        throw err;
+      }
+    );
+  }
+
+  Future<int> saveBirthInfo(int? pregnancyId) {
+    final newBornEarring = int.parse(newBornEarringController.text);
+    final newBornWeight = double.parse(newBornWeightController.text);
+
+    final birth = Birth.fromJson({
+      'id': 0,
+      'date': dateBirth,
+      'weight': newBornWeight,
+      'bcs': newBornBCS!.index,
+      'bovine': newBornEarring,
+      'pregnancy': pregnancyId
+    });
+
+    return BirthController.saveBirth(birth);
+  }
+
+  String? validateAllFields() {
+    if (motherEarringController.earring == null) {
+      return "Por favor, escolha a vaca.";
+    }
+
+    if (newBornEarringController.text.isEmpty) {
+      return "Por favor, digite o brinco do novo animal.";
+    }
+
+    if (newBornWeightController.text.isEmpty) {
+      return "Por favor, digite o peso do novo animal";
+    }
+
+    if (newBornSex == null) {
+      return "Por favor, selecione o sexo do novo animal.";
+    }
+
+    if (newBornBCS == null) {
+      return "Por favor, selecione a avaliação corporal do novo animal.";
+    }
+
+    return null;
+  }
+
+  void clearForm() {
+    setState(() {
+      motherEarringController.clear();
+
+      newBornNameController.text = "";
+      newBornEarringController.text = "";
+      newBornWeightController.text = "";
+
+      newBornSex = null;
+      newBornBCS = null;
+
+      observationController.text = "";
+    });
+  }
+}
