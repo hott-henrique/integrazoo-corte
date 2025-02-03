@@ -28,22 +28,22 @@
     - ~~Tratamento~~
     - ~~Finalização~~
 
-10. Adicionar novos tipos de Finalização:
-    "Alterar banco e formulários."
-    - Descarte:
-        - Exemplo: Animal geneticamente ruim. Animal improdutivo.
-        - Pesos registrados: Nenhum.
-    - Venda:
-        - Exemplo: Animal vendido a outro produtor.
-        - Pesos registrados: Nenhum.
-    - Morte:
-        - Exemplo: Animal morre por uma doença.
-        - Pesos registrados: Nenhum.
-    - Abate:
-        - Exemplo: Animal vendido ao frigorífico.
-        - Pesos registrados: Peso ao abate e peso da carcaça quente.
+10. ~~Adicionar novos tipos de Finalização:~~
+    ~~"Alterar banco e formulários."~~
+    - ~~Descarte:~~
+        - ~~Exemplo: Animal geneticamente ruim. Animal improdutivo.~~
+        - ~~Pesos registrados: Nenhum.~~
+    - ~~Venda:~~
+        - ~~Exemplo: Animal vendido a outro produtor.~~
+        - ~~Pesos registrados: Nenhum.~~
+    - ~~Morte:~~
+        - ~~Exemplo: Animal morre por uma doença.~~
+        - ~~Pesos registrados: Nenhum.~~
+    - ~~Abate:~~
+        - ~~Exemplo: Animal vendido ao frigorífico.~~
+        - ~~Pesos registrados: Peso ao abate e peso da carcaça quente.~~
 
-11. Criar 'Controller' e 'Persistence' separados para a finalização.
+11. ~~Criar 'Controller' e 'Persistence' separados para a finalização.~~
 
 12. Implementar 'Visualizar Desmames'.
 

@@ -107,8 +107,8 @@ class BovineFormState extends State<BovineForm> {
     final dateEntryPicker = TextFormField(
       controller: dateEntryController,
       decoration: const InputDecoration(border: OutlineInputBorder(),
-                                        label: Text("Data de Entrada (Opcional)"),
-                                        hintText: "Digite a data de entrada do animal.",
+                                        label: Text("Data"),
+                                        hintText: "Digite a data de aquisição do animal.",
                                         floatingLabelBehavior: FloatingLabelBehavior.always),
       readOnly: true,
       onTap: () async {
@@ -127,8 +127,8 @@ class BovineFormState extends State<BovineForm> {
     final entryWeightField = TextFormField(
       keyboardType: TextInputType.number,
       decoration: const InputDecoration(border: OutlineInputBorder(),
-                                        label: Text("Peso de Entrada (Opcional)"),
-                                        hintText: "Digite o peso do animal ao entrar.",
+                                        label: Text("Peso"),
+                                        hintText: "Digite o peso de aquisição do animal.",
                                         floatingLabelBehavior: FloatingLabelBehavior.always),
       controller: entryWeightController,
       validator: (String? value) {
@@ -155,7 +155,7 @@ class BovineFormState extends State<BovineForm> {
       Text(bovineSex == Sex.male ? "Reprodutor" : "Matriz")
     ]);
 
-    final addButton = Button(text: "ADICIONAR", color: Colors.green[400]!, onPressed: createBovine);
+    final addButton = Button(text: "SALVAR", color: Colors.green[400]!, onPressed: createBovine);
 
     const divider = Divider(height: 8, color: Colors.transparent);
 

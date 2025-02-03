@@ -149,18 +149,6 @@ class BovineController {
     return BovinePersistence.doesEarringExists(earring);
   }
 
-  static Future<void> discard(int earring, Discard discard) {
-    return BovinePersistence.discard(earring, discard);
-  }
-
-  static Future<Discard?> getDiscard(int earring) {
-    return BovinePersistence.getDiscard(earring);
-  }
-
-  static Future<void> cancelDiscard(int earring) {
-    return BovinePersistence.cancelDiscard(earring);
-  }
-
   static Future<int> countChildrenOfSex(int earring, Sex s) {
     return BovinePersistence.countChildrenOfSex(earring, s);
   }

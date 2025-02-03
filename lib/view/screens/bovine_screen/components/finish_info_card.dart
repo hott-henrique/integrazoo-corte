@@ -7,45 +7,45 @@ import 'package:intl/intl.dart';
 import 'package:integrazoo/view/components/button.dart';
 import 'package:integrazoo/view/components/titled_card.dart';
 
-import 'package:integrazoo/view/forms/update/discard_info_form.dart';
+import 'package:integrazoo/view/forms/update/finish_info_form.dart';
 
-import 'package:integrazoo/control/bovine_controller.dart';
+import 'package:integrazoo/control/finish_controller.dart';
 
 import 'package:integrazoo/database/database.dart';
 
 
-class DiscardInfoCard extends StatefulWidget {
+class FinishInfoCard extends StatefulWidget {
   final int earring;
 
-  const DiscardInfoCard({ super.key, required this.earring });
+  const FinishInfoCard({ super.key, required this.earring });
 
   @override
-  State<DiscardInfoCard> createState() => _DiscardInfoCard();
+  State<FinishInfoCard> createState() => _FinishInfoCard();
 }
 
-class _DiscardInfoCard extends State<DiscardInfoCard> {
+class _FinishInfoCard extends State<FinishInfoCard> {
   Exception? exception;
 
-  Future<Discard?> get _discardFuture => BovineController.getDiscard(widget.earring);
+  Future<Finish?> get _finishFuture => FinishController.getByEarring(widget.earring);
 
   bool isEditing = false;
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Discard?>(
-      future: _discardFuture,
-      builder: (context, AsyncSnapshot<Discard?> snapshot) {
+    return FutureBuilder<Finish?>(
+      future: _finishFuture,
+      builder: (context, AsyncSnapshot<Finish?> snapshot) {
         late Widget cardContent;
         if (snapshot.connectionState != ConnectionState.done && !snapshot.hasData) {
           cardContent = const Text("Carregando...", style: TextStyle(fontStyle: FontStyle.italic), textAlign: TextAlign.center);
         } else if (snapshot.connectionState == ConnectionState.done && (!snapshot.hasData || isEditing)) {
-          cardContent = DiscardInfoForm(
+          cardContent = FinishInfoForm(
             earring: widget.earring,
-            discard: snapshot.data,
+            finish: snapshot.data,
             postSaved: () => setState(() => isEditing = false)
           );
         } else {
-          final discard = snapshot.data!;
+          final finish = snapshot.data!;
           final DateFormat formatter = DateFormat('dd/MM/yyyy');
 
           cardContent = Padding(
@@ -53,17 +53,20 @@ class _DiscardInfoCard extends State<DiscardInfoCard> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                buildInfo("Data", formatter.format(discard.date)),
-                buildInfo("Razão", discard.reason.toString()),
-                buildInfo("Peso", '${discard.weight.toString()} Kg'),
-                buildInfo("Observação", discard.observation ?? "--"),
+                buildInfo("Data", formatter.format(finish.date)),
+                buildInfo("Razão", finish.reason.toString()),
+                if (finish.reason == FinishingReason.slaughter) ...[
+                  buildInfo("Peso", '${finish.weight.toString()} Kg'),
+                  buildInfo("Peso Carcaça Quente", '${finish.hotCarcassWeight.toString()} Kg'),
+                  buildInfo("Observação", finish.observation ?? "--"),
+                ]
               ]
             ),
           );
         }
 
         return TitledCard(
-          title: "Descarte",
+          title: "Finalização",
           content: cardContent,
           actions: [
             if (snapshot.hasData && !isEditing)
@@ -88,10 +91,10 @@ class _DiscardInfoCard extends State<DiscardInfoCard> {
     if (action == "Deletar") {
       showDialog(context: context, builder: (context) {
         return AlertDialog(
-          title: const Text('Você deseja mesmo deletar as informações de descarte desse animal?'),
+          title: const Text('Você deseja mesmo deletar as informações de finalização desse animal?'),
           actions: <Widget>[
             Button(color: Colors.red, text: "Confirmar", onPressed: () {
-              BovineController.cancelDiscard(widget.earring);
+              FinishController.delete(widget.earring);
               Navigator.of(context).pop();
             }),
             Button(color: Colors.blue, text: "Cancelar", onPressed: () => Navigator.of(context).pop())

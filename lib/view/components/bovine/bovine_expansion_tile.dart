@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:integrazoo/control/finish_controller.dart';
 import 'package:integrazoo/persistence/birth_persistence.dart';
 
 import 'package:intl/intl.dart';
@@ -34,7 +35,7 @@ class BovineExpansionTileState extends State<BovineExpansionTile> {
   Future<Bovine?> get _bovineFuture => BovineController.getBovine(widget.earring);
   Future<Birth?> get _birthFuture => BirthController.getBirth(widget.earring);
   Future<Weaning?> get _weaningFuture => WeaningController.getWeaning(widget.earring);
-  Future<Discard?> get _discardFuture => BovineController.getDiscard(widget.earring);
+  Future<Finish?> get _finishFuture => FinishController.getByEarring(widget.earring);
   Future<Reproduction?> get _reproductionFuture => ReproductionController.getReproductionThatGeneratedAnimal(widget.earring);
   Future<Pregnancy?> get _firstPregnancy => BirthPersistence.getCowFirstBirth(widget.earring);
 
@@ -180,17 +181,18 @@ class BovineExpansionTileState extends State<BovineExpansionTile> {
   }
 
   Widget getDiscardWeightInfo() {
-    return FutureBuilder<Discard?>(
-      future: _discardFuture,
-      builder: (context, AsyncSnapshot<Discard?> snapshot) {
+    return FutureBuilder<Finish?>(
+      future: _finishFuture,
+      builder: (context, AsyncSnapshot<Finish?> snapshot) {
         if (snapshot.connectionState != ConnectionState.done && !snapshot.hasData) {
           return const Text("Carregando...", style: TextStyle(fontStyle: FontStyle.italic), textAlign: TextAlign.center);
         } else if (snapshot.connectionState == ConnectionState.done && !snapshot.hasData) {
           return const Row(children: [ Expanded(child: Text("Peso ao Descarte:")), Text("-- kg") ]);
         } else {
-          final discard = snapshot.data!;
-          String discardWeight = discard.weight == null ? "--" : discard.weight.toString();
-          return Row(children: [ const Expanded(child: Text("Peso ao Descarte:")), Text("$discardWeight kg") ]);
+          final finish = snapshot.data!;
+          String finishWeight = finish.weight == null ? "--" : finish.weight.toString();
+          // String finishHotCarcassWeight = finish.hotCarcassWeight == null ? "--" : finish.hotCarcassWeight.toString();
+          return Row(children: [ const Expanded(child: Text("Peso ao Descarte:")), Text("$finishWeight kg") ]);
         }
       }
     );
@@ -227,7 +229,7 @@ class BovineExpansionTileState extends State<BovineExpansionTile> {
 
   Widget getWeightGainInfo() {
     return FutureBuilder<List<dynamic>>(
-      future: Future.wait([ _birthFuture, _weaningFuture, _discardFuture ]),
+      future: Future.wait([ _birthFuture, _weaningFuture, _finishFuture ]),
       builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
         if (snapshot.connectionState != ConnectionState.done && !snapshot.hasData) {
           return const Text("Carregando...", style: TextStyle(fontStyle: FontStyle.italic), textAlign: TextAlign.center);
@@ -236,18 +238,18 @@ class BovineExpansionTileState extends State<BovineExpansionTile> {
         } else {
           final birth = snapshot.data![0] as Birth?;
           final weaning = snapshot.data![1] as Weaning?;
-          final discard = snapshot.data![2] as Discard?;
+          final finish = snapshot.data![2] as Finish?;
 
           if (birth == null) {
             return const Row(children: [ Expanded(child: Text("GPM:")), Text("-- kg/dia") ]);
           }
 
-          if (discard != null && discard.weight != null) {
-            int deltaT = discard.date.difference(birth.date).inDays;
+          if (finish != null && finish.weight != null) {
+            int deltaT = finish.date.difference(birth.date).inDays;
             if (deltaT == 0) {
               deltaT = 1;
             }
-            double gain = discard.weight! - birth.weight;
+            double gain = finish.weight! - birth.weight;
             double gainPerDay = gain / deltaT;
             return Row(children: [ const Expanded(child: Text("GPM")), Text("${gainPerDay.toStringAsFixed(2)} kg/dia") ]);
           }

@@ -1296,11 +1296,11 @@ class BreedersCompanion extends UpdateCompanion<Breeder> {
   }
 }
 
-class $DiscardsTable extends Discards with TableInfo<$DiscardsTable, Discard> {
+class $FinishesTable extends Finishes with TableInfo<$FinishesTable, Finish> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $DiscardsTable(this.attachedDatabase, [this._alias]);
+  $FinishesTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _bovineMeta = const VerificationMeta('bovine');
   @override
   late final GeneratedColumn<int> bovine = GeneratedColumn<int>(
@@ -1309,17 +1309,17 @@ class $DiscardsTable extends Discards with TableInfo<$DiscardsTable, Discard> {
       requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'REFERENCES bovines (earring) ON DELETE CASCADE'));
+  static const VerificationMeta _reasonMeta = const VerificationMeta('reason');
+  @override
+  late final GeneratedColumnWithTypeConverter<FinishingReason, int> reason =
+      GeneratedColumn<int>('reason', aliasedName, false,
+              type: DriftSqlType.int, requiredDuringInsert: true)
+          .withConverter<FinishingReason>($FinishesTable.$converterreason);
   static const VerificationMeta _dateMeta = const VerificationMeta('date');
   @override
   late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
       'date', aliasedName, false,
       type: DriftSqlType.dateTime, requiredDuringInsert: true);
-  static const VerificationMeta _reasonMeta = const VerificationMeta('reason');
-  @override
-  late final GeneratedColumnWithTypeConverter<DiscardReason, int> reason =
-      GeneratedColumn<int>('reason', aliasedName, false,
-              type: DriftSqlType.int, requiredDuringInsert: true)
-          .withConverter<DiscardReason>($DiscardsTable.$converterreason);
   static const VerificationMeta _observationMeta =
       const VerificationMeta('observation');
   @override
@@ -1333,16 +1333,25 @@ class $DiscardsTable extends Discards with TableInfo<$DiscardsTable, Discard> {
       check: () => ComparableExpr(weight).isBiggerThan(const Constant(0.0)),
       type: DriftSqlType.double,
       requiredDuringInsert: false);
+  static const VerificationMeta _hotCarcassWeightMeta =
+      const VerificationMeta('hotCarcassWeight');
+  @override
+  late final GeneratedColumn<double> hotCarcassWeight = GeneratedColumn<double>(
+      'hot_carcass_weight', aliasedName, true,
+      check: () =>
+          ComparableExpr(hotCarcassWeight).isBiggerThan(const Constant(0.0)),
+      type: DriftSqlType.double,
+      requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns =>
-      [bovine, date, reason, observation, weight];
+      [bovine, reason, date, observation, weight, hotCarcassWeight];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'discards';
+  static const String $name = 'finishes';
   @override
-  VerificationContext validateIntegrity(Insertable<Discard> instance,
+  VerificationContext validateIntegrity(Insertable<Finish> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -1350,13 +1359,13 @@ class $DiscardsTable extends Discards with TableInfo<$DiscardsTable, Discard> {
       context.handle(_bovineMeta,
           bovine.isAcceptableOrUnknown(data['bovine']!, _bovineMeta));
     }
+    context.handle(_reasonMeta, const VerificationResult.success());
     if (data.containsKey('date')) {
       context.handle(
           _dateMeta, date.isAcceptableOrUnknown(data['date']!, _dateMeta));
     } else if (isInserting) {
       context.missing(_dateMeta);
     }
-    context.handle(_reasonMeta, const VerificationResult.success());
     if (data.containsKey('observation')) {
       context.handle(
           _observationMeta,
@@ -1367,91 +1376,108 @@ class $DiscardsTable extends Discards with TableInfo<$DiscardsTable, Discard> {
       context.handle(_weightMeta,
           weight.isAcceptableOrUnknown(data['weight']!, _weightMeta));
     }
+    if (data.containsKey('hot_carcass_weight')) {
+      context.handle(
+          _hotCarcassWeightMeta,
+          hotCarcassWeight.isAcceptableOrUnknown(
+              data['hot_carcass_weight']!, _hotCarcassWeightMeta));
+    }
     return context;
   }
 
   @override
   Set<GeneratedColumn> get $primaryKey => {bovine};
   @override
-  Discard map(Map<String, dynamic> data, {String? tablePrefix}) {
+  Finish map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Discard(
+    return Finish(
       bovine: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}bovine'])!,
-      date: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}date'])!,
-      reason: $DiscardsTable.$converterreason.fromSql(attachedDatabase
+      reason: $FinishesTable.$converterreason.fromSql(attachedDatabase
           .typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}reason'])!),
+      date: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}date'])!,
       observation: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}observation']),
       weight: attachedDatabase.typeMapping
           .read(DriftSqlType.double, data['${effectivePrefix}weight']),
+      hotCarcassWeight: attachedDatabase.typeMapping.read(
+          DriftSqlType.double, data['${effectivePrefix}hot_carcass_weight']),
     );
   }
 
   @override
-  $DiscardsTable createAlias(String alias) {
-    return $DiscardsTable(attachedDatabase, alias);
+  $FinishesTable createAlias(String alias) {
+    return $FinishesTable(attachedDatabase, alias);
   }
 
-  static JsonTypeConverter2<DiscardReason, int, int> $converterreason =
-      const EnumIndexConverter<DiscardReason>(DiscardReason.values);
+  static JsonTypeConverter2<FinishingReason, int, int> $converterreason =
+      const EnumIndexConverter<FinishingReason>(FinishingReason.values);
 }
 
-class Discard extends DataClass implements Insertable<Discard> {
+class Finish extends DataClass implements Insertable<Finish> {
   final int bovine;
+  final FinishingReason reason;
   final DateTime date;
-  final DiscardReason reason;
   final String? observation;
   final double? weight;
-  const Discard(
+  final double? hotCarcassWeight;
+  const Finish(
       {required this.bovine,
-      required this.date,
       required this.reason,
+      required this.date,
       this.observation,
-      this.weight});
+      this.weight,
+      this.hotCarcassWeight});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['bovine'] = Variable<int>(bovine);
-    map['date'] = Variable<DateTime>(date);
     {
       map['reason'] =
-          Variable<int>($DiscardsTable.$converterreason.toSql(reason));
+          Variable<int>($FinishesTable.$converterreason.toSql(reason));
     }
+    map['date'] = Variable<DateTime>(date);
     if (!nullToAbsent || observation != null) {
       map['observation'] = Variable<String>(observation);
     }
     if (!nullToAbsent || weight != null) {
       map['weight'] = Variable<double>(weight);
     }
+    if (!nullToAbsent || hotCarcassWeight != null) {
+      map['hot_carcass_weight'] = Variable<double>(hotCarcassWeight);
+    }
     return map;
   }
 
-  DiscardsCompanion toCompanion(bool nullToAbsent) {
-    return DiscardsCompanion(
+  FinishesCompanion toCompanion(bool nullToAbsent) {
+    return FinishesCompanion(
       bovine: Value(bovine),
-      date: Value(date),
       reason: Value(reason),
+      date: Value(date),
       observation: observation == null && nullToAbsent
           ? const Value.absent()
           : Value(observation),
       weight:
           weight == null && nullToAbsent ? const Value.absent() : Value(weight),
+      hotCarcassWeight: hotCarcassWeight == null && nullToAbsent
+          ? const Value.absent()
+          : Value(hotCarcassWeight),
     );
   }
 
-  factory Discard.fromJson(Map<String, dynamic> json,
+  factory Finish.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Discard(
+    return Finish(
       bovine: serializer.fromJson<int>(json['bovine']),
-      date: serializer.fromJson<DateTime>(json['date']),
-      reason: $DiscardsTable.$converterreason
+      reason: $FinishesTable.$converterreason
           .fromJson(serializer.fromJson<int>(json['reason'])),
+      date: serializer.fromJson<DateTime>(json['date']),
       observation: serializer.fromJson<String?>(json['observation']),
       weight: serializer.fromJson<double?>(json['weight']),
+      hotCarcassWeight: serializer.fromJson<double?>(json['hotCarcassWeight']),
     );
   }
   @override
@@ -1459,112 +1485,130 @@ class Discard extends DataClass implements Insertable<Discard> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'bovine': serializer.toJson<int>(bovine),
-      'date': serializer.toJson<DateTime>(date),
       'reason': serializer
-          .toJson<int>($DiscardsTable.$converterreason.toJson(reason)),
+          .toJson<int>($FinishesTable.$converterreason.toJson(reason)),
+      'date': serializer.toJson<DateTime>(date),
       'observation': serializer.toJson<String?>(observation),
       'weight': serializer.toJson<double?>(weight),
+      'hotCarcassWeight': serializer.toJson<double?>(hotCarcassWeight),
     };
   }
 
-  Discard copyWith(
+  Finish copyWith(
           {int? bovine,
+          FinishingReason? reason,
           DateTime? date,
-          DiscardReason? reason,
           Value<String?> observation = const Value.absent(),
-          Value<double?> weight = const Value.absent()}) =>
-      Discard(
+          Value<double?> weight = const Value.absent(),
+          Value<double?> hotCarcassWeight = const Value.absent()}) =>
+      Finish(
         bovine: bovine ?? this.bovine,
-        date: date ?? this.date,
         reason: reason ?? this.reason,
+        date: date ?? this.date,
         observation: observation.present ? observation.value : this.observation,
         weight: weight.present ? weight.value : this.weight,
+        hotCarcassWeight: hotCarcassWeight.present
+            ? hotCarcassWeight.value
+            : this.hotCarcassWeight,
       );
-  Discard copyWithCompanion(DiscardsCompanion data) {
-    return Discard(
+  Finish copyWithCompanion(FinishesCompanion data) {
+    return Finish(
       bovine: data.bovine.present ? data.bovine.value : this.bovine,
-      date: data.date.present ? data.date.value : this.date,
       reason: data.reason.present ? data.reason.value : this.reason,
+      date: data.date.present ? data.date.value : this.date,
       observation:
           data.observation.present ? data.observation.value : this.observation,
       weight: data.weight.present ? data.weight.value : this.weight,
+      hotCarcassWeight: data.hotCarcassWeight.present
+          ? data.hotCarcassWeight.value
+          : this.hotCarcassWeight,
     );
   }
 
   @override
   String toString() {
-    return (StringBuffer('Discard(')
+    return (StringBuffer('Finish(')
           ..write('bovine: $bovine, ')
-          ..write('date: $date, ')
           ..write('reason: $reason, ')
+          ..write('date: $date, ')
           ..write('observation: $observation, ')
-          ..write('weight: $weight')
+          ..write('weight: $weight, ')
+          ..write('hotCarcassWeight: $hotCarcassWeight')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(bovine, date, reason, observation, weight);
+  int get hashCode =>
+      Object.hash(bovine, reason, date, observation, weight, hotCarcassWeight);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Discard &&
+      (other is Finish &&
           other.bovine == this.bovine &&
-          other.date == this.date &&
           other.reason == this.reason &&
+          other.date == this.date &&
           other.observation == this.observation &&
-          other.weight == this.weight);
+          other.weight == this.weight &&
+          other.hotCarcassWeight == this.hotCarcassWeight);
 }
 
-class DiscardsCompanion extends UpdateCompanion<Discard> {
+class FinishesCompanion extends UpdateCompanion<Finish> {
   final Value<int> bovine;
+  final Value<FinishingReason> reason;
   final Value<DateTime> date;
-  final Value<DiscardReason> reason;
   final Value<String?> observation;
   final Value<double?> weight;
-  const DiscardsCompanion({
+  final Value<double?> hotCarcassWeight;
+  const FinishesCompanion({
     this.bovine = const Value.absent(),
-    this.date = const Value.absent(),
     this.reason = const Value.absent(),
+    this.date = const Value.absent(),
     this.observation = const Value.absent(),
     this.weight = const Value.absent(),
+    this.hotCarcassWeight = const Value.absent(),
   });
-  DiscardsCompanion.insert({
+  FinishesCompanion.insert({
     this.bovine = const Value.absent(),
+    required FinishingReason reason,
     required DateTime date,
-    required DiscardReason reason,
     this.observation = const Value.absent(),
     this.weight = const Value.absent(),
-  })  : date = Value(date),
-        reason = Value(reason);
-  static Insertable<Discard> custom({
+    this.hotCarcassWeight = const Value.absent(),
+  })  : reason = Value(reason),
+        date = Value(date);
+  static Insertable<Finish> custom({
     Expression<int>? bovine,
-    Expression<DateTime>? date,
     Expression<int>? reason,
+    Expression<DateTime>? date,
     Expression<String>? observation,
     Expression<double>? weight,
+    Expression<double>? hotCarcassWeight,
   }) {
     return RawValuesInsertable({
       if (bovine != null) 'bovine': bovine,
-      if (date != null) 'date': date,
       if (reason != null) 'reason': reason,
+      if (date != null) 'date': date,
       if (observation != null) 'observation': observation,
       if (weight != null) 'weight': weight,
+      if (hotCarcassWeight != null) 'hot_carcass_weight': hotCarcassWeight,
     });
   }
 
-  DiscardsCompanion copyWith(
+  FinishesCompanion copyWith(
       {Value<int>? bovine,
+      Value<FinishingReason>? reason,
       Value<DateTime>? date,
-      Value<DiscardReason>? reason,
       Value<String?>? observation,
-      Value<double?>? weight}) {
-    return DiscardsCompanion(
+      Value<double?>? weight,
+      Value<double?>? hotCarcassWeight}) {
+    return FinishesCompanion(
       bovine: bovine ?? this.bovine,
-      date: date ?? this.date,
       reason: reason ?? this.reason,
+      date: date ?? this.date,
       observation: observation ?? this.observation,
       weight: weight ?? this.weight,
+      hotCarcassWeight: hotCarcassWeight ?? this.hotCarcassWeight,
     );
   }
 
@@ -1574,12 +1618,12 @@ class DiscardsCompanion extends UpdateCompanion<Discard> {
     if (bovine.present) {
       map['bovine'] = Variable<int>(bovine.value);
     }
-    if (date.present) {
-      map['date'] = Variable<DateTime>(date.value);
-    }
     if (reason.present) {
       map['reason'] =
-          Variable<int>($DiscardsTable.$converterreason.toSql(reason.value));
+          Variable<int>($FinishesTable.$converterreason.toSql(reason.value));
+    }
+    if (date.present) {
+      map['date'] = Variable<DateTime>(date.value);
     }
     if (observation.present) {
       map['observation'] = Variable<String>(observation.value);
@@ -1587,17 +1631,21 @@ class DiscardsCompanion extends UpdateCompanion<Discard> {
     if (weight.present) {
       map['weight'] = Variable<double>(weight.value);
     }
+    if (hotCarcassWeight.present) {
+      map['hot_carcass_weight'] = Variable<double>(hotCarcassWeight.value);
+    }
     return map;
   }
 
   @override
   String toString() {
-    return (StringBuffer('DiscardsCompanion(')
+    return (StringBuffer('FinishesCompanion(')
           ..write('bovine: $bovine, ')
-          ..write('date: $date, ')
           ..write('reason: $reason, ')
+          ..write('date: $date, ')
           ..write('observation: $observation, ')
-          ..write('weight: $weight')
+          ..write('weight: $weight, ')
+          ..write('hotCarcassWeight: $hotCarcassWeight')
           ..write(')'))
         .toString();
   }
@@ -3563,7 +3611,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $BovinesTable bovines = $BovinesTable(this);
   late final $BovinesEntryTable bovinesEntry = $BovinesEntryTable(this);
   late final $BreedersTable breeders = $BreedersTable(this);
-  late final $DiscardsTable discards = $DiscardsTable(this);
+  late final $FinishesTable finishes = $FinishesTable(this);
   late final $ReproductionsTable reproductions = $ReproductionsTable(this);
   late final $PregnanciesTable pregnancies = $PregnanciesTable(this);
   late final $BirthsTable births = $BirthsTable(this);
@@ -3578,7 +3626,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         bovines,
         bovinesEntry,
         breeders,
-        discards,
+        finishes,
         reproductions,
         pregnancies,
         births,
@@ -3600,7 +3648,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
             on: TableUpdateQuery.onTableName('bovines',
                 limitUpdateKind: UpdateKind.delete),
             result: [
-              TableUpdate('discards', kind: UpdateKind.delete),
+              TableUpdate('finishes', kind: UpdateKind.delete),
             ],
           ),
           WritePropagation(
@@ -3726,17 +3774,17 @@ final class $$BovinesTableReferences
         manager.$state.copyWith(prefetchedData: cache));
   }
 
-  static MultiTypedResultKey<$DiscardsTable, List<Discard>> _discardsRefsTable(
+  static MultiTypedResultKey<$FinishesTable, List<Finish>> _finishesRefsTable(
           _$AppDatabase db) =>
-      MultiTypedResultKey.fromTable(db.discards,
+      MultiTypedResultKey.fromTable(db.finishes,
           aliasName:
-              $_aliasNameGenerator(db.bovines.earring, db.discards.bovine));
+              $_aliasNameGenerator(db.bovines.earring, db.finishes.bovine));
 
-  $$DiscardsTableProcessedTableManager get discardsRefs {
-    final manager = $$DiscardsTableTableManager($_db, $_db.discards)
+  $$FinishesTableProcessedTableManager get finishesRefs {
+    final manager = $$FinishesTableTableManager($_db, $_db.finishes)
         .filter((f) => f.bovine.earring($_item.earring));
 
-    final cache = $_typedResult.readTableOrNull(_discardsRefsTable($_db));
+    final cache = $_typedResult.readTableOrNull(_finishesRefsTable($_db));
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
@@ -3860,19 +3908,19 @@ class $$BovinesTableFilterComposer
     return f(composer);
   }
 
-  Expression<bool> discardsRefs(
-      Expression<bool> Function($$DiscardsTableFilterComposer f) f) {
-    final $$DiscardsTableFilterComposer composer = $composerBuilder(
+  Expression<bool> finishesRefs(
+      Expression<bool> Function($$FinishesTableFilterComposer f) f) {
+    final $$FinishesTableFilterComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.earring,
-        referencedTable: $db.discards,
+        referencedTable: $db.finishes,
         getReferencedColumn: (t) => t.bovine,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$DiscardsTableFilterComposer(
+            $$FinishesTableFilterComposer(
               $db: $db,
-              $table: $db.discards,
+              $table: $db.finishes,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -4063,19 +4111,19 @@ class $$BovinesTableAnnotationComposer
     return f(composer);
   }
 
-  Expression<T> discardsRefs<T extends Object>(
-      Expression<T> Function($$DiscardsTableAnnotationComposer a) f) {
-    final $$DiscardsTableAnnotationComposer composer = $composerBuilder(
+  Expression<T> finishesRefs<T extends Object>(
+      Expression<T> Function($$FinishesTableAnnotationComposer a) f) {
+    final $$FinishesTableAnnotationComposer composer = $composerBuilder(
         composer: this,
         getCurrentColumn: (t) => t.earring,
-        referencedTable: $db.discards,
+        referencedTable: $db.finishes,
         getReferencedColumn: (t) => t.bovine,
         builder: (joinBuilder,
                 {$addJoinBuilderToRootComposer,
                 $removeJoinBuilderFromRootComposer}) =>
-            $$DiscardsTableAnnotationComposer(
+            $$FinishesTableAnnotationComposer(
               $db: $db,
-              $table: $db.discards,
+              $table: $db.finishes,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -4182,7 +4230,7 @@ class $$BovinesTableTableManager extends RootTableManager<
     Bovine,
     PrefetchHooks Function(
         {bool bovinesEntryRefs,
-        bool discardsRefs,
+        bool finishesRefs,
         bool pregnanciesRefs,
         bool birthsRefs,
         bool weaningsRefs,
@@ -4247,7 +4295,7 @@ class $$BovinesTableTableManager extends RootTableManager<
               .toList(),
           prefetchHooksCallback: (
               {bovinesEntryRefs = false,
-              discardsRefs = false,
+              finishesRefs = false,
               pregnanciesRefs = false,
               birthsRefs = false,
               weaningsRefs = false,
@@ -4256,7 +4304,7 @@ class $$BovinesTableTableManager extends RootTableManager<
               db: db,
               explicitlyWatchedTables: [
                 if (bovinesEntryRefs) db.bovinesEntry,
-                if (discardsRefs) db.discards,
+                if (finishesRefs) db.finishes,
                 if (pregnanciesRefs) db.pregnancies,
                 if (birthsRefs) db.births,
                 if (weaningsRefs) db.weanings,
@@ -4277,14 +4325,14 @@ class $$BovinesTableTableManager extends RootTableManager<
                             (item, referencedItems) => referencedItems
                                 .where((e) => e.bovine == item.earring),
                         typedResults: items),
-                  if (discardsRefs)
+                  if (finishesRefs)
                     await $_getPrefetchedData(
                         currentTable: table,
                         referencedTable:
-                            $$BovinesTableReferences._discardsRefsTable(db),
+                            $$BovinesTableReferences._finishesRefsTable(db),
                         managerFromTypedResult: (p0) =>
                             $$BovinesTableReferences(db, table, p0)
-                                .discardsRefs,
+                                .finishesRefs,
                         referencedItemsForCurrentItem:
                             (item, referencedItems) => referencedItems
                                 .where((e) => e.bovine == item.earring),
@@ -4356,7 +4404,7 @@ typedef $$BovinesTableProcessedTableManager = ProcessedTableManager<
     Bovine,
     PrefetchHooks Function(
         {bool bovinesEntryRefs,
-        bool discardsRefs,
+        bool finishesRefs,
         bool pregnanciesRefs,
         bool birthsRefs,
         bool weaningsRefs,
@@ -5019,27 +5067,29 @@ typedef $$BreedersTableProcessedTableManager = ProcessedTableManager<
     (Breeder, $$BreedersTableReferences),
     Breeder,
     PrefetchHooks Function({bool reproductionsRefs, bool parentingRefs})>;
-typedef $$DiscardsTableCreateCompanionBuilder = DiscardsCompanion Function({
+typedef $$FinishesTableCreateCompanionBuilder = FinishesCompanion Function({
   Value<int> bovine,
+  required FinishingReason reason,
   required DateTime date,
-  required DiscardReason reason,
   Value<String?> observation,
   Value<double?> weight,
+  Value<double?> hotCarcassWeight,
 });
-typedef $$DiscardsTableUpdateCompanionBuilder = DiscardsCompanion Function({
+typedef $$FinishesTableUpdateCompanionBuilder = FinishesCompanion Function({
   Value<int> bovine,
+  Value<FinishingReason> reason,
   Value<DateTime> date,
-  Value<DiscardReason> reason,
   Value<String?> observation,
   Value<double?> weight,
+  Value<double?> hotCarcassWeight,
 });
 
-final class $$DiscardsTableReferences
-    extends BaseReferences<_$AppDatabase, $DiscardsTable, Discard> {
-  $$DiscardsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+final class $$FinishesTableReferences
+    extends BaseReferences<_$AppDatabase, $FinishesTable, Finish> {
+  $$FinishesTableReferences(super.$_db, super.$_table, super.$_typedResult);
 
   static $BovinesTable _bovineTable(_$AppDatabase db) => db.bovines.createAlias(
-      $_aliasNameGenerator(db.discards.bovine, db.bovines.earring));
+      $_aliasNameGenerator(db.finishes.bovine, db.bovines.earring));
 
   $$BovinesTableProcessedTableManager? get bovine {
     if ($_item.bovine == null) return null;
@@ -5052,28 +5102,32 @@ final class $$DiscardsTableReferences
   }
 }
 
-class $$DiscardsTableFilterComposer
-    extends Composer<_$AppDatabase, $DiscardsTable> {
-  $$DiscardsTableFilterComposer({
+class $$FinishesTableFilterComposer
+    extends Composer<_$AppDatabase, $FinishesTable> {
+  $$FinishesTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnFilters<DateTime> get date => $composableBuilder(
-      column: $table.date, builder: (column) => ColumnFilters(column));
-
-  ColumnWithTypeConverterFilters<DiscardReason, DiscardReason, int>
+  ColumnWithTypeConverterFilters<FinishingReason, FinishingReason, int>
       get reason => $composableBuilder(
           column: $table.reason,
           builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<DateTime> get date => $composableBuilder(
+      column: $table.date, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get observation => $composableBuilder(
       column: $table.observation, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<double> get weight => $composableBuilder(
       column: $table.weight, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get hotCarcassWeight => $composableBuilder(
+      column: $table.hotCarcassWeight,
+      builder: (column) => ColumnFilters(column));
 
   $$BovinesTableFilterComposer get bovine {
     final $$BovinesTableFilterComposer composer = $composerBuilder(
@@ -5096,26 +5150,30 @@ class $$DiscardsTableFilterComposer
   }
 }
 
-class $$DiscardsTableOrderingComposer
-    extends Composer<_$AppDatabase, $DiscardsTable> {
-  $$DiscardsTableOrderingComposer({
+class $$FinishesTableOrderingComposer
+    extends Composer<_$AppDatabase, $FinishesTable> {
+  $$FinishesTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnOrderings<DateTime> get date => $composableBuilder(
-      column: $table.date, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<int> get reason => $composableBuilder(
       column: $table.reason, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get date => $composableBuilder(
+      column: $table.date, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get observation => $composableBuilder(
       column: $table.observation, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<double> get weight => $composableBuilder(
       column: $table.weight, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get hotCarcassWeight => $composableBuilder(
+      column: $table.hotCarcassWeight,
+      builder: (column) => ColumnOrderings(column));
 
   $$BovinesTableOrderingComposer get bovine {
     final $$BovinesTableOrderingComposer composer = $composerBuilder(
@@ -5138,26 +5196,29 @@ class $$DiscardsTableOrderingComposer
   }
 }
 
-class $$DiscardsTableAnnotationComposer
-    extends Composer<_$AppDatabase, $DiscardsTable> {
-  $$DiscardsTableAnnotationComposer({
+class $$FinishesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FinishesTable> {
+  $$FinishesTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
+  GeneratedColumnWithTypeConverter<FinishingReason, int> get reason =>
+      $composableBuilder(column: $table.reason, builder: (column) => column);
+
   GeneratedColumn<DateTime> get date =>
       $composableBuilder(column: $table.date, builder: (column) => column);
-
-  GeneratedColumnWithTypeConverter<DiscardReason, int> get reason =>
-      $composableBuilder(column: $table.reason, builder: (column) => column);
 
   GeneratedColumn<String> get observation => $composableBuilder(
       column: $table.observation, builder: (column) => column);
 
   GeneratedColumn<double> get weight =>
       $composableBuilder(column: $table.weight, builder: (column) => column);
+
+  GeneratedColumn<double> get hotCarcassWeight => $composableBuilder(
+      column: $table.hotCarcassWeight, builder: (column) => column);
 
   $$BovinesTableAnnotationComposer get bovine {
     final $$BovinesTableAnnotationComposer composer = $composerBuilder(
@@ -5180,59 +5241,63 @@ class $$DiscardsTableAnnotationComposer
   }
 }
 
-class $$DiscardsTableTableManager extends RootTableManager<
+class $$FinishesTableTableManager extends RootTableManager<
     _$AppDatabase,
-    $DiscardsTable,
-    Discard,
-    $$DiscardsTableFilterComposer,
-    $$DiscardsTableOrderingComposer,
-    $$DiscardsTableAnnotationComposer,
-    $$DiscardsTableCreateCompanionBuilder,
-    $$DiscardsTableUpdateCompanionBuilder,
-    (Discard, $$DiscardsTableReferences),
-    Discard,
+    $FinishesTable,
+    Finish,
+    $$FinishesTableFilterComposer,
+    $$FinishesTableOrderingComposer,
+    $$FinishesTableAnnotationComposer,
+    $$FinishesTableCreateCompanionBuilder,
+    $$FinishesTableUpdateCompanionBuilder,
+    (Finish, $$FinishesTableReferences),
+    Finish,
     PrefetchHooks Function({bool bovine})> {
-  $$DiscardsTableTableManager(_$AppDatabase db, $DiscardsTable table)
+  $$FinishesTableTableManager(_$AppDatabase db, $FinishesTable table)
       : super(TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$DiscardsTableFilterComposer($db: db, $table: table),
+              $$FinishesTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $$DiscardsTableOrderingComposer($db: db, $table: table),
+              $$FinishesTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
-              $$DiscardsTableAnnotationComposer($db: db, $table: table),
+              $$FinishesTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> bovine = const Value.absent(),
+            Value<FinishingReason> reason = const Value.absent(),
             Value<DateTime> date = const Value.absent(),
-            Value<DiscardReason> reason = const Value.absent(),
             Value<String?> observation = const Value.absent(),
             Value<double?> weight = const Value.absent(),
+            Value<double?> hotCarcassWeight = const Value.absent(),
           }) =>
-              DiscardsCompanion(
+              FinishesCompanion(
             bovine: bovine,
-            date: date,
             reason: reason,
+            date: date,
             observation: observation,
             weight: weight,
+            hotCarcassWeight: hotCarcassWeight,
           ),
           createCompanionCallback: ({
             Value<int> bovine = const Value.absent(),
+            required FinishingReason reason,
             required DateTime date,
-            required DiscardReason reason,
             Value<String?> observation = const Value.absent(),
             Value<double?> weight = const Value.absent(),
+            Value<double?> hotCarcassWeight = const Value.absent(),
           }) =>
-              DiscardsCompanion.insert(
+              FinishesCompanion.insert(
             bovine: bovine,
-            date: date,
             reason: reason,
+            date: date,
             observation: observation,
             weight: weight,
+            hotCarcassWeight: hotCarcassWeight,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) =>
-                  (e.readTable(table), $$DiscardsTableReferences(db, table, e)))
+                  (e.readTable(table), $$FinishesTableReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: ({bovine = false}) {
             return PrefetchHooks(
@@ -5255,9 +5320,9 @@ class $$DiscardsTableTableManager extends RootTableManager<
                   state = state.withJoin(
                     currentTable: table,
                     currentColumn: table.bovine,
-                    referencedTable: $$DiscardsTableReferences._bovineTable(db),
+                    referencedTable: $$FinishesTableReferences._bovineTable(db),
                     referencedColumn:
-                        $$DiscardsTableReferences._bovineTable(db).earring,
+                        $$FinishesTableReferences._bovineTable(db).earring,
                   ) as T;
                 }
 
@@ -5271,17 +5336,17 @@ class $$DiscardsTableTableManager extends RootTableManager<
         ));
 }
 
-typedef $$DiscardsTableProcessedTableManager = ProcessedTableManager<
+typedef $$FinishesTableProcessedTableManager = ProcessedTableManager<
     _$AppDatabase,
-    $DiscardsTable,
-    Discard,
-    $$DiscardsTableFilterComposer,
-    $$DiscardsTableOrderingComposer,
-    $$DiscardsTableAnnotationComposer,
-    $$DiscardsTableCreateCompanionBuilder,
-    $$DiscardsTableUpdateCompanionBuilder,
-    (Discard, $$DiscardsTableReferences),
-    Discard,
+    $FinishesTable,
+    Finish,
+    $$FinishesTableFilterComposer,
+    $$FinishesTableOrderingComposer,
+    $$FinishesTableAnnotationComposer,
+    $$FinishesTableCreateCompanionBuilder,
+    $$FinishesTableUpdateCompanionBuilder,
+    (Finish, $$FinishesTableReferences),
+    Finish,
     PrefetchHooks Function({bool bovine})>;
 typedef $$ReproductionsTableCreateCompanionBuilder = ReproductionsCompanion
     Function({
@@ -7604,8 +7669,8 @@ class $AppDatabaseManager {
       $$BovinesEntryTableTableManager(_db, _db.bovinesEntry);
   $$BreedersTableTableManager get breeders =>
       $$BreedersTableTableManager(_db, _db.breeders);
-  $$DiscardsTableTableManager get discards =>
-      $$DiscardsTableTableManager(_db, _db.discards);
+  $$FinishesTableTableManager get finishes =>
+      $$FinishesTableTableManager(_db, _db.finishes);
   $$ReproductionsTableTableManager get reproductions =>
       $$ReproductionsTableTableManager(_db, _db.reproductions);
   $$PregnanciesTableTableManager get pregnancies =>

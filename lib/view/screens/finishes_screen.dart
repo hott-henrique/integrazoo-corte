@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 
 import 'package:integrazoo/base.dart';
+import 'package:integrazoo/control/finish_controller.dart';
 
 import 'package:integrazoo/view/components/unexpected_error_alert_dialog.dart';
 
@@ -12,14 +13,14 @@ import 'package:integrazoo/control/bovine_controller.dart';
 
 import 'package:integrazoo/database/database.dart';
 
-class DiscardsScreen extends StatefulWidget {
-  const DiscardsScreen({ super.key });
+class FinishesScreen extends StatefulWidget {
+  const FinishesScreen({ super.key });
 
   @override
-  State<DiscardsScreen> createState() => _DiscardsScreen();
+  State<FinishesScreen> createState() => _FinishesScreen();
 }
 
-class _DiscardsScreen extends State<DiscardsScreen> {
+class _FinishesScreen extends State<FinishesScreen> {
   Exception? exception;
 
   List<Bovine> bovines = List.empty(growable: true);
@@ -101,8 +102,8 @@ class _DiscardsScreen extends State<DiscardsScreen> {
   }
 
   Widget buildCancelDiscardView(Bovine b) {
-    return FutureBuilder<Discard?>(
-      future: BovineController.getDiscard(b.earring),
+    return FutureBuilder<Finish?>(
+      future: FinishController.getByEarring(b.earring),
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return const Text("Loading...");
@@ -157,6 +158,6 @@ class _DiscardsScreen extends State<DiscardsScreen> {
   }
 
   Future<void> cancelDiscard(int earring) {
-    return BovineController.cancelDiscard(earring);
+    return FinishController.delete(earring);
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:integrazoo/control/finish_controller.dart';
 
 import 'package:intl/intl.dart';
 
@@ -12,57 +13,52 @@ import 'package:integrazoo/control/bovine_controller.dart';
 import 'package:integrazoo/database/database.dart';
 
 
-class DiscardInfoForm extends StatefulWidget {
+class FinishInfoForm extends StatefulWidget {
   final int earring;
-  final Discard? discard;
+  final Finish? finish;
   final VoidCallback postSaved;
 
-  const DiscardInfoForm({ super.key, required this.earring, this.discard, required this.postSaved});
+  const FinishInfoForm({ super.key, required this.earring, this.finish, required this.postSaved});
 
   @override
-  DiscardInfoFormState createState() {
-    return DiscardInfoFormState();
-  }
+  State<FinishInfoForm> createState() => _FinishInfoForm();
 }
 
-class DiscardInfoFormState extends State<DiscardInfoForm> {
+class _FinishInfoForm extends State<FinishInfoForm> {
   final _formKey = GlobalKey<FormState>();
 
   final observationController = TextEditingController();
   final weightController = TextEditingController();
+  final hotCarcassWeightController = TextEditingController();
 
   final reasonController = TextEditingController();
-  DiscardReason? reason;
+  FinishingReason? reason;
 
   late DateTime date;
   late final TextEditingController dateController;
 
   final DateFormat formatter = DateFormat('dd/MM/yyyy');
 
-  Exception? exception;
-
   @override
   void initState() {
     super.initState();
 
-    date = widget.discard?.date ?? DateTime.now();
+    reason = widget.finish?.reason;
+    reasonController.text = (widget.finish?.reason ?? "").toString();
+
+    date = widget.finish?.date ?? DateTime.now();
     dateController = TextEditingController(text: formatter.format(date));
-    weightController.text = (widget.discard?.weight ?? "").toString();
-    observationController.text = widget.discard?.observation ?? "";
-    reasonController.text = (widget.discard?.reason ?? "").toString();
-    reason = widget.discard?.reason;
+
+    weightController.text = (widget.finish?.weight ?? "").toString();
+    hotCarcassWeightController.text = (widget.finish?.hotCarcassWeight ?? "").toString();
+
+    observationController.text = widget.finish?.observation ?? "";
   }
 
   @override
   Widget build(BuildContext context) {
-    if (exception != null) {
-      return UnexpectedErrorAlertDialog(title: 'Erro Inesperado',
-                                        message: 'Algo de inespearado aconteceu durante a execução do aplicativo.',
-                                        onPressed: () => setState(() => exception = null));
-    }
-
-    final reasonDropdown = DropdownMenu<DiscardReason>(
-      dropdownMenuEntries: DiscardReason.values.map((r) => DropdownMenuEntry(value: r, label: r.toString())).toList(),
+    final reasonDropdown = DropdownMenu<FinishingReason>(
+      dropdownMenuEntries: FinishingReason.values.map((r) => DropdownMenuEntry(value: r, label: r.toString())).toList(),
       onSelected: (value) => setState(() => reason = value!),
       label: const Text('Motivação'),
       controller: reasonController,
@@ -83,6 +79,25 @@ class DiscardInfoFormState extends State<DiscardInfoForm> {
                                         label: Text("Peso - Kilogramas"),
                                         floatingLabelBehavior: FloatingLabelBehavior.auto),
       controller: weightController,
+      validator: (String? value) {
+        if (value == null) {
+          return null;
+        }
+
+        if (value.isNotEmpty && double.tryParse(value) == null) {
+          return "Por favor, digite um número válido.";
+        }
+
+        return null;
+      },
+    );
+
+    final hotCarcassWeightField = TextFormField(
+      keyboardType: TextInputType.number,
+      decoration: const InputDecoration(border: OutlineInputBorder(),
+                                        label: Text("Peso da Carcaça Quente- Kilogramas"),
+                                        floatingLabelBehavior: FloatingLabelBehavior.auto),
+      controller: hotCarcassWeightController,
       validator: (String? value) {
         if (value == null) {
           return null;
@@ -129,8 +144,12 @@ class DiscardInfoFormState extends State<DiscardInfoForm> {
       divider,
       datePicker,
       divider,
-      weightField,
-      divider,
+      if (reason == FinishingReason.slaughter) ...[
+        weightField,
+        divider,
+        hotCarcassWeightField,
+        divider,
+      ],
       addButton
     ];
 
@@ -162,29 +181,32 @@ class DiscardInfoFormState extends State<DiscardInfoForm> {
 
       updateBovineStatus();
 
-      final discard = Discard.fromJson({
+      final finish = Finish.fromJson({
         'id': 0,
         'bovine': widget.earring,
         'date': date,
         'reason': reason!.index,
         'observation': observationController.text.isEmpty ? null : observationController.text,
-        'weight': double.tryParse(weightController.text)
+        'weight': double.tryParse(weightController.text),
+        'hotCarcassWeight': double.tryParse(hotCarcassWeightController.text)
       });
 
-      BovineController.discard(widget.earring, discard).then(
+      FinishController.save(widget.earring, finish).then(
         (_) {
-          if (context.mounted) {
+          if (mounted) {
             SnackBar snackBar = const SnackBar(
-              content: Text('Informações de descartes salvas com sucesso.'),
+              content: Text('Informações de finalização salvas com sucesso.'),
               backgroundColor: Colors.green,
               showCloseIcon: true
             );
+
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
             clearForm();
+
             widget.postSaved();
           }
-        },
-        onError: (e) => setState(() => exception = e)
+        }
       );
     }
   }

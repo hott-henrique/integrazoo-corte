@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:integrazoo/view/forms/create/bovine_form.dart';
-import 'package:integrazoo/view/forms/create/bovine_discard_form.dart';
+import 'package:integrazoo/view/forms/create/finish_form.dart';
 import 'package:integrazoo/view/forms/create/breeder_form.dart';
 import 'package:integrazoo/view/forms/create/artificial_insemination_form.dart';
 import 'package:integrazoo/view/forms/create/natural_mating_form.dart';
@@ -12,7 +12,7 @@ import 'package:integrazoo/view/forms/create/treatment_form.dart';
 
 import 'package:integrazoo/view/screens/herd_screen.dart';
 import 'package:integrazoo/view/screens/breeders_screen.dart';
-import 'package:integrazoo/view/screens/discards_screen.dart';
+import 'package:integrazoo/view/screens/finishes_screen.dart';
 
 import 'package:integrazoo/view/screens/relatories/female_breeders_relatory.dart';
 import 'package:integrazoo/view/screens/relatories/herd_relatory.dart';
@@ -157,7 +157,7 @@ class _IntegrazooBaseAppState extends State<IntegrazooBaseApp> {
         title: const Text("Reprodução"),
         children: [
           ListTile(
-            title: const Text("Registrar Inseminação Artificial"),
+            title: const Text("Registrar Inseminações"),
             onTap: () {
               Navigator.of(context).popUntil((route) => route.isFirst);
               Navigator.of(context)
@@ -173,7 +173,7 @@ class _IntegrazooBaseAppState extends State<IntegrazooBaseApp> {
             }
           ),
           ListTile(
-            title: const Text("Regitrar Diagnóstico Reprodução"),
+            title: const Text("Registrar Prenhe"),
             onTap: () {
               Navigator.of(context).popUntil((route) => route.isFirst);
               Navigator.of(context)
@@ -211,7 +211,7 @@ class _IntegrazooBaseAppState extends State<IntegrazooBaseApp> {
             onTap: () {
               Navigator.of(context).popUntil((route) => route.isFirst);
               Navigator.of(context)
-                       .push(MaterialPageRoute(builder: (context) => const BovineDiscardForm()));
+                       .push(MaterialPageRoute(builder: (context) => const FinishForm()));
             }
           ),
           ListTile(
@@ -219,7 +219,7 @@ class _IntegrazooBaseAppState extends State<IntegrazooBaseApp> {
             onTap: () {
               Navigator.of(context).popUntil((route) => route.isFirst);
               Navigator.of(context)
-                       .push(MaterialPageRoute(builder: (context) => const DiscardsScreen()));
+                       .push(MaterialPageRoute(builder: (context) => const FinishesScreen()));
             }
           )
         ]

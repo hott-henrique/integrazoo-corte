@@ -65,33 +65,40 @@ class Breeders extends Table {
   RealColumn get epdYearlingWeight => real().nullable()();
 }
 
-enum DiscardReason {
-  death,
+enum FinishingReason {
+  discard,
   sell,
-  other;
+  death,
+  slaughter;
 
   @override
   String toString() {
     switch (this) {
+      case discard:
+        return 'Descarte';
+
       case death:
         return 'Morte';
 
       case sell:
         return 'Venda';
 
-      case other:
-        return 'Outro';
+      case slaughter:
+        return 'Abate';
     }
   }
 }
 
-class Discards extends Table {
+@DataClassName('Finish')
+class Finishes extends Table {
   IntColumn get bovine => integer().references(Bovines, #earring, onDelete: KeyAction.cascade)();
 
+  IntColumn get reason => intEnum<FinishingReason>()();
   DateTimeColumn get date => dateTime()();
-  IntColumn get reason => intEnum<DiscardReason>()();
   TextColumn get observation => text().nullable()();
+
   RealColumn get weight => real().nullable().check(weight.isBiggerThan(const Constant(0.0)))();
+  RealColumn get hotCarcassWeight => real().nullable().check(hotCarcassWeight.isBiggerThan(const Constant(0.0)))();
 
   @override
   Set<Column> get primaryKey => { bovine };
@@ -254,7 +261,7 @@ class Treatments extends Table {
   Bovines,
   BovinesEntry,
   Breeders,
-  Discards,
+  Finishes,
   Reproductions,
   Pregnancies,
   Births,

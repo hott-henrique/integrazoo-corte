@@ -388,50 +388,6 @@ class BovinePersistence {
     return r.then((v) => v != null);
   }
 
-  static Future<void> discard(int earring, Discard discard) async {
-    final r = await (database.select(database.bovines)
-                             ..where((b) => b.earring.equals(earring)))
-                             .getSingleOrNull();
-
-    if (r == null) {
-      return;
-    }
-
-    final discardCompanion = DiscardsCompanion.insert(
-      bovine: Value(discard.bovine),
-      reason: discard.reason,
-      observation: Value(discard.observation),
-      weight: Value(discard.weight),
-      date: discard.date
-    );
-
-    database.into(database.discards).insertOnConflictUpdate(discardCompanion);
-  }
-
-  static Future<Discard?> getDiscard(int earring) async {
-    return (database.select(database.discards)
-                    ..where((d) => d.bovine.equals(earring)))
-                    .getSingleOrNull();
-  }
-
-  static Future<void> cancelDiscard(int earring) async {
-    final r = await (database.select(database.bovines)
-                             ..where((b) => b.earring.equals(earring)))
-                             .getSingleOrNull();
-
-    if (r == null) {
-      return;
-    }
-
-    (database.delete(database.discards)..where((d) => d.bovine.equals(earring))).go().then(
-      (_) {
-        final bovineUpdate = r.copyWith(wasDiscarded: false);
-
-        BovinePersistence.saveBovine(bovineUpdate);
-      }
-    );
-  }
-
   static Future<int> countChildrenOfSex(int earring, Sex s) async {
     final result = await database.customSelect(
       """

@@ -1,45 +1,45 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:integrazoo/control/finish_controller.dart';
 
 import 'package:intl/intl.dart';
 
 import 'package:integrazoo/base.dart';
 
 import 'package:integrazoo/view/components/button.dart';
-import 'package:integrazoo/view/components/unexpected_error_alert_dialog.dart';
 
 import 'package:integrazoo/view/components/bovine/single_bovine_selector.dart';
 import 'package:integrazoo/view/components/bovine/earring_controller.dart';
 
 import 'package:integrazoo/control/bovine_controller.dart';
+
 import 'package:integrazoo/database/database.dart';
 
 
-class BovineDiscardForm extends StatefulWidget {
-  const BovineDiscardForm({ super.key });
+class FinishForm extends StatefulWidget {
+  const FinishForm({ super.key });
 
   @override
-  BovineDiscardFormState createState() {
-    return BovineDiscardFormState();
-  }
+  State<FinishForm> createState() => _FinishForm();
 }
 
-class BovineDiscardFormState extends State<BovineDiscardForm> {
+class _FinishForm extends State<FinishForm> {
   final _formKey = GlobalKey<FormState>();
 
   final earringController = EarringController();
 
-  final observationController = TextEditingController();
+  FinishingReason? reason;
+
   final weightController = TextEditingController();
-  DiscardReason? reason;
+  final hotCarcassWeightController = TextEditingController();
+
+  final observationController = TextEditingController();
 
   late final TextEditingController dateController;
   DateTime date = DateTime.now();
 
   final DateFormat formatter = DateFormat('dd/MM/yyyy');
-
-  Exception? exception;
 
   @override
   void initState() {
@@ -49,26 +49,14 @@ class BovineDiscardFormState extends State<BovineDiscardForm> {
 
   @override
   Widget build(BuildContext context) {
-    if (exception != null) {
-      return UnexpectedErrorAlertDialog(title: 'Erro Inesperado',
-                                        message: 'Algo de inespearado aconteceu durante a execução do aplicativo.',
-                                        onPressed: () => setState(() => exception = null));
-    }
+    final bovineSelector = SingleBovineSelector(earringController: earringController, wasDiscarded: false);
 
-    final reasonDropdown = DropdownMenu<DiscardReason>(
+    final reasonDropdown = DropdownMenu<FinishingReason>(
       initialSelection: reason,
-      dropdownMenuEntries: DiscardReason.values.map((r) => DropdownMenuEntry(value: r, label: r.toString())).toList(),
+      dropdownMenuEntries: FinishingReason.values.map((r) => DropdownMenuEntry(value: r, label: r.toString())).toList(),
       onSelected: (value) => setState(() => reason = value!),
       label: const Text('Motivação'),
       expandedInsets: EdgeInsets.zero
-    );
-
-    final observationField = TextFormField(
-      keyboardType: TextInputType.text,
-      controller: observationController,
-      decoration: const InputDecoration(border: OutlineInputBorder(),
-                                        label: Text("Observação"),
-                                        floatingLabelBehavior: FloatingLabelBehavior.auto)
     );
 
     final weightField = TextFormField(
@@ -90,8 +78,34 @@ class BovineDiscardFormState extends State<BovineDiscardForm> {
       },
     );
 
+    final hotCarcassWeightField = TextFormField(
+      keyboardType: TextInputType.number,
+      decoration: const InputDecoration(border: OutlineInputBorder(),
+                                        label: Text("Peso da Carcaça Quente - Kilogramas"),
+                                        floatingLabelBehavior: FloatingLabelBehavior.auto,
+                                        hintText: "Digite o peso da carcaça quente em kilogramas."),
+      controller: hotCarcassWeightController,
+      validator: (String? value) {
+        if (value == null) {
+          return null;
+        }
 
-    final addButton = Button(text: "Confirmar Descarte", color: Colors.red, onPressed: discardBovine);
+        if (value.isNotEmpty && double.tryParse(value) == null) {
+          return "Por favor, digite um número válido.";
+        }
+
+        return null;
+      },
+    );
+
+    final observationField = TextFormField(
+      keyboardType: TextInputType.text,
+      controller: observationController,
+      decoration: const InputDecoration(border: OutlineInputBorder(),
+                                        label: Text("Observação (Opcional)"),
+                                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                                        hintText: "Digite alguma observação sobre essa finalização.")
+    );
 
     final datePicker = TextFormField(
       controller: dateController,
@@ -115,7 +129,7 @@ class BovineDiscardFormState extends State<BovineDiscardForm> {
       },
     );
 
-    final bovineSelector = SingleBovineSelector(earringController: earringController, wasDiscarded: false);
+    final addButton = Button(text: "SALVAR", color: Colors.green, onPressed: discardBovine);
 
     Divider divider = const Divider(color: Colors.transparent);
 
@@ -128,13 +142,17 @@ class BovineDiscardFormState extends State<BovineDiscardForm> {
       divider,
       datePicker,
       divider,
-      weightField,
-      divider,
+      if (reason == FinishingReason.slaughter) ...[
+        weightField,
+        divider,
+        hotCarcassWeightField,
+        divider,
+      ],
       addButton
     ];
 
     return IntegrazooBaseApp(
-      title: "DESCARTAR ANIMAL",
+      title: "FINALIZAR ANIMAL",
       body: SingleChildScrollView(child:
         Form(
         autovalidateMode: AutovalidateMode.always,
@@ -167,28 +185,28 @@ class BovineDiscardFormState extends State<BovineDiscardForm> {
 
       int earring = earringController.earring!;
 
-      final discard = Discard.fromJson({
+      final discard = Finish.fromJson({
         'id': 0,
         'bovine': earring,
         'date': date,
         'reason': reason!.index,
         'observation': observationController.text.isEmpty ? null : observationController.text,
-        'weight': double.tryParse(weightController.text)
+        'weight': double.tryParse(weightController.text),
+        'hotCarcassWeight': double.tryParse(hotCarcassWeightController.text)
       });
 
-      BovineController.discard(earring, discard).then(
+      FinishController.save(earring, discard).then(
         (_) {
-          if (context.mounted) {
+          if (mounted) {
             SnackBar snackBar = const SnackBar(
-              content: Text('Descarte realizado.'),
+              content: Text('Finalização salva com sucesso.'),
               backgroundColor: Colors.green,
               showCloseIcon: true
             );
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
             clearForm();
           }
-        },
-        onError: (e) => setState(() => exception = e)
+        }
       );
     }
   }

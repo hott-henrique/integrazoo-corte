@@ -6,7 +6,7 @@ import 'package:integrazoo/base.dart';
 
 import 'package:integrazoo/view/screens/bovine_screen/components/birth_info_card.dart';
 import 'package:integrazoo/view/screens/bovine_screen/components/bovine_info_card.dart';
-import 'package:integrazoo/view/screens/bovine_screen/components/discard_info_card.dart';
+import 'package:integrazoo/view/screens/bovine_screen/components/finish_info_card.dart';
 import 'package:integrazoo/view/screens/bovine_screen/components/parents_info_card.dart';
 import 'package:integrazoo/view/screens/bovine_screen/components/weaning_info_card.dart';
 
@@ -33,7 +33,7 @@ class _BovineScreen extends State<BovineScreen> {
     columnBody.add(ParentsInfoCard(earring: widget.earring));
     columnBody.add(BirthInfoCard(earring: widget.earring));
     columnBody.add(WeaningInfoCard(earring: widget.earring));
-    columnBody.add(DiscardInfoCard(earring: widget.earring));
+    columnBody.add(FinishInfoCard(earring: widget.earring));
 
     return IntegrazooBaseApp(
       title: "ANIMAL #${widget.earring}",
