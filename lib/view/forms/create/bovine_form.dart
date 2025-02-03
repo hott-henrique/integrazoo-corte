@@ -31,7 +31,7 @@ class BovineFormState extends State<BovineForm> {
   final earringController = TextEditingController();
   final nameController = TextEditingController();
   final sexController = TextEditingController();
-  Sex? bovineSex;
+  Sex bovineSex = Sex.female;
   bool isBreeder = false;
 
   late final TextEditingController dateEntryController;
@@ -45,6 +45,7 @@ class BovineFormState extends State<BovineForm> {
   @override
   void initState() {
     super.initState();
+    sexController.text = bovineSex.toString();
     dateEntryController = TextEditingController(text: null);
   }
 
@@ -93,7 +94,13 @@ class BovineFormState extends State<BovineForm> {
       label: const Text("Sexo"),
       controller: sexController,
       dropdownMenuEntries: Sex.values.map((sex) => DropdownMenuEntry(value: sex, label: sex.toString())).toList(),
-      onSelected: (value) => bovineSex = value,
+      onSelected: (value) {
+        if (value == null) {
+          return;
+        }
+
+        setState(() => bovineSex = value);
+      },
       expandedInsets: EdgeInsets.zero,
     );
 
@@ -145,7 +152,7 @@ class BovineFormState extends State<BovineForm> {
           isBreeder = value;
         })
       )),
-      const Text("Reprodutor")
+      Text(bovineSex == Sex.male ? "Reprodutor" : "Matriz")
     ]);
 
     final addButton = Button(text: "ADICIONAR", color: Colors.green[400]!, onPressed: createBovine);
@@ -162,7 +169,7 @@ class BovineFormState extends State<BovineForm> {
       isBreederCheckbox,
       divider,
       ExpansionTile(
-        title: const Text("Informações de Entrada (Opcional)"),
+        title: const Text("Informações de Aquisição (Opcional)"),
         shape: Border.all(width: 0, color: Colors.transparent),
         children: [
           divider,
@@ -266,10 +273,6 @@ class BovineFormState extends State<BovineForm> {
       return 'Por favor, digite o brinco do animal.';
     }
 
-    if (bovineSex == null) {
-      return 'Por favor, selecione o sexo do animal.';
-    }
-
     return null;
   }
 
@@ -280,7 +283,7 @@ class BovineFormState extends State<BovineForm> {
       sexController.clear();
       entryWeightController.clear();
       dateEntryController.clear();
-      bovineSex = null;
+      bovineSex = Sex.female;
       isBreeder = false;
     });
   }

@@ -54,6 +54,19 @@ class PregnancyPersistence {
                     .getSingleOrNull();
   }
 
+  static Future<int> countBovinesPregnant() async {
+    final result = await database.customSelect(
+      """
+        SELECT COUNT(*)
+        FROM Bovines b
+        JOIN Pregnancies p ON p.cow = b.earring
+        WHERE p.has_ended = false AND b.is_pregnant = true
+      """,
+    ).getSingle();
+
+    return result.read<int>("COUNT(*)");
+  }
+
   static Future<List<(Bovine, Pregnancy)>> getBovinesPregnant(int pageSize, int page) async {
     final result = await database.customSelect(
       """
@@ -68,8 +81,6 @@ class PregnancyPersistence {
       variables: [ Variable(pageSize), Variable(page * pageSize)],
     ).get();
 
-    inspect(result);
-
     return result.map((row) {
       Bovine b = Bovine.fromJson({
         'earring': row.data["earring"] as int,
@@ -83,8 +94,6 @@ class PregnancyPersistence {
         'weight540': row.data["weight540"] as int?,
       });
 
-      inspect(b);
-
       Pregnancy p = Pregnancy.fromJson({
         'id': row.data["id"] as int,
         'cow': row.data["cow"] as int,
@@ -94,8 +103,6 @@ class PregnancyPersistence {
         'hasEnded': (row.data["has_ended"] as int) == 0 ? false : true,
         'observation': row.data["observation"] as String,
       });
-
-      inspect(p);
 
       return (b, p);
     }).toList();

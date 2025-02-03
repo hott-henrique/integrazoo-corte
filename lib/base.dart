@@ -78,10 +78,10 @@ class _IntegrazooBaseAppState extends State<IntegrazooBaseApp> {
         )
       ),
       ExpansionTile(
-        title: const Text("Analises"),
+        title: const Text("Relatórios"),
         children: [
           ListTile(
-            title: const Text("Matrizes"),
+            title: const Text("Desempenho das Matrizes"),
             onTap: () {
               Navigator.of(context).popUntil((route) => route.isFirst);
               Navigator.of(context)
@@ -141,22 +141,14 @@ class _IntegrazooBaseAppState extends State<IntegrazooBaseApp> {
         ]
       ),
       ExpansionTile(
-        title: const Text("Descarte"),
+        title: const Text("Desmame"),
         children: [
           ListTile(
-            title: const Text("Registrar Descarte"),
+            title: const Text("Registrar Desmame"),
             onTap: () {
               Navigator.of(context).popUntil((route) => route.isFirst);
               Navigator.of(context)
-                       .push(MaterialPageRoute(builder: (context) => const BovineDiscardForm()));
-            }
-          ),
-          ListTile(
-            title: const Text("Visualizar Descartes"),
-            onTap: () {
-              Navigator.of(context).popUntil((route) => route.isFirst);
-              Navigator.of(context)
-                       .push(MaterialPageRoute(builder: (context) => const DiscardsScreen()));
+                       .push(MaterialPageRoute(builder: (context) => const WeaningForm()));
             }
           )
         ]
@@ -181,7 +173,7 @@ class _IntegrazooBaseAppState extends State<IntegrazooBaseApp> {
             }
           ),
           ListTile(
-            title: const Text("Diagnosticar Reprodução"),
+            title: const Text("Regitrar Diagnóstico Reprodução"),
             onTap: () {
               Navigator.of(context).popUntil((route) => route.isFirst);
               Navigator.of(context)
@@ -199,19 +191,6 @@ class _IntegrazooBaseAppState extends State<IntegrazooBaseApp> {
         ]
       ),
       ExpansionTile(
-        title: const Text("Desmame"),
-        children: [
-          ListTile(
-            title: const Text("Registrar Desmame"),
-            onTap: () {
-              Navigator.of(context).popUntil((route) => route.isFirst);
-              Navigator.of(context)
-                       .push(MaterialPageRoute(builder: (context) => const WeaningForm()));
-            }
-          )
-        ]
-      ),
-      ExpansionTile(
         title: const Text("Tratamento"),
         children: [
           ListTile(
@@ -220,6 +199,27 @@ class _IntegrazooBaseAppState extends State<IntegrazooBaseApp> {
               Navigator.of(context).popUntil((route) => route.isFirst);
               Navigator.of(context)
                        .push(MaterialPageRoute(builder: (context) => const TreatmentForm()));
+            }
+          )
+        ]
+      ),
+      ExpansionTile(
+        title: const Text("Finalização"),
+        children: [
+          ListTile(
+            title: const Text("Registrar Finalização"),
+            onTap: () {
+              Navigator.of(context).popUntil((route) => route.isFirst);
+              Navigator.of(context)
+                       .push(MaterialPageRoute(builder: (context) => const BovineDiscardForm()));
+            }
+          ),
+          ListTile(
+            title: const Text("Visualizar Finalizações"),
+            onTap: () {
+              Navigator.of(context).popUntil((route) => route.isFirst);
+              Navigator.of(context)
+                       .push(MaterialPageRoute(builder: (context) => const DiscardsScreen()));
             }
           )
         ]

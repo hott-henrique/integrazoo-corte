@@ -1,32 +1,32 @@
 # TODO
 
-1. Substituir o termo 'Analises' por 'Relatórios'.
+1. ~~Substituir o termo 'Analises' por 'Relatórios'.~~
 
 2. Mover o relatório 'Rebanho' para a página inicial.
 
-3. Substituir o nome da aba 'Matrizes' por 'Desempenho das Matrizes'.
+3. ~~Substituir o nome da aba 'Matrizes' por 'Desempenho das Matrizes'.~~
 
-4. Substituir o termo 'entrada' por 'aquisição'.
+4. ~~Substituir o termo 'entrada' por 'aquisição'.~~
 
-5. Substituir o termo 'reprodutor' por 'matriz' caso o animal seja fêmea.
+5. ~~Substituir o termo 'reprodutor' por 'matriz' caso o animal seja fêmea.~~
 
-6. Substituir o termo 'descarte' por 'finalização'.
+6. ~~Substituir o termo 'descarte' por 'finalização'.~~
 
-7. Substituir o termo 'Diagnosticar Reprodução' por 'Registrar Prenhez'.
+7. ~~Substituir o termo 'Diagnosticar Reprodução' por 'Registrar Diagnóstico Reprodução'.~~
 
 8. Checar erros de ortografia. Reportados:
     - Tirar acento de gravidez.
     - Registro de prenhe Z.
     - Tirar o acento do gravidez.
 
-9. Apresentar as funcionalidades na seguinte ordem:
-    - Relatórios
-    - Rebanho
-    - Reprodutores
-    - Reprodução
-    - Desmame
-    - Tratamento
-    - Finalização
+9. ~~Apresentar as funcionalidades na seguinte ordem:~~
+    - ~~Relatórios~~
+    - ~~Rebanho~~
+    - ~~Reprodutores~~
+    - ~~Reprodução~~
+    - ~~Desmame~~
+    - ~~Tratamento~~
+    - ~~Finalização~~
 
 10. Adicionar novos tipos de Finalização:
     "Alterar banco e formulários."
@@ -54,9 +54,9 @@
 15. Na página de detalhes do animal:
     - Caso ela esteja reproduzindo, ou prenha, mostrar as informações e possibilidar editar / deletar.
 
-16. Na página que lista os animais em tratamento, em reprodução e fêmeas prenhas:
-    - Fazer com que cada painel seja scrollavel para carregar mais objetos.
-    - Cada painel ocupar um terço da tela.
+16. ~~Na página que lista os animais em tratamento, em reprodução e fêmeas prenhas:~~
+    - ~~Fazer com que cada painel seja paginável para carregar mais objetos.~~
+    - ~~Cada painel em uma *tab* diferente.~~
 
 17. Estilizar o seletor de animais e reprodutores.
 

@@ -66,6 +66,19 @@ class ReproductionPersistence {
     return (database.select(database.reproductions)..where((r) => r.id.equals(pregnancy.reproduction!))).getSingleOrNull();
   }
 
+  static Future<int> countBovinesReproducing() async {
+    final result = await database.customSelect(
+      """
+        SELECT COUNT(*)
+        FROM Bovines b
+        JOIN Reproductions r ON r.cow = b.earring
+        WHERE r.diagnostic = 2
+      """,
+    ).getSingle();
+
+    return result.read<int>("COUNT(*)");
+  }
+
   static Future<List<(Bovine, Reproduction)>> getBovinesReproducing(int pageSize, int page) async {
     final result = await database.customSelect(
       """

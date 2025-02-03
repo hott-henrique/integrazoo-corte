@@ -28,6 +28,10 @@ class ReproductionController {
     return ReproductionPersistence.getReproductionThatGeneratedAnimal(earring);
   }
 
+  static Future<int> countBovinesReproducing() async {
+    return ReproductionPersistence.countBovinesReproducing();
+  }
+
   static Future<List<(Bovine, Reproduction)>> getBovinesReproducing(int pageSize, int page) async {
     return ReproductionPersistence.getBovinesReproducing(pageSize, page);
   }

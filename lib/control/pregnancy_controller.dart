@@ -1,8 +1,6 @@
 import 'dart:developer';
 
 import 'package:integrazoo/persistence/pregnancy_persistence.dart';
-import 'package:integrazoo/persistence/reproduction_persistence.dart';
-import 'package:integrazoo/persistence/bovine_persistence.dart';
 
 import 'package:integrazoo/database/database.dart';
 
@@ -20,6 +18,10 @@ class PregnancyController {
 
   static Future<int> delete(int id) {
     return PregnancyPersistence.delete(id);
+  }
+
+  static Future<int> countBovinesPregnant() {
+    return PregnancyPersistence.countBovinesPregnant();
   }
 
   static Future<List<(Bovine, Pregnancy)>> getBovinesPregnant(int pageSize, int page) {
