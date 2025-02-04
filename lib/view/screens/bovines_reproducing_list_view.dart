@@ -34,6 +34,10 @@ class _BovinesReproducingListView extends State<BovinesReproducingListView> {
           return const Text("Algo de errado ocorreu! Por favor, contate o suporte.");
         }
 
+        if (snapshot.data! == 0) {
+          return const Center(child: Text("Nenhuma fêmea esperando diagnóstico no momento."));
+        }
+
         return PaginateBovinesReproducing(numElements: snapshot.data!, postAction: () => setState(() => ()));
       }
     );

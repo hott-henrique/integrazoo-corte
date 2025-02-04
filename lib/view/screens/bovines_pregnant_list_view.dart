@@ -33,6 +33,10 @@ class _BovinesPregnantListView extends State<BovinesPregnantListView> {
           return const Text("Algo de errado ocorreu! Por favor, contate o suporte.");
         }
 
+        if (snapshot.data! == 0) {
+          return const Center(child: Text("Nenhuma fêmea prenha no momento."));
+        }
+
         return PaginateBovinesPregnant(numElements: snapshot.data!, postAction: () => setState(() => ()));
       }
     );

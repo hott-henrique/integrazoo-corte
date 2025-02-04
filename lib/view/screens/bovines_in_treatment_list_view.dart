@@ -35,6 +35,10 @@ class _BovinesInTreatmentListView extends State<BovinesInTreatmentListView> {
           return const Text("Algo de errado ocorreu! Por favor, contate o suporte.");
         }
 
+        if (snapshot.data! == 0) {
+          return const Center(child: Text("Nenhum animal em tratamento no momento."));
+        }
+
         return PaginateBovinesInTreatment(numElements: snapshot.data!, postAction: () => setState(() => ()));
       }
     );
