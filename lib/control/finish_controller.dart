@@ -14,6 +14,14 @@ class FinishController {
     return FinishPersistence.getByEarring(earring);
   }
 
+  static Future<int> countFinishes() {
+    return FinishPersistence.countFinishes();
+  }
+
+  static Future<List<Finish>> getFinishes(int pageSize, int page) {
+    return FinishPersistence.getFinishes(pageSize, page);
+  }
+
   static Future<void> delete(int earring) {
     return FinishPersistence.delete(earring);
   }

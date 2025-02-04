@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 
 import 'package:integrazoo/view/components/titled_card.dart';
 
-import 'package:integrazoo/view/forms/update/finish_info_form.dart';
+import 'package:integrazoo/view/forms/create/finish_form.dart';
 
 import 'package:integrazoo/control/finish_controller.dart';
 
@@ -37,9 +37,10 @@ class _FinishInfoCard extends State<FinishInfoCard> {
         if (snapshot.connectionState != ConnectionState.done && !snapshot.hasData) {
           cardContent = const Text("Carregando...", style: TextStyle(fontStyle: FontStyle.italic), textAlign: TextAlign.center);
         } else if (snapshot.connectionState == ConnectionState.done && (!snapshot.hasData || isEditing)) {
-          cardContent = FinishInfoForm(
-            earring: widget.earring,
+          cardContent = FinishForm(
             finish: snapshot.data,
+            earring: widget.earring,
+            shouldPop: false,
             postSaved: () => setState(() => isEditing = false)
           );
         } else {
@@ -53,10 +54,11 @@ class _FinishInfoCard extends State<FinishInfoCard> {
                 buildInfo("Data", DateFormat.yMd("pt_BR").format(finish.date)),
                 buildInfo("Razão", finish.reason.toString()),
                 if (finish.reason == FinishingReason.slaughter) ...[
-                  buildInfo("Peso", '${finish.weight.toString()} Kg'),
+                  buildInfo("Peso Animal", '${finish.weight.toString()} Kg'),
                   buildInfo("Peso Carcaça Quente", '${finish.hotCarcassWeight.toString()} Kg'),
-                  buildInfo("Observação", finish.observation ?? "--"),
-                ]
+                ],
+                if (finish.observation != null)
+                  buildInfo("Observação", finish.observation!),
               ]
             ),
           );

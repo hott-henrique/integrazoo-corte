@@ -182,12 +182,19 @@ class BovineExpansionTileState extends State<BovineExpansionTile> {
         if (snapshot.connectionState != ConnectionState.done && !snapshot.hasData) {
           return const Text("Carregando...", style: TextStyle(fontStyle: FontStyle.italic), textAlign: TextAlign.center);
         } else if (snapshot.connectionState == ConnectionState.done && !snapshot.hasData) {
-          return const Row(children: [ Expanded(child: Text("Peso ao Descarte:")), Text("-- kg") ]);
+          return const SizedBox.shrink();
         } else {
           final finish = snapshot.data!;
-          String finishWeight = finish.weight == null ? "--" : finish.weight.toString();
-          // String finishHotCarcassWeight = finish.hotCarcassWeight == null ? "--" : finish.hotCarcassWeight.toString();
-          return Row(children: [ const Expanded(child: Text("Peso ao Descarte:")), Text("$finishWeight kg") ]);
+
+          if (finish.reason == FinishingReason.slaughter) {
+            return Column(children: [
+              Row(children: [ const Expanded(child: Text("Finalização:")), Text(finish.reason.toString()) ]),
+              Row(children: [ const Expanded(child: Text("\t\tPeso Animal:")), Text(finish.weight!.toString()) ]),
+              Row(children: [ const Expanded(child: Text("\t\tPeso Carcaça Quente:")), Text(finish.hotCarcassWeight!.toString()) ]),
+            ]);
+          } else {
+            return Row(children: [ const Expanded(child: Text("Finalização:")), Text(finish.reason.toString()) ]);
+          }
         }
       }
     );

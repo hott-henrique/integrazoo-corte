@@ -17,7 +17,13 @@ import 'package:integrazoo/database/database.dart';
 
 
 class FinishForm extends StatefulWidget {
-  const FinishForm({ super.key });
+  final int? earring;
+  final Finish? finish;
+
+  final bool shouldPop;
+  final VoidCallback? postSaved;
+
+  const FinishForm({ super.key, this.earring, this.finish, this.shouldPop = false, this.postSaved });
 
   @override
   State<FinishForm> createState() => _FinishForm();
@@ -30,6 +36,7 @@ class _FinishForm extends State<FinishForm> {
 
   FinishingReason? reason;
 
+  final reasonController = TextEditingController();
   final weightController = TextEditingController();
   final hotCarcassWeightController = TextEditingController();
 
@@ -41,6 +48,19 @@ class _FinishForm extends State<FinishForm> {
   @override
   void initState() {
     super.initState();
+
+    earringController.setEarring(widget.earring);
+
+    if (widget.finish != null) {
+      date = widget.finish!.date;
+      reason = widget.finish!.reason;
+      reasonController.text = widget.finish!.reason.toString();
+      weightController.text = widget.finish!.weight.toString();
+      hotCarcassWeightController.text = widget.finish!.hotCarcassWeight.toString();
+
+      earringController.setEarring(widget.finish!.bovine);
+    }
+
     dateController = TextEditingController(text: DateFormat.yMd("pt_BR").format(date));
   }
 
@@ -53,7 +73,8 @@ class _FinishForm extends State<FinishForm> {
       dropdownMenuEntries: FinishingReason.values.map((r) => DropdownMenuEntry(value: r, label: r.toString())).toList(),
       onSelected: (value) => setState(() => reason = value!),
       label: const Text('Motivação'),
-      expandedInsets: EdgeInsets.zero
+      expandedInsets: EdgeInsets.zero,
+      controller:  reasonController
     );
 
     final weightField = TextFormField(
@@ -131,8 +152,10 @@ class _FinishForm extends State<FinishForm> {
     Divider divider = const Divider(color: Colors.transparent);
 
     final column = <Widget>[
-      bovineSelector,
-      divider,
+      if (widget.finish == null && widget.earring == null) ...[
+        bovineSelector,
+        divider,
+      ],
       reasonDropdown,
       divider,
       observationField,
@@ -148,17 +171,13 @@ class _FinishForm extends State<FinishForm> {
       addButton
     ];
 
-    return IntegrazooBaseApp(
-      title: "FINALIZAR ANIMAL",
-      body: SingleChildScrollView(child:
-        Form(
-        autovalidateMode: AutovalidateMode.always,
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(8.0),
+      child: Form(
         key: _formKey,
-        child: Container(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: column)
-        )
-      ))
+        autovalidateMode: AutovalidateMode.always,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: column)
+      )
     );
   }
 
@@ -182,8 +201,7 @@ class _FinishForm extends State<FinishForm> {
 
       int earring = earringController.earring!;
 
-      final discard = Finish.fromJson({
-        'id': 0,
+      final finish = Finish.fromJson({
         'bovine': earring,
         'date': date,
         'reason': reason!.index,
@@ -192,7 +210,7 @@ class _FinishForm extends State<FinishForm> {
         'hotCarcassWeight': double.tryParse(hotCarcassWeightController.text)
       });
 
-      FinishController.save(earring, discard).then(
+      FinishController.save(earring, finish).then(
         (_) {
           if (mounted) {
             SnackBar snackBar = const SnackBar(
@@ -201,7 +219,14 @@ class _FinishForm extends State<FinishForm> {
               showCloseIcon: true
             );
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            clearForm();
+
+            if (widget.shouldPop) {
+              Navigator.of(context).pop();
+            } else {
+              clearForm();
+            }
+
+            widget.postSaved?.call();
           }
         }
       );
@@ -240,6 +265,7 @@ class _FinishForm extends State<FinishForm> {
       earringController.clear();
       observationController.clear();
       weightController.clear();
+      reasonController.clear();
       reason = null;
       date = DateTime.now();
       dateController.text = DateFormat.yMd("pt_BR").format(date);

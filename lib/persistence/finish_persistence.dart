@@ -38,6 +38,21 @@ class FinishPersistence {
                     .getSingleOrNull();
   }
 
+  static Future<int> countFinishes() async {
+    final result = await database.customSelect(
+      """
+        SELECT COUNT(*)
+        FROM Finishes f
+      """,
+    ).getSingle();
+
+    return result.read<int>("COUNT(*)");
+  }
+
+  static Future<List<Finish>> getFinishes(int pageSize, int page) async {
+    return (database.select(database.finishes)..limit(pageSize, offset: page * pageSize)).get();
+  }
+
   static Future<void> delete(int earring) async {
     final r = await (database.select(database.bovines)
                              ..where((b) => b.earring.equals(earring)))
