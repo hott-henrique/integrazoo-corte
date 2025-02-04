@@ -34,7 +34,25 @@ class TreatmentPersistence {
                     ..where((t) => t.id.equals(id))).go();
   }
 
+  static Future<int> countTreatments() async {
+    final result = await database.customSelect(
+      """
+        SELECT COUNT(*)
+        FROM Treatments t
+      """,
+    ).getSingle();
+
+    return result.read<int>("COUNT(*)");
+  }
+
+  static Future<List<Treatment>> getTreatments(int pageSize, int page) async {
+    return (database.select(database.treatments)..limit(pageSize, offset: page * pageSize)).get();
+  }
+
   static Future<int> countActiveTreatments() async {
+    final now = DateTime.now();
+    final endOfToday = DateTime(now.year, now.month, now.day, 0, 0, 0);
+
     final result = await database.customSelect(
       """
         SELECT COUNT(*)
@@ -42,13 +60,16 @@ class TreatmentPersistence {
         JOIN Treatments t ON t.bovine = b.earring
         WHERE t.ending_date >= ?
       """,
-      variables: [ Variable(DateTime.now().millisecondsSinceEpoch ~/ 1000) ],
+      variables: [ Variable(endOfToday.millisecondsSinceEpoch ~/ 1000) ],
     ).getSingle();
 
     return result.read<int>("COUNT(*)");
   }
 
   static Future<List<(Bovine, Treatment)>> getBovinesInTreatment(int pageSize, int page) async {
+    final now = DateTime.now();
+    final endOfToday = DateTime(now.year, now.month, now.day, 0, 0, 0);
+
     final result = await database.customSelect(
       """
         SELECT b.*, t.*
@@ -59,7 +80,7 @@ class TreatmentPersistence {
         LIMIT ?
         OFFSET ?
       """,
-      variables: [ Variable(DateTime.now().millisecondsSinceEpoch ~/ 1000), Variable(pageSize), Variable(page * pageSize)],
+      variables: [ Variable(endOfToday.millisecondsSinceEpoch ~/ 1000), Variable(pageSize), Variable(page * pageSize)],
     ).get();
 
     return result.map((row) {

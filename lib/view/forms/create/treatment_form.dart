@@ -65,17 +65,6 @@ class _TreatmentFormState extends State<TreatmentForm> {
       earringController: earringController,
     );
 
-    final reasonField = TextFormField(
-      controller: reasonController,
-      keyboardType: TextInputType.text,
-      decoration: const InputDecoration(
-        hintText: 'Digite o motivo do tratamento',
-        border: OutlineInputBorder(),
-        label: Text("Razão do Tratmento"),
-        floatingLabelBehavior: FloatingLabelBehavior.always
-      ),
-    );
-
     final medicineNameField = TextFormField(
       controller: medicineController,
       keyboardType: TextInputType.text,
@@ -83,6 +72,17 @@ class _TreatmentFormState extends State<TreatmentForm> {
         hintText: 'Digite o nome do medicamento',
         border: OutlineInputBorder(),
         label: Text("Nome do Medicamento"),
+        floatingLabelBehavior: FloatingLabelBehavior.always
+      ),
+    );
+
+    final reasonField = TextFormField(
+      controller: reasonController,
+      keyboardType: TextInputType.text,
+      decoration: const InputDecoration(
+        hintText: 'Digite o motivo do tratamento',
+        border: OutlineInputBorder(),
+        label: Text("Razão do Tratmento"),
         floatingLabelBehavior: FloatingLabelBehavior.always
       ),
     );
@@ -131,13 +131,15 @@ class _TreatmentFormState extends State<TreatmentForm> {
       },
     );
 
-    final saveButton = TextButton(onPressed: registerTreatment, child: const Text("Confirmar"));
+    final saveButton = TextButton(onPressed: registerTreatment, child: const Text("SALVAR"));
 
     Divider divider = const Divider(color: Colors.transparent);
 
     final column = <Widget>[
-      bovineSelector,
-      divider,
+      if (widget.treatment == null) ...[
+        bovineSelector,
+        divider,
+      ],
       medicineNameField,
       divider,
       reasonField,
@@ -149,17 +151,24 @@ class _TreatmentFormState extends State<TreatmentForm> {
       saveButton
     ];
 
-    return IntegrazooBaseApp(
-      title: "REGISTRAR TRATAMENTO",
-      body: SingleChildScrollView(child:
-        Form(
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(8.0),
+      child: Form(
         autovalidateMode: AutovalidateMode.always,
         key: _formKey,
-        child: Container(
-          padding: const EdgeInsets.all(8.0),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: column)
+      )
+    );
+    return IntegrazooBaseApp(
+      title: "REGISTRAR TRATAMENTO",
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(8.0),
+        child: Form(
+          autovalidateMode: AutovalidateMode.always,
+          key: _formKey,
           child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: column)
         )
-      ))
+      )
     );
   }
 
@@ -190,12 +199,13 @@ class _TreatmentFormState extends State<TreatmentForm> {
 
       TreatmentController.saveTreatment(treatment).then(
         (_) {
-          if (context.mounted) {
+          if (mounted) {
             SnackBar snackBar = const SnackBar(
-              content: Text('Tratamento registrado com sucesso.'),
+              content: Text('Tratamento salvo com sucesso.'),
               backgroundColor: Colors.green,
               showCloseIcon: true
             );
+
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
             if (widget.shouldPop) {

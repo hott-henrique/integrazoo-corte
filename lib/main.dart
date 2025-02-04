@@ -61,7 +61,7 @@ void main() async {
       ),
       scrollbarTheme: const ScrollbarThemeData(
         trackVisibility: WidgetStatePropertyAll<bool>(true),
-        thumbVisibility: WidgetStatePropertyAll<bool>(true)
+        thumbVisibility: WidgetStatePropertyAll<bool>(true),
       ),
       dividerTheme: const DividerThemeData(color: Colors.transparent, thickness: 0.0, space: 8)
     )

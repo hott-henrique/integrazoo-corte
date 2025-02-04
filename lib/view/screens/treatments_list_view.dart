@@ -4,28 +4,25 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 
+import 'package:integrazoo/view/forms/create/treatment_form.dart';
 
 import 'package:integrazoo/control/treatment_controller.dart';
-
-import 'package:integrazoo/view/forms/create/treatment_form.dart';
 
 import 'package:integrazoo/database/database.dart';
 
 
-class BovinesInTreatmentListView extends StatefulWidget {
-  const BovinesInTreatmentListView({ super.key });
+class TreatmentsListView extends StatefulWidget {
+  const TreatmentsListView({ super.key });
 
   @override
-  State<BovinesInTreatmentListView> createState() => _BovinesInTreatmentListView();
+  State<TreatmentsListView> createState() => _TreatmentsListView();
 }
 
-class _BovinesInTreatmentListView extends State<BovinesInTreatmentListView> {
-  bool hasTriedLoading = false;
-
+class _TreatmentsListView extends State<TreatmentsListView> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: TreatmentController.countActiveTreatments(),
+      future: TreatmentController.countTreatments(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator();
@@ -35,23 +32,27 @@ class _BovinesInTreatmentListView extends State<BovinesInTreatmentListView> {
           return const Text("Algo de errado ocorreu! Por favor, contate o suporte.");
         }
 
-        return PaginateBovinesInTreatment(numElements: snapshot.data!, postAction: () => setState(() => ()));
+        if (snapshot.data! == 0) {
+          return const Center(child: Text("Nenhum tratamento registrado até o momento."));
+        }
+
+        return PaginateTreatments(numElements: snapshot.data!, postAction: () => setState(() => ()));
       }
     );
   }
 }
 
-class PaginateBovinesInTreatment extends StatefulWidget {
+class PaginateTreatments extends StatefulWidget {
   final int numElements;
   final VoidCallback? postAction;
 
-  const PaginateBovinesInTreatment({ super.key, required this.numElements, this.postAction });
+  const PaginateTreatments({ super.key, required this.numElements, this.postAction });
 
   @override
-  State<PaginateBovinesInTreatment> createState() => _PaginateBovinesInTreatment();
+  State<PaginateTreatments> createState() => _PaginateTreatments();
 }
 
-class _PaginateBovinesInTreatment extends State<PaginateBovinesInTreatment> {
+class _PaginateTreatments extends State<PaginateTreatments> {
   int page = 0, pageSize = 25;
 
   int get maxPages => (widget.numElements / pageSize).ceil();
@@ -85,7 +86,7 @@ class _PaginateBovinesInTreatment extends State<PaginateBovinesInTreatment> {
 
   Widget buildTreatments_() {
     return FutureBuilder(
-      future: TreatmentController.getBovinesInTreatment(pageSize, page),
+      future: TreatmentController.getTreatments(pageSize, page),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -100,19 +101,19 @@ class _PaginateBovinesInTreatment extends State<PaginateBovinesInTreatment> {
     );
   }
 
-  Widget buildTreatments(List<(Bovine, Treatment)> bovinesInTreatment) {
-    if (bovinesInTreatment.isEmpty) {
-      return const Center(child: Text("Nenhum animal em tratamento no momento."));
+  Widget buildTreatments(List<Treatment> treatments) {
+    if (treatments.isEmpty) {
+      return const Center(child: Text("Nenhum tratamento registrado no momento."));
     }
 
     return ListView.separated(
-      itemCount: bovinesInTreatment.length + 1,
+      itemCount: treatments.length + 1,
       itemBuilder: (ctx, idx) {
-        if (idx == bovinesInTreatment.length) {
+        if (idx == treatments.length) {
           return const SizedBox.shrink();
         }
-        final e = bovinesInTreatment[idx];
-        return BovineTreatmentTile(bovine: e.$1, treatment: e.$2, postAction: widget.postAction);
+        final e = treatments[idx];
+        return TreatmentTile(treatment: e, postAction: widget.postAction);
       },
       separatorBuilder: (ctx, idx) {
         return const Divider(color: Colors.black, height: 1);
@@ -121,27 +122,27 @@ class _PaginateBovinesInTreatment extends State<PaginateBovinesInTreatment> {
   }
 }
 
-class BovineTreatmentTile extends StatelessWidget {
-  final Bovine bovine;
+class TreatmentTile extends StatelessWidget {
   final Treatment treatment;
 
   final VoidCallback? postAction;
 
-  const BovineTreatmentTile({
+  const TreatmentTile({
     super.key,
-    required this.bovine,
     required this.treatment,
     this.postAction
   });
 
   @override
   Widget build(BuildContext context) {
-    final formatter = DateFormat('dd/MM/yyyy');
-
     return ListTile(
-      title: Text('${bovine.name ?? ""} #${bovine.earring}'),
-      subtitle: Text('${treatment.medicine}: ${treatment.reason}\n'
-                     'Início: ${formatter.format(treatment.startingDate)} - Fim: ${formatter.format(treatment.endingDate)}'),
+      title: Text('Animal: #${treatment.bovine}'),
+      subtitle: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        Text('Medicamento: ${treatment.medicine}'),
+        Text('Motivação: ${treatment.reason}'),
+        Text('Início: ${DateFormat.yMd("pt_BR").format(treatment.startingDate)}'),
+        Text('Fim: ${DateFormat.yMd("pt_BR").format(treatment.endingDate)}'),
+      ]),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       trailing: _PopupMenuActions(treatment: treatment, postAction: postAction),
     );
@@ -166,30 +167,30 @@ class _PopupMenuActionsState extends State<_PopupMenuActions> {
       case "Editar":
         showDialog(
           context: context,
-          builder: (context) => Dialog(child: TreatmentForm(treatment: widget.treatment, shouldPop: true))
+          builder: (context) {
+            return Dialog(child: TreatmentForm(treatment: widget.treatment, shouldPop: true));
+          }
         ).then((_) => widget.postAction?.call());
         break;
 
       case "Deletar":
         showDialog(
           context: context,
-          builder: (context) {
-            return AlertDialog(
-              icon: const Icon(Icons.info),
-              title: const Text("Deseja mesmo deletar o tratamento?"),
-              actions: [ TextButton(
-                onPressed: () async {
-                  await TreatmentController.delete(widget.treatment.id);
+          builder: (context) => AlertDialog(
+            icon: const Icon(Icons.info),
+            title: const Text("Deseja mesmo deletar o tratamento?"),
+            actions: [ TextButton(
+              onPressed: () async {
+                await TreatmentController.delete(widget.treatment.id);
 
-                  if (mounted && context.mounted) {
-                    Navigator.of(context).pop();
-                    widget.postAction!();
-                  }
-                },
-                child: const Text("Confirmar")
-              ) ]
-            );
-          }
+                if (mounted && context.mounted) {
+                  Navigator.of(context).pop();
+                  widget.postAction!();
+                }
+              },
+              child: const Text("CONFIRMAR"),
+            ) ],
+          )
         );
         break;
     }

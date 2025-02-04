@@ -47,7 +47,7 @@
 
 12. ~~Implementar 'Visualizar Desmames'.~~
 
-13. Implementar 'Visualizar Tratamentos'.
+13. ~~Implementar 'Visualizar Tratamentos'.~~
 
 14. Adicionar elemento que lista tratamentos nos detalhes do animal.
 

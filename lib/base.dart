@@ -16,6 +16,7 @@ import 'package:integrazoo/view/screens/finishes_screen.dart';
 
 import 'package:integrazoo/view/screens/relatories/female_breeders_relatory.dart';
 import 'package:integrazoo/view/screens/relatories/herd_relatory.dart';
+import 'package:integrazoo/view/screens/treatments_list_view.dart';
 import 'package:integrazoo/view/screens/weanings_list_view.dart';
 
 
@@ -209,8 +210,20 @@ class _IntegrazooBaseAppState extends State<IntegrazooBaseApp> {
             title: const Text("Registrar Tratamento"),
             onTap: () {
               Navigator.of(context).popUntil((route) => route.isFirst);
-              Navigator.of(context)
-                       .push(MaterialPageRoute(builder: (context) => const TreatmentForm()));
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const IntegrazooBaseApp(
+                title: "REGISTRAR TRATAMENTO",
+                body: TreatmentForm()
+              )));
+            }
+          ),
+          ListTile(
+            title: const Text("Visualizar Tratamentos"),
+            onTap: () {
+              Navigator.of(context).popUntil((route) => route.isFirst);
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const IntegrazooBaseApp(
+                title: "TRATAMENTOS",
+                body: TreatmentsListView()
+              )));
             }
           )
         ]
