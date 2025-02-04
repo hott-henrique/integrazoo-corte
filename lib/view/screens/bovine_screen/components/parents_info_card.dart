@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 
-import 'package:integrazoo/view/components/button.dart';
 import 'package:integrazoo/view/components/titled_card.dart';
 
 import 'package:integrazoo/view/forms/update/parents_info_form.dart';
@@ -22,7 +21,6 @@ class ParentsInfoCard extends StatefulWidget {
 }
 
 class _ParentsInfoCard extends State<ParentsInfoCard> {
-  Exception? exception;
 
   Future<Parents?> get _parentsFuture => ParentsController.getParents(widget.earring);
 
@@ -85,13 +83,15 @@ class _ParentsInfoCard extends State<ParentsInfoCard> {
         return AlertDialog(
           title: const Text('Você deseja mesmo deletar as informações de descarte desse animal?'),
           actions: <Widget>[
-            Button(color: Colors.red, text: "Confirmar", onPressed: () {
-              ParentsController.deleteParents(widget.earring);
-              Navigator.of(context).pop();
-            }),
-            Button(color: Colors.blue, text: "Cancelar", onPressed: () => Navigator.of(context).pop())
-          ],
-          actionsAlignment: MainAxisAlignment.center
+            TextButton(
+              onPressed: () {
+                ParentsController.deleteParents(widget.earring);
+                Navigator.of(context).pop();
+              },
+              child: const Text("Confirmar")
+            ),
+            TextButton(onPressed: Navigator.of(context).pop, child: const Text("Cancelar"))
+          ]
         );
       }).then((_) => setState(() => ()));
       return;

@@ -5,13 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:integrazoo/base.dart';
 
 import 'package:integrazoo/view/components/bovine/bovine_expansion_tile.dart';
-import 'package:integrazoo/view/components/unexpected_error_alert_dialog.dart';
-
-import 'package:integrazoo/view/components/button.dart';
 
 import 'package:integrazoo/control/bovine_controller.dart';
 
 import 'package:integrazoo/database/database.dart';
+
 
 enum DiscardFiltering {
   ignore, wasDiscarded, wasNotDiscarded;
@@ -52,7 +50,6 @@ class HerdScreen extends StatefulWidget {
 }
 
 class _HerdScreen extends State<HerdScreen> {
-  Exception? exception;
 
   List<Bovine> bovines = List.empty(growable: true);
 
@@ -65,12 +62,6 @@ class _HerdScreen extends State<HerdScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (exception != null) {
-      return UnexpectedErrorAlertDialog(title: 'Erro Inesperado',
-                                        message: 'Algo de inespearado aconteceu durante a execução do aplicativo.',
-                                        onPressed: () => setState(() => exception = null));
-    }
-
     return IntegrazooBaseApp(
       title: "REBANHO",
       showBackButton: false,
@@ -135,9 +126,7 @@ class _HerdScreen extends State<HerdScreen> {
           return AlertDialog(
             title: const Text('Configurações de Pesquisa'),
             content: buildFiltersSelection(),
-            actions: <Widget>[
-              Button(color: Colors.blue, text: "Confirmar", onPressed: () => Navigator.of(context).pop())
-            ],
+            actions: <Widget>[ TextButton(onPressed: Navigator.of(context).pop, child: const Text("CONFIRMAR")) ],
             actionsAlignment: MainAxisAlignment.center
           );
         }).then((_) => redoSearch())
@@ -150,14 +139,12 @@ class _HerdScreen extends State<HerdScreen> {
         const Spacer(),
         Flexible(flex: 10, child: settingsIcon)
       ]),
-      const Divider(color: Colors.transparent),
-      ...(
-        bovines.map((Bovine b) => BovineExpansionTile(
-          earring: b.earring,
-          postDelete: redoSearch,
-          postBackButtonClick: redoSearch,
-        )).toList()
-      )
+      const Divider(color: Colors.black),
+      ...bovines.map((Bovine b) => BovineExpansionTile(
+        earring: b.earring,
+        postDelete: redoSearch,
+        postBackButtonClick: redoSearch,
+      )),
     ]);
   }
 

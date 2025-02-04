@@ -17,7 +17,6 @@ class SingleBreederSelector extends StatefulWidget {
 }
 
 class _SingleBreederSelector extends State<SingleBreederSelector> {
-  Exception? exception;
 
 
   @override

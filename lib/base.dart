@@ -16,6 +16,7 @@ import 'package:integrazoo/view/screens/finishes_screen.dart';
 
 import 'package:integrazoo/view/screens/relatories/female_breeders_relatory.dart';
 import 'package:integrazoo/view/screens/relatories/herd_relatory.dart';
+import 'package:integrazoo/view/screens/weanings_list_view.dart';
 
 
 class IntegrazooBaseApp extends StatefulWidget {
@@ -149,6 +150,17 @@ class _IntegrazooBaseAppState extends State<IntegrazooBaseApp> {
               Navigator.of(context).popUntil((route) => route.isFirst);
               Navigator.of(context)
                        .push(MaterialPageRoute(builder: (context) => const WeaningForm()));
+            }
+          ),
+          ListTile(
+            title: const Text("Visualizar Desmames"),
+            onTap: () {
+              Navigator.of(context).popUntil((route) => route.isFirst);
+              Navigator.of(context)
+                       .push(MaterialPageRoute(builder: (context) => const IntegrazooBaseApp(
+                         body: WeaningsListView(),
+                         title: "DESMAMES"
+                       )));
             }
           )
         ]

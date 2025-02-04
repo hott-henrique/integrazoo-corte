@@ -23,7 +23,6 @@ class BovineScreen extends StatefulWidget {
 }
 
 class _BovineScreen extends State<BovineScreen> {
-  Exception? exception;
 
   @override
   Widget build(BuildContext context) {

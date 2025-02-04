@@ -45,7 +45,7 @@
 
 11. ~~Criar 'Controller' e 'Persistence' separados para a finalização.~~
 
-12. Implementar 'Visualizar Desmames'.
+12. ~~Implementar 'Visualizar Desmames'.~~
 
 13. Implementar 'Visualizar Tratamentos'.
 
@@ -60,7 +60,7 @@
 
 17. Estilizar o seletor de animais e reprodutores.
 
-18. Mover todas as estilização pro argumento 'theme' no arquivo 'main.dart'.
+18. ~Mover todas as estilização pro argumento 'theme' no arquivo 'main.dart'.~
 
 19. Implementar SQL que recupera as mesmas informações do relatório de matrizes para as crias de uma determinada vaca:
     - Nome, Peso ao Nascimento, Peso a Desmama, Pesoa ao Sobreano, Idade ao Primeiro Parto.
@@ -74,4 +74,4 @@
         - Sequência de diagnósticos: (+ - -) / Retorno: 2
         - Sequência de diagnósticos: (+ - - + -) / Retorno: 1
 
-21. Adicionar a informação do item 19 na tabela de desempenho das matrizes: Ao clicar na linha da matriz mostrar o desempenho das crias.
+21. Adicionar a informação do item 19 e 20 na tabela de desempenho das matrizes: Ao clicar na linha da matriz mostrar o desempenho das crias.

@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 
-import 'package:integrazoo/view/components/button.dart';
 import 'package:integrazoo/view/components/titled_card.dart';
 
 import 'package:integrazoo/view/forms/update/bovine_info_form.dart';
@@ -22,7 +21,6 @@ class BovineInfoCard extends StatefulWidget {
 }
 
 class _BovineInfoCard extends State<BovineInfoCard> {
-  Exception? exception;
 
   Future<Bovine?> get _bovineFuture => BovineController.getBovine(widget.earring);
 
@@ -96,13 +94,15 @@ class _BovineInfoCard extends State<BovineInfoCard> {
         return AlertDialog(
           title: const Text('Você deseja mesmo deletar esse animal?'),
           actions: <Widget>[
-            Button(color: Colors.red, text: "Confirmar", onPressed: () {
-              BovineController.deleteBovine(widget.earring);
-              Navigator.of(context).popUntil((page) => page.isFirst);
-            }),
-            Button(color: Colors.blue, text: "Cancelar", onPressed: () => Navigator.of(context).pop())
-          ],
-          actionsAlignment: MainAxisAlignment.center
+            TextButton(
+              onPressed: () {
+                BovineController.deleteBovine(widget.earring);
+                Navigator.of(context).popUntil((page) => page.isFirst);
+              },
+              child: const Text("Confirmar")
+            ),
+            TextButton(onPressed: Navigator.of(context).pop, child: const Text("Cancelar"))
+          ]
         );
       }).then((_) => setState(() => Navigator.of(context).pop()));
       return;

@@ -6,8 +6,6 @@ import 'package:intl/intl.dart';
 
 import 'package:integrazoo/base.dart';
 
-import 'package:integrazoo/view/components/button.dart';
-import 'package:integrazoo/view/components/unexpected_error_alert_dialog.dart';
 
 import 'package:integrazoo/view/components/bovine/single_bovine_selector.dart';
 import 'package:integrazoo/view/components/bovine/earring_controller.dart';
@@ -34,25 +32,15 @@ class _WeaningForm extends State<WeaningForm> {
   DateTime date= DateTime.now();
   late final TextEditingController dateController;
 
-  final DateFormat formatter = DateFormat('dd/MM/yyyy');
-
-  Exception? exception;
-
   @override
   void initState() {
     super.initState();
-    dateController = TextEditingController(text: formatter.format(date));
+    dateController = TextEditingController(text: DateFormat.yMd("pt_BR").format(date));
   }
 
   @override
   Widget build(BuildContext context) {
-    if (exception != null) {
-      return UnexpectedErrorAlertDialog(title: 'Erro Inesperado',
-                                        message: 'Algo de inespearado aconteceu durante a execução do aplicativo.',
-                                        onPressed: () => setState(() => exception = null));
-    }
-
-    final addButton = Button(text: "Confirmar", color: Colors.green, onPressed: saveWeaning);
+    final addButton = TextButton(onPressed: saveWeaning, child: const Text("Salvar"));
 
     final datePicker = InputDatePickerFormField(
       initialDate: date,
@@ -193,7 +181,7 @@ class _WeaningForm extends State<WeaningForm> {
       earringController.clear();
       weightController.clear();
       date = DateTime.now();
-      dateController = TextEditingController(text: formatter.format(date));
+      dateController = TextEditingController(text: DateFormat.yMd("pt_BR").format(date));
     });
   }
 }

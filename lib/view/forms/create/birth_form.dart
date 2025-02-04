@@ -6,9 +6,6 @@ import 'package:intl/intl.dart';
 
 import 'package:integrazoo/base.dart';
 
-import 'package:integrazoo/view/components/button.dart';
-import 'package:integrazoo/view/components/unexpected_error_alert_dialog.dart';
-
 import 'package:integrazoo/view/components/bovine/single_bovine_selector.dart';
 import 'package:integrazoo/view/components/bovine/earring_controller.dart';
 
@@ -46,25 +43,15 @@ class _BirthForm extends State<BirthForm> {
   late final TextEditingController dateBirthController;
   DateTime dateBirth = DateTime.now();
 
-  final DateFormat formatter = DateFormat('dd/MM/yyyy');
-
-  Exception? exception;
-
   @override
   void initState() {
     super.initState();
-    dateBirthController = TextEditingController(text: formatter.format(dateBirth));
+    dateBirthController = TextEditingController(text: DateFormat.yMd("pt_BR").format(dateBirth));
   }
 
   @override
   Widget build(BuildContext context) {
-    if (exception != null) {
-      return UnexpectedErrorAlertDialog(title: 'Erro Inesperado',
-                                        message: 'Algo de inespearado aconteceu durante a execução do aplicativo.',
-                                        onPressed: () => setState(() => exception = null));
-    }
-
-    final addButton = Button(text: "Confirmar", color: Colors.green, onPressed: saveBirth);
+    final addButton = TextButton(onPressed: saveBirth, child: const Text("SALVAR"));
 
     final cowSelector = SingleBovineSelector(
       sex: Sex.female,
@@ -91,7 +78,7 @@ class _BirthForm extends State<BirthForm> {
         if (pickedDate != null) {
           setState(() {
             dateBirth = pickedDate;
-            dateBirthController.text = formatter.format(pickedDate);
+            dateBirthController.text = DateFormat.yMd("pt_BR").format(pickedDate);
           });
         }
       },
@@ -263,14 +250,16 @@ class _BirthForm extends State<BirthForm> {
 
         await saveBirthInfo(pregnancy?.id);
 
-        SnackBar snackBar = const SnackBar(
-          content: Text("Parto registrado com sucesso"),
-          backgroundColor: Colors.green,
-          showCloseIcon: true
-        );
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        if (mounted) {
+          SnackBar snackBar = const SnackBar(
+            content: Text("Parto registrado com sucesso"),
+            backgroundColor: Colors.green,
+            showCloseIcon: true
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-        clearForm();
+          clearForm();
+        }
       });
     }
   }

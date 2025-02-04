@@ -6,8 +6,6 @@ import 'package:intl/intl.dart';
 
 import 'package:integrazoo/base.dart';
 
-import 'package:integrazoo/view/components/button.dart';
-import 'package:integrazoo/view/components/unexpected_error_alert_dialog.dart';
 
 import 'package:integrazoo/view/components/bovine/earring_controller.dart';
 import 'package:integrazoo/view/components/bovine/single_bovine_selector.dart';
@@ -37,10 +35,6 @@ class _NaturalMatingForm extends State<NaturalMatingForm> {
   DateTime date = DateTime.now();
   late final TextEditingController dateController;
 
-  final DateFormat formatter = DateFormat('dd/MM/yyyy');
-
-  Exception? exception;
-
   @override
   void initState() {
     super.initState();
@@ -51,18 +45,12 @@ class _NaturalMatingForm extends State<NaturalMatingForm> {
       bullEarringController.setEarring(widget.reproduction!.bull);
     }
 
-    dateController = TextEditingController(text: formatter.format(date));
+    dateController = TextEditingController(text: DateFormat.yMd("pt_BR").format(date));
   }
 
   @override
   Widget build(BuildContext context) {
-    if (exception != null) {
-      return UnexpectedErrorAlertDialog(title: 'Erro Inesperado',
-                                        message: 'Algo de inespearado aconteceu durante a execução do aplicativo.',
-                                        onPressed: () => setState(() => exception = null));
-    }
-
-    final addButton = Button(text: "CONFIRMAR", color: Colors.green, onPressed: registerMatings);
+    final addButton = TextButton(onPressed: registerMatings, child: const Text("SALVAR"));
 
     final datePicker = TextFormField(
       controller: dateController,
@@ -80,7 +68,7 @@ class _NaturalMatingForm extends State<NaturalMatingForm> {
         if (pickedDate != null) {
           setState(() {
             date = pickedDate;
-            dateController.text = formatter.format(pickedDate);
+            dateController.text = DateFormat.yMd("pt_BR").format(pickedDate);
           });
         }
       },
@@ -208,7 +196,7 @@ class _NaturalMatingForm extends State<NaturalMatingForm> {
       cowEarringController.clear();
       bullEarringController.clear();
       date = DateTime.now();
-      dateController.text = formatter.format(date);
+      dateController.text = DateFormat.yMd("pt_BR").format(date);
     });
   }
 }

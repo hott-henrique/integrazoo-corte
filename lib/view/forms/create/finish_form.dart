@@ -7,7 +7,6 @@ import 'package:intl/intl.dart';
 
 import 'package:integrazoo/base.dart';
 
-import 'package:integrazoo/view/components/button.dart';
 
 import 'package:integrazoo/view/components/bovine/single_bovine_selector.dart';
 import 'package:integrazoo/view/components/bovine/earring_controller.dart';
@@ -39,12 +38,10 @@ class _FinishForm extends State<FinishForm> {
   late final TextEditingController dateController;
   DateTime date = DateTime.now();
 
-  final DateFormat formatter = DateFormat('dd/MM/yyyy');
-
   @override
   void initState() {
     super.initState();
-    dateController = TextEditingController(text: formatter.format(date));
+    dateController = TextEditingController(text: DateFormat.yMd("pt_BR").format(date));
   }
 
   @override
@@ -123,13 +120,13 @@ class _FinishForm extends State<FinishForm> {
         if (pickedDate != null) {
           setState(() {
             date= pickedDate;
-            dateController.text = formatter.format(pickedDate);
+            dateController.text = DateFormat.yMd("pt_BR").format(pickedDate);
           });
         }
       },
     );
 
-    final addButton = Button(text: "SALVAR", color: Colors.green, onPressed: discardBovine);
+    final addButton = TextButton(onPressed: discardBovine, child: const Text("SALVAR"));
 
     Divider divider = const Divider(color: Colors.transparent);
 
@@ -245,7 +242,7 @@ class _FinishForm extends State<FinishForm> {
       weightController.clear();
       reason = null;
       date = DateTime.now();
-      dateController.text = formatter.format(date);
+      dateController.text = DateFormat.yMd("pt_BR").format(date);
     });
   }
 }

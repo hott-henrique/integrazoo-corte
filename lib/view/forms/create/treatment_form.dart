@@ -6,8 +6,6 @@ import 'package:intl/intl.dart';
 
 import 'package:integrazoo/base.dart';
 
-import 'package:integrazoo/view/components/button.dart';
-import 'package:integrazoo/view/components/unexpected_error_alert_dialog.dart';
 
 import 'package:integrazoo/view/components/bovine/earring_controller.dart';
 import 'package:integrazoo/view/components/bovine/single_bovine_selector.dart';
@@ -40,10 +38,6 @@ class _TreatmentFormState extends State<TreatmentForm> {
   DateTime endingDate = DateTime.now();
   late final TextEditingController endingDateController;
 
-  final DateFormat formatter = DateFormat('dd/MM/yyyy');
-
-  Exception? exception;
-
   @override
   void initState() {
     super.initState();
@@ -56,20 +50,12 @@ class _TreatmentFormState extends State<TreatmentForm> {
 
     earringController.setEarring(widget.treatment?.bovine);
 
-    startingDateController = TextEditingController(text: formatter.format(startingDate));
-    endingDateController = TextEditingController(text: formatter.format(endingDate));
+    startingDateController = TextEditingController(text: DateFormat.yMd("pt_BR").format(startingDate));
+    endingDateController = TextEditingController(text: DateFormat.yMd("pt_BR").format(endingDate));
   }
 
   @override
   Widget build(BuildContext context) {
-    if (exception != null) {
-      return UnexpectedErrorAlertDialog(
-        title: 'Erro Inesperado',
-        message: 'Algo de inespearado aconteceu durante a execução do aplicativo.',
-        onPressed: () => setState(() => exception = null)
-      );
-    }
-
     final bovineSelector = SingleBovineSelector(
       sex: null,
       wasDiscarded: false,
@@ -117,7 +103,7 @@ class _TreatmentFormState extends State<TreatmentForm> {
         if (pickedDate != null) {
           setState(() {
             startingDate = pickedDate;
-            startingDateController.text = formatter.format(pickedDate);
+            startingDateController.text = DateFormat.yMd("pt_BR").format(pickedDate);
           });
         }
       },
@@ -139,13 +125,13 @@ class _TreatmentFormState extends State<TreatmentForm> {
         if (pickedDate != null) {
           setState(() {
             endingDate = pickedDate;
-            endingDateController.text = formatter.format(pickedDate);
+            endingDateController.text = DateFormat.yMd("pt_BR").format(pickedDate);
           });
         }
       },
     );
 
-    final saveButton = Button(text: "Confirmar", color: Colors.green, onPressed: registerTreatment);
+    final saveButton = TextButton(onPressed: registerTreatment, child: const Text("Confirmar"));
 
     Divider divider = const Divider(color: Colors.transparent);
 
@@ -246,10 +232,10 @@ class _TreatmentFormState extends State<TreatmentForm> {
       reasonController.text = "";
 
       startingDate = DateTime.now();
-      startingDateController.text = formatter.format(startingDate);
+      startingDateController.text = DateFormat.yMd("pt_BR").format(startingDate);
 
       endingDate = DateTime.now();
-      endingDateController.text = formatter.format(endingDate);
+      endingDateController.text = DateFormat.yMd("pt_BR").format(endingDate);
 
       earringController.clear();
     });

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 
-import 'package:integrazoo/view/components/button.dart';
 import 'package:integrazoo/view/components/titled_card.dart';
 
 import 'package:integrazoo/view/forms/update/birth_info_form.dart';
@@ -24,7 +23,6 @@ class BirthInfoCard extends StatefulWidget {
 }
 
 class _BirthInfoCard extends State<BirthInfoCard> {
-  Exception? exception;
 
   Future<Birth?> get _birthFuture => BirthController.getBirth(widget.earring);
 
@@ -48,14 +46,12 @@ class _BirthInfoCard extends State<BirthInfoCard> {
         } else {
           final birth = snapshot.data;
 
-          final DateFormat formatter = DateFormat('dd/MM/yyyy');
-
           cardContent = Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                buildInfo("Data", formatter.format(birth!.date)),
+                buildInfo("Data", DateFormat.yMd("pt_BR").format(birth!.date)),
                 buildInfo("Peso", '${birth.weight.toString()} Kg'),
                 buildInfo("Classificação Corporal", birth.bcs.toString()),
               ]
@@ -91,13 +87,15 @@ class _BirthInfoCard extends State<BirthInfoCard> {
         return AlertDialog(
           title: const Text('Você deseja mesmo deletar as informações do nascimento do animal?'),
           actions: <Widget>[
-            Button(color: Colors.red, text: "Confirmar", onPressed: () {
-              BirthController.deleteBirth(widget.earring);
-              Navigator.of(context).pop();
-            }),
-            Button(color: Colors.blue, text: "Cancelar", onPressed: () => Navigator.of(context).pop())
-          ],
-          actionsAlignment: MainAxisAlignment.center
+            TextButton(
+              onPressed: () {
+                BirthController.deleteBirth(widget.earring);
+                Navigator.of(context).pop();
+              },
+              child: const Text("CONFIRMAR")
+            ),
+            TextButton(onPressed: Navigator.of(context).pop,  child: const Text("Cancelar"))
+          ]
         );
       }).then((_) => setState(() => ()));
       return;

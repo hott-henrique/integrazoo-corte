@@ -31,4 +31,19 @@ class WeaningPersistence {
                     ..where((b) => b.bovine.equals(earring)))
                     .go();
   }
+
+  static Future<int> countWeanings() async {
+    final result = await database.customSelect(
+      """
+        SELECT COUNT(*)
+        FROM Weanings w
+      """,
+    ).getSingle();
+
+    return result.read<int>("COUNT(*)");
+  }
+
+  static Future<List<Weaning>> getWeanings(int pageSize, int page) async {
+    return (database.select(database.weanings)..limit(pageSize, offset: page * pageSize)).get();
+  }
 }

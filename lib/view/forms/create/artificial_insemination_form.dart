@@ -6,9 +6,6 @@ import 'package:intl/intl.dart';
 
 import 'package:integrazoo/base.dart';
 
-import 'package:integrazoo/view/components/button.dart';
-import 'package:integrazoo/view/components/unexpected_error_alert_dialog.dart';
-
 import 'package:integrazoo/view/components/bovine/multi_bovine_selector.dart';
 import 'package:integrazoo/view/components/bovine/multi_earring_controller.dart';
 
@@ -42,10 +39,6 @@ class _ArtificialInseminationForm extends State<ArtificialInseminationForm> {
 
   final TextEditingController strawNumberController = TextEditingController();
 
-  final DateFormat formatter = DateFormat('dd/MM/yyyy');
-
-  Exception? exception;
-
   @override
   void initState() {
     super.initState();
@@ -57,18 +50,12 @@ class _ArtificialInseminationForm extends State<ArtificialInseminationForm> {
       strawNumberController.text = widget.reproduction!.strawNumber.toString();
     }
 
-    dateController = TextEditingController(text: formatter.format(date));
+    dateController = TextEditingController(text: DateFormat.yMd("pt_BR").format(date));
   }
 
   @override
   Widget build(BuildContext context) {
-    if (exception != null) {
-      return UnexpectedErrorAlertDialog(title: 'Erro Inesperado',
-                                        message: 'Algo de inespearado aconteceu durante a execução do aplicativo.',
-                                        onPressed: () => setState(() => exception = null));
-    }
-
-    final addButton = Button(text: "CONFIRMAR", color: Colors.green, onPressed: registerInseminations);
+    final addButton = TextButton(onPressed: registerInseminations, child: const Text("SALVAR"),);
 
     final datePicker = TextFormField(
       controller: dateController,
@@ -86,7 +73,7 @@ class _ArtificialInseminationForm extends State<ArtificialInseminationForm> {
         if (pickedDate != null) {
           setState(() {
             date = pickedDate;
-            dateController.text = formatter.format(pickedDate);
+            dateController.text = DateFormat.yMd("pt_BR").format(pickedDate);
           });
         }
       },
@@ -205,7 +192,7 @@ class _ArtificialInseminationForm extends State<ArtificialInseminationForm> {
           inspect("Something went wrong");
         }
 
-        if (context.mounted) {
+        if (mounted) {
           SnackBar snackBar = const SnackBar(
             content: Text('Inseminações registradas com sucesso.'),
             backgroundColor: Colors.green,
@@ -246,7 +233,7 @@ class _ArtificialInseminationForm extends State<ArtificialInseminationForm> {
       breederController.clear();
       strawNumberController.clear();
       date = DateTime.now();
-      dateController.text = formatter.format(date);
+      dateController.text = DateFormat.yMd('pt_BR').format(date);
     });
   }
 }

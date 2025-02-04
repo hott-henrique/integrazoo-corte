@@ -16,7 +16,6 @@ class FemaleBreedersRelatory extends StatefulWidget {
 }
 
 class _FemaleBreedersRelatory extends State<FemaleBreedersRelatory> {
-  Exception? exception;
 
   bool isAscending = true;
   int previousSortColumnIndex = 0;

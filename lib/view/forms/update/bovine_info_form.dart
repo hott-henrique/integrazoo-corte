@@ -2,10 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 
-import 'package:intl/intl.dart';
 
-import 'package:integrazoo/view/components/button.dart';
-import 'package:integrazoo/view/components/unexpected_error_alert_dialog.dart';
 
 import 'package:integrazoo/control/bovine_controller.dart';
 
@@ -18,6 +15,7 @@ class BovineInfoForm extends StatefulWidget {
   final int earring;
   final Bovine? bovine;
   final VoidCallback postSaved;
+
   const BovineInfoForm({ super.key, required this.earring, this.bovine, required this.postSaved });
 
   @override
@@ -39,10 +37,6 @@ class BovineInfoFormState extends State<BovineInfoForm> {
   final weightController = TextEditingController();
   final entryWeightController = TextEditingController();
 
-  final DateFormat formatter = DateFormat('dd/MM/yyyy');
-
-  Exception? exception;
-
   @override
   void initState() {
     super.initState();
@@ -56,12 +50,6 @@ class BovineInfoFormState extends State<BovineInfoForm> {
 
   @override
   Widget build(BuildContext context) {
-    if (exception != null) {
-      return UnexpectedErrorAlertDialog(title: 'Erro Inesperado',
-                                        message: 'Algo de inespearado aconteceu durante a execução do aplicativo.',
-                                        onPressed: () => setState(() => exception = null));
-    }
-
     final nameField = TextFormField(
       keyboardType: TextInputType.number,
       decoration: const InputDecoration(
@@ -114,7 +102,7 @@ class BovineInfoFormState extends State<BovineInfoForm> {
       const Text("Reprodutor")
     ]);
 
-    final addButton = Button(text: "SALVAR", color: Colors.green[400]!, onPressed: createBovine);
+    final addButton = TextButton(onPressed: createBovine, child: const Text("SALVAR"));
 
     const divider = Divider(height: 8, color: Colors.transparent);
 

@@ -1,14 +1,11 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:integrazoo/control/finish_controller.dart';
 import 'package:integrazoo/persistence/birth_persistence.dart';
 
 import 'package:intl/intl.dart';
 
 import 'package:integrazoo/database/database.dart';
-
-import 'package:integrazoo/view/components/button.dart';
 
 import 'package:integrazoo/view/screens/bovine_screen/bovine_screen.dart';
 
@@ -16,6 +13,7 @@ import 'package:integrazoo/control/bovine_controller.dart';
 import 'package:integrazoo/control/birth_controller.dart';
 import 'package:integrazoo/control/reproduction_controller.dart';
 import 'package:integrazoo/control/weaning_controller.dart';
+import 'package:integrazoo/control/finish_controller.dart';
 
 
 class BovineExpansionTile extends StatefulWidget {
@@ -37,7 +35,7 @@ class BovineExpansionTileState extends State<BovineExpansionTile> {
   Future<Weaning?> get _weaningFuture => WeaningController.getWeaning(widget.earring);
   Future<Finish?> get _finishFuture => FinishController.getByEarring(widget.earring);
   Future<Reproduction?> get _reproductionFuture => ReproductionController.getReproductionThatGeneratedAnimal(widget.earring);
-  Future<Pregnancy?> get _firstPregnancy => BirthPersistence.getCowFirstBirth(widget.earring);
+  Future<Pregnancy?> get _firstPregnancy => BirthController.getCowFirstBirth(widget.earring);
 
   Future<List<dynamic>> get _childrenCountBySexFutures => Future.wait([
     BovineController.countChildrenOfSex(widget.earring, Sex.female),
@@ -91,8 +89,7 @@ class BovineExpansionTileState extends State<BovineExpansionTile> {
       buildParentingInfo(),
       // if (b.sex == Sex.female)
       //   buildFirstPregnancyWithBirth(),
-      Button(
-        text: "DETALHES",
+      TextButton(
         onPressed: () => Navigator.of(context)
                                   .push(
                                     MaterialPageRoute(builder: (context) => BovineScreen(
@@ -100,21 +97,20 @@ class BovineExpansionTileState extends State<BovineExpansionTile> {
                                       postBackButtonClick: widget.postBackButtonClick
                                     ))
                                   ),
-        color: Colors.green
+        child: const Text("DETALHES"),
       ),
       const Divider(height: 1.5, color: Colors.transparent),
-      Button(
-        text: "DELETAR",
+      TextButton(
         onPressed: () {
           showDialog(context: context, builder: (context) {
             return AlertDialog(
               title: const Text('Você deseja mesmo deletar esse animal?'),
               actions: <Widget>[
-                Button(color: Colors.red, text: "Confirmar", onPressed: () {
+                TextButton(child: const Text("Confirmar"), onPressed: () {
                   BovineController.deleteBovine(widget.earring);
                   Navigator.of(context).pop();
                 }),
-                Button(color: Colors.blue, text: "Cancelar", onPressed: () => Navigator.of(context).pop())
+                TextButton(child: const Text("Cancelar"), onPressed: () => Navigator.of(context).pop())
               ],
               actionsAlignment: MainAxisAlignment.center
             );
@@ -124,7 +120,7 @@ class BovineExpansionTileState extends State<BovineExpansionTile> {
             }
           });
         },
-        color: Colors.red
+        child: const Text("DELETAR"),
       ),
     ];
 
@@ -141,8 +137,7 @@ class BovineExpansionTileState extends State<BovineExpansionTile> {
           return const Text("Data de Nascimento: --/--/--");
         } else {
           final birth = snapshot.data!;
-          final DateFormat formatter = DateFormat('dd/MM/yyyy');
-          return Text('Data de Nascimento: ${formatter.format(birth.date)}');
+          return Text('Data de Nascimento: ${DateFormat.yMd("pt_BR").format(birth.date)}');
         }
       }
     );
@@ -324,13 +319,11 @@ class BovineExpansionTileState extends State<BovineExpansionTile> {
             return const Row(children: [ Expanded(child: Text("Primeira Cria:")), Text("--") ]);
           }
 
-          final DateFormat formatter = DateFormat('dd/MM/yyyy');
-
           if (birth == null) {
             return Column(children: [
               Row(children: [
                 const Expanded(child: Text("Data Primeira Cria:")),
-                Text(formatter.format(pregnancy.date))
+                Text(DateFormat.yMd("pt_BR").format(pregnancy.date))
               ]),
             ]);
           }

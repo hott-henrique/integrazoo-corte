@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:integrazoo/base.dart';
 
 import 'package:integrazoo/view/components/breeder/breeder_expansion_tile.dart';
-import 'package:integrazoo/view/components/unexpected_error_alert_dialog.dart';
 
 import 'package:integrazoo/control/breeder_controller.dart';
 
@@ -20,7 +19,6 @@ class BreedersScreen extends StatefulWidget {
 }
 
 class _BreedersScreen extends State<BreedersScreen> {
-  Exception? exception;
 
   List<Widget> widgets = List.empty(growable: true);
 
@@ -29,11 +27,6 @@ class _BreedersScreen extends State<BreedersScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (exception != null) {
-      return UnexpectedErrorAlertDialog(title: 'Erro Inesperado',
-                                        message: 'Algo de inespearado aconteceu durante a execução do aplicativo.',
-                                        onPressed: () => setState(() => exception = null));
-    }
     return IntegrazooBaseApp(
       title: "REPRODUTORES",
       body: Padding(

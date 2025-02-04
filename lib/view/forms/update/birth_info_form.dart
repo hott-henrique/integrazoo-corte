@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 
-import 'package:integrazoo/view/components/button.dart';
-import 'package:integrazoo/view/components/unexpected_error_alert_dialog.dart';
 
 import 'package:integrazoo/control/birth_controller.dart';
 
@@ -38,14 +36,10 @@ class _BirthInfoForm extends State<BirthInfoForm> {
   late final TextEditingController dateBirthController;
   DateTime dateBirth = DateTime.now();
 
-  final DateFormat formatter = DateFormat('dd/MM/yyyy');
-
-  Exception? exception;
-
   @override
   void initState() {
     super.initState();
-    dateBirthController = TextEditingController(text: formatter.format(widget.birth?.date ?? dateBirth));
+    dateBirthController = TextEditingController(text: DateFormat.yMd("pt_BR").format(widget.birth?.date ?? dateBirth));
 
     newBornWeightController.text = (widget.birth?.weight ?? "").toString();
     newBornBCSController.text = (widget.birth?.bcs ?? "").toString();
@@ -54,13 +48,7 @@ class _BirthInfoForm extends State<BirthInfoForm> {
 
   @override
   Widget build(BuildContext context) {
-    if (exception != null) {
-      return UnexpectedErrorAlertDialog(title: 'Erro Inesperado',
-                                        message: 'Algo de inespearado aconteceu durante a execução do aplicativo.',
-                                        onPressed: () => setState(() => exception = null));
-    }
-
-    final addButton = Button(text: "SALVAR", color: Colors.green, onPressed: saveBirth);
+    final addButton = TextButton(onPressed: saveBirth, child: const Text("SALVAR"));
 
     final dateBirthPicker = TextFormField(
       controller: dateBirthController,
@@ -78,7 +66,7 @@ class _BirthInfoForm extends State<BirthInfoForm> {
         if (pickedDate != null) {
           setState(() {
             dateBirth = pickedDate;
-            dateBirthController.text = formatter.format(pickedDate);
+            dateBirthController.text = DateFormat.yMd("pt_BR").format(pickedDate);
           });
         }
       },

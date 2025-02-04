@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 
-import 'package:integrazoo/view/components/button.dart';
-import 'package:integrazoo/view/components/unexpected_error_alert_dialog.dart';
 
 import 'package:integrazoo/control/bovine_controller.dart';
 import 'package:integrazoo/control/weaning_controller.dart';
@@ -33,27 +31,17 @@ class _WeaningInfoForm extends State<WeaningInfoForm> {
   late DateTime date;
   late final TextEditingController dateController;
 
-  final DateFormat formatter = DateFormat('dd/MM/yyyy');
-
-  Exception? exception;
-
   @override
   void initState() {
     super.initState();
     date = widget.weaning?.date ?? DateTime.now();
-    dateController = TextEditingController(text: formatter.format(date));
+    dateController = TextEditingController(text: DateFormat.yMd("pt_BR").format(date));
     weightController.text = (widget.weaning?.weight ?? "").toString();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (exception != null) {
-      return UnexpectedErrorAlertDialog(title: 'Erro Inesperado',
-                                        message: 'Algo de inespearado aconteceu durante a execução do aplicativo.',
-                                        onPressed: () => setState(() => exception = null));
-    }
-
-    final addButton = Button(text: "SALVAR", color: Colors.green, onPressed: saveWeaning);
+    final addButton = TextButton(onPressed: saveWeaning, child: const Text("SALVAR"));
 
     final datePicker = TextFormField(
       controller: dateController,
@@ -71,7 +59,7 @@ class _WeaningInfoForm extends State<WeaningInfoForm> {
         if (pickedDate != null) {
           setState(() {
             date = pickedDate;
-            dateController.text = formatter.format(pickedDate);
+            dateController.text = DateFormat.yMd("pt_BR").format(pickedDate);
           });
         }
       },
@@ -185,7 +173,7 @@ class _WeaningInfoForm extends State<WeaningInfoForm> {
     setState(() {
       weightController.clear();
       date = DateTime.now();
-      dateController.text = formatter.format(date);
+      dateController.text = DateFormat.yMd("pt_BR").format(date);
     });
   }
 }

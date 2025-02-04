@@ -17,12 +17,18 @@ void main() async {
   runApp(MaterialApp(
     localizationsDelegates: const [
       GlobalMaterialLocalizations.delegate,
-      GlobalWidgetsLocalizations.delegate
+      GlobalWidgetsLocalizations.delegate,
+      GlobalCupertinoLocalizations.delegate
     ],
     home: const IntegrazooApp(),
     supportedLocales: const [ Locale('pt', 'BR') ],
     theme: ThemeData(
+      useMaterial3: true,
       colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Colors.green,
+        foregroundColor: Colors.white
+      ),
       textTheme: const TextTheme(
         titleLarge: TextStyle(
           color: Colors.white,
@@ -30,13 +36,34 @@ void main() async {
           fontWeight: FontWeight.w800
         ),
       ),
-      textButtonTheme: TextButtonThemeData(
+      textButtonTheme: const TextButtonThemeData(
         style: ButtonStyle(
-          backgroundColor: WidgetStateProperty.all(Colors.green[400]),
-          foregroundColor: WidgetStateProperty.all(Colors.white),
-          shape: WidgetStateProperty.all(const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4.0))))
+          foregroundColor: WidgetStatePropertyAll<Color>(Colors.white),
+          backgroundColor: WidgetStatePropertyAll<Color>(Colors.green),
+          shape: WidgetStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4.0)))),
+        ),
+      ),
+      iconButtonTheme: const IconButtonThemeData(
+        style: ButtonStyle(
+          foregroundColor: WidgetStatePropertyAll<Color>(Colors.black),
+          backgroundColor: WidgetStatePropertyAll<Color>(Colors.transparent),
+          shape: WidgetStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4.0)))),
         )
-      )
+      ),
+      expansionTileTheme: const ExpansionTileThemeData(
+        shape: Border(bottom: BorderSide(color: Colors.black, width: 1)),
+        collapsedShape: Border(bottom: BorderSide(color: Colors.black, width: 1)),
+      ),
+      dialogTheme: const DialogTheme(
+        iconColor: Colors.black,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(2.0))),
+        alignment: Alignment.center
+      ),
+      scrollbarTheme: const ScrollbarThemeData(
+        trackVisibility: WidgetStatePropertyAll<bool>(true),
+        thumbVisibility: WidgetStatePropertyAll<bool>(true)
+      ),
+      dividerTheme: const DividerThemeData(color: Colors.transparent, thickness: 0.0, space: 8)
     )
   ));
 }

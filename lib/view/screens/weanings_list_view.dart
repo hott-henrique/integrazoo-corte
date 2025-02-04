@@ -4,27 +4,25 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 
+import 'package:integrazoo/view/forms/update/weaning_info_form.dart';
 
-import 'package:integrazoo/control/reproduction_controller.dart';
-
-import 'package:integrazoo/view/forms/create/artificial_insemination_form.dart';
-import 'package:integrazoo/view/forms/create/natural_mating_form.dart';
+import 'package:integrazoo/control/weaning_controller.dart';
 
 import 'package:integrazoo/database/database.dart';
 
 
-class BovinesReproducingListView extends StatefulWidget {
-  const BovinesReproducingListView({ super.key });
+class WeaningsListView extends StatefulWidget {
+  const WeaningsListView({ super.key });
 
   @override
-  State<BovinesReproducingListView> createState() => _BovinesReproducingListView();
+  State<WeaningsListView> createState() => _WeaningsListView();
 }
 
-class _BovinesReproducingListView extends State<BovinesReproducingListView> {
+class _WeaningsListView extends State<WeaningsListView> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: ReproductionController.countBovinesReproducing(),
+      future: WeaningController.countWeanings(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator();
@@ -78,13 +76,13 @@ class _PaginateBovinesReproducing extends State<PaginateBovinesReproducing> {
         ),
       ]),
       const Divider(color: Colors.black, height: 1),
-      Expanded(child: buildReproductions_())
+      Expanded(child: buildWeanings_())
     ]);
   }
 
-  Widget buildReproductions_() {
+  Widget buildWeanings_() {
     return FutureBuilder(
-      future: ReproductionController.getBovinesReproducing(pageSize, page),
+      future: WeaningController.getWeanings(pageSize, page),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -94,24 +92,24 @@ class _PaginateBovinesReproducing extends State<PaginateBovinesReproducing> {
           return const Text("Algo de errado ocorreu! Por favor, contate o suporte.");
         }
 
-        return buildReproductions(snapshot.data!);
+        return buildWeanings(snapshot.data!);
       }
     );
   }
 
-  Widget buildReproductions(List<(Bovine, Reproduction)> bovinesReproducing) {
-    if (bovinesReproducing.isEmpty) {
-      return const Center(child: Text("Nenhuma fêmea reproduzindo no momento."));
+  Widget buildWeanings(List<Weaning> weanings) {
+    if (weanings.isEmpty) {
+      return const Center(child: Text("Nenhum desmame registrado no momento."));
     }
 
     return ListView.separated(
-      itemCount: bovinesReproducing.length + 1,
+      itemCount: weanings.length + 1,
       itemBuilder: (ctx, idx) {
-        if (idx == bovinesReproducing.length) {
+        if (idx == weanings.length) {
           return const SizedBox.shrink();
         }
-        final e = bovinesReproducing[idx];
-        return BovineReproductionTile(bovine: e.$1, reproduction: e.$2, postAction: widget.postAction);
+        final e = weanings[idx];
+        return WeaningTile(weaning: e, postAction: widget.postAction);
       },
       separatorBuilder: (ctx, idx) {
         return const Divider(color: Colors.black, height: 1);
@@ -120,44 +118,37 @@ class _PaginateBovinesReproducing extends State<PaginateBovinesReproducing> {
   }
 }
 
-class BovineReproductionTile extends StatelessWidget {
-  final Bovine bovine;
-  final Reproduction reproduction;
+class WeaningTile extends StatelessWidget {
+  final Weaning weaning;
 
   final VoidCallback? postAction;
 
-  const BovineReproductionTile({
+  const WeaningTile({
     super.key,
-    required this.bovine,
-    required this.reproduction,
+    required this.weaning,
     this.postAction
   });
 
   @override
   Widget build(BuildContext context) {
-    final formatter = DateFormat('dd/MM/yyyy');
-
     return ListTile(
-      title: Text('${bovine.name ?? ""} #${bovine.earring}'),
+      title: Text('Animal: #${weaning.bovine}'),
       subtitle: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        Text('Tipo: ${reproduction.kind.toString()}'),
-        Text('Pai: ${reproduction.bull != null  ? "#${reproduction.bull}" : reproduction.breeder}'),
-        Text('Data: ${formatter.format(reproduction.date)}'),
-        if (reproduction.kind == ReproductionKind.artificialInsemination)
-          Text('Pipeta: ${reproduction.strawNumber}'),
+        Text('Data: ${DateFormat.yMd("pt_BR").format(weaning.date)}'),
+        Text('Peso: ${weaning.weight}'),
       ]),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      trailing: _PopupMenuActions(reproduction: reproduction, postAction: postAction),
+      trailing: _PopupMenuActions(weaning: weaning, postAction: postAction),
     );
   }
 }
 
 class _PopupMenuActions extends StatefulWidget {
-  final Reproduction reproduction;
+  final Weaning weaning;
 
   final VoidCallback? postAction;
 
-  const _PopupMenuActions({ super.key, required this.reproduction, this.postAction });
+  const _PopupMenuActions({ super.key, required this.weaning, this.postAction });
 
   @override
   State<_PopupMenuActions> createState() => _PopupMenuActionsState();
@@ -168,41 +159,39 @@ class _PopupMenuActionsState extends State<_PopupMenuActions> {
   void _handleAction(String action, BuildContext context) {
     switch (action) {
       case "Editar":
-        final page = widget.reproduction.kind == ReproductionKind.coverage ?
-                     NaturalMatingForm(reproduction: widget.reproduction, shouldPop: true) :
-                     ArtificialInseminationForm(reproduction: widget.reproduction, shouldPop: true);
-
-        Navigator.of(context)
-                 .push(MaterialPageRoute(builder: (context) => page))
-                 .then((_) => widget.postAction!());
+        showDialog(
+          context: context,
+          builder: (context) {
+            return Dialog(
+              child: WeaningInfoForm(earring: widget.weaning.bovine, weaning: widget.weaning, postSaved: widget.postAction ?? () => ())
+            );
+          }
+        );
         break;
 
       case "Deletar":
         showDialog(
           context: context,
-          builder: (context) {
-            return AlertDialog(
-              icon: const Icon(Icons.info),
-              iconColor: Colors.black,
-              title: const Text("Deseja mesmo deletar o tratamento?"),
-              actions: [
-                Center(
-                  child: TextButton(
-                    onPressed: () async {
-                      await ReproductionController.delete(widget.reproduction.id);
+          builder: (context) => AlertDialog(
+            icon: const Icon(Icons.info),
+            title: const Text("Deseja mesmo deletar o desmame?"),
+            actions: [
+              // Center(child:
+                TextButton(
+                onPressed: () async {
+                  await WeaningController.deleteWeaning(widget.weaning.bovine);
 
-                      if (mounted && context.mounted) {
-                        Navigator.of(context).pop();
-                        widget.postAction!();
-                      }
-                    },
-                    child: const Text("Confirmar"),
-                  ),
-                ),
-              ],
-              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(2.0))),
-            );
-          },
+                  if (mounted) {
+                    Navigator.of(context).pop();
+                  }
+
+                  widget.postAction!();
+                },
+                child: const Text("CONFIRMAR"),
+              )
+              // ),
+            ],
+          )
         );
         break;
     }

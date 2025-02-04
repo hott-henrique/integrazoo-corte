@@ -34,8 +34,6 @@ class MultiBovineSelector extends StatefulWidget {
 }
 
 class _MultiBovineSelector extends State<MultiBovineSelector> {
-  Exception? exception;
-
   int pageSize = 5, page = 0;
 
   @override

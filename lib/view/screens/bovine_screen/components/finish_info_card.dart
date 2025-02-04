@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 
-import 'package:integrazoo/view/components/button.dart';
 import 'package:integrazoo/view/components/titled_card.dart';
 
 import 'package:integrazoo/view/forms/update/finish_info_form.dart';
@@ -24,7 +23,6 @@ class FinishInfoCard extends StatefulWidget {
 }
 
 class _FinishInfoCard extends State<FinishInfoCard> {
-  Exception? exception;
 
   Future<Finish?> get _finishFuture => FinishController.getByEarring(widget.earring);
 
@@ -46,14 +44,13 @@ class _FinishInfoCard extends State<FinishInfoCard> {
           );
         } else {
           final finish = snapshot.data!;
-          final DateFormat formatter = DateFormat('dd/MM/yyyy');
 
           cardContent = Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                buildInfo("Data", formatter.format(finish.date)),
+                buildInfo("Data", DateFormat.yMd("pt_BR").format(finish.date)),
                 buildInfo("Razão", finish.reason.toString()),
                 if (finish.reason == FinishingReason.slaughter) ...[
                   buildInfo("Peso", '${finish.weight.toString()} Kg'),
@@ -93,11 +90,14 @@ class _FinishInfoCard extends State<FinishInfoCard> {
         return AlertDialog(
           title: const Text('Você deseja mesmo deletar as informações de finalização desse animal?'),
           actions: <Widget>[
-            Button(color: Colors.red, text: "Confirmar", onPressed: () {
-              FinishController.delete(widget.earring);
-              Navigator.of(context).pop();
-            }),
-            Button(color: Colors.blue, text: "Cancelar", onPressed: () => Navigator.of(context).pop())
+            TextButton(
+              onPressed: () {
+                FinishController.delete(widget.earring);
+                Navigator.of(context).pop();
+              },
+              child: const Text("Confirmar")
+            ),
+            TextButton(onPressed: Navigator.of(context).pop, child: const Text("CANCELAR"))
           ],
           actionsAlignment: MainAxisAlignment.center
         );

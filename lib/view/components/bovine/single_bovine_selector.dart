@@ -36,7 +36,6 @@ class SingleBovineSelector extends StatefulWidget {
 }
 
 class _SingleBovineSelector extends State<SingleBovineSelector> {
-  Exception? exception;
 
   @override
   Widget build(BuildContext context) {

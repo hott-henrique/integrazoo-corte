@@ -8,8 +8,6 @@ import 'package:intl/intl.dart';
 
 import 'package:integrazoo/base.dart';
 
-import 'package:integrazoo/view/components/button.dart';
-import 'package:integrazoo/view/components/unexpected_error_alert_dialog.dart';
 
 import 'package:integrazoo/view/components/bovine/single_bovine_selector.dart';
 import 'package:integrazoo/view/components/bovine/earring_controller.dart';
@@ -43,26 +41,16 @@ class _PregnancyForm extends State<PregnancyForm> {
   late final TextEditingController dateDiagnosticController;
   late final TextEditingController dateBirthForecastController;
 
-  final DateFormat formatter = DateFormat('dd/MM/yyyy');
-
-  Exception? exception;
-
   @override
   void initState() {
     super.initState();
-    dateDiagnosticController = TextEditingController(text: formatter.format(dateDiagnostic));
-    dateBirthForecastController = TextEditingController(text: formatter.format(dateBirthForecast));
+    dateDiagnosticController = TextEditingController(text: DateFormat.yMd("pt_BR").format(dateDiagnostic));
+    dateBirthForecastController = TextEditingController(text: DateFormat.yMd("pt_BR").format(dateBirthForecast));
   }
 
   @override
   Widget build(BuildContext context) {
-    if (exception != null) {
-      return UnexpectedErrorAlertDialog(title: 'Erro Inesperado',
-                                        message: 'Algo de inespearado aconteceu durante a execução do aplicativo.',
-                                        onPressed: () => setState(() => exception = null));
-    }
-
-    final addButton = Button(text: "Confirmar", color: Colors.green, onPressed: savePregnancy);
+    final addButton = TextButton(onPressed: savePregnancy, child: const Text("Confirmar"));
 
     final diagnosticCheckbox = Row(children: [
       Checkbox(
@@ -88,7 +76,7 @@ class _PregnancyForm extends State<PregnancyForm> {
         if (pickedDate != null) {
           setState(() {
             dateDiagnostic = pickedDate;
-            dateDiagnosticController.text = formatter.format(pickedDate);
+            dateDiagnosticController.text = DateFormat.yMd("pt_BR").format(pickedDate);
           });
         }
       },
@@ -110,7 +98,7 @@ class _PregnancyForm extends State<PregnancyForm> {
         if (pickedDate != null) {
           setState(() {
             dateBirthForecast = pickedDate;
-            dateBirthForecastController.text = formatter.format(pickedDate);
+            dateBirthForecastController.text = DateFormat.yMd("pt_BR").format(pickedDate);
           });
         }
       },
@@ -241,10 +229,10 @@ class _PregnancyForm extends State<PregnancyForm> {
   void clearForm() {
     setState(() {
       dateDiagnostic = DateTime.now();
-      dateDiagnosticController.text = formatter.format(dateDiagnostic);
+      dateDiagnosticController.text = DateFormat.yMd("pt_BR").format(dateDiagnostic);
 
       dateBirthForecast = DateTime.now().add(const Duration(days: 9 * 30));
-      dateBirthForecastController.text = formatter.format(dateBirthForecast);
+      dateBirthForecastController.text = DateFormat.yMd("pt_BR").format(dateBirthForecast);
 
       observationController.text = "";
 

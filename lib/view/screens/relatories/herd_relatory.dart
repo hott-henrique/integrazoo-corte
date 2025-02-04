@@ -20,7 +20,6 @@ class HerdRelatory extends StatefulWidget {
 }
 
 class _HerdRelatory extends State<HerdRelatory> {
-  Exception? exception;
 
   @override
   Widget build(BuildContext context) {

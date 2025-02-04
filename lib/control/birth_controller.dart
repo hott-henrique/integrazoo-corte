@@ -20,7 +20,7 @@ class BirthController {
     return BirthPersistence.deleteBirth(earring);
   }
 
-  static Future<void> getCowFirstBirth(int earring) {
+  static Future<Pregnancy?> getCowFirstBirth(int earring) {
     return BirthPersistence.getCowFirstBirth(earring);
   }
 }

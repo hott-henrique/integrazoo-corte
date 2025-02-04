@@ -3,15 +3,12 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 
 import 'package:integrazoo/base.dart';
+
 import 'package:integrazoo/control/finish_controller.dart';
-
-import 'package:integrazoo/view/components/unexpected_error_alert_dialog.dart';
-
-import 'package:integrazoo/view/components/button.dart';
-
 import 'package:integrazoo/control/bovine_controller.dart';
 
 import 'package:integrazoo/database/database.dart';
+
 
 class FinishesScreen extends StatefulWidget {
   const FinishesScreen({ super.key });
@@ -21,7 +18,6 @@ class FinishesScreen extends StatefulWidget {
 }
 
 class _FinishesScreen extends State<FinishesScreen> {
-  Exception? exception;
 
   List<Bovine> bovines = List.empty(growable: true);
 
@@ -30,12 +26,6 @@ class _FinishesScreen extends State<FinishesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (exception != null) {
-      return UnexpectedErrorAlertDialog(title: 'Erro Inesperado',
-                                        message: 'Algo de inespearado aconteceu durante a execução do aplicativo.',
-                                        onPressed: () => setState(() => exception = null));
-    }
-
     return IntegrazooBaseApp(
       title: "REBANHO",
       body: Padding(
@@ -124,10 +114,9 @@ class _FinishesScreen extends State<FinishesScreen> {
             title: Text("${b.name ?? ''} #${b.earring}"),
             subtitle: Text(discard.reason.toString()),
             leading: b.sex == Sex.male ? bullHead : cowHead,
-            trailing: Button(
-              color: Colors.red,
-              text: "Cancelar",
-              onPressed: () => showCancelDiscardDialog(b.earring)
+            trailing: TextButton(
+              onPressed: () => showCancelDiscardDialog(b.earring),
+              child: const Text("Cancelar"),
             ),
             shape: const RoundedRectangleBorder(side: BorderSide(width: 1.0), borderRadius: BorderRadius.all(Radius.circular(6.0)))
           )
@@ -143,14 +132,17 @@ class _FinishesScreen extends State<FinishesScreen> {
         return AlertDialog(
           title: Text("Cancelar discarte do animal #$earring?"),
           actions: [
-            Button(color: Colors.red, text: "Confirmar", onPressed: (){
-              cancelDiscard(earring).then((_) {
-                setState(() => bovines.removeWhere((element) => element.earring == earring));
-                if (context.mounted) {
-                  Navigator.of(context).pop();
-                }
-              });
-            }),
+            TextButton(
+              onPressed: () {
+                cancelDiscard(earring).then((_) {
+                  setState(() => bovines.removeWhere((element) => element.earring == earring));
+                  if (context.mounted) {
+                    Navigator.of(context).pop();
+                  }
+                });
+              },
+              child: const Text("CONFIRMAR")
+            )
           ]
         );
       }

@@ -5,8 +5,6 @@ import 'package:integrazoo/control/finish_controller.dart';
 
 import 'package:intl/intl.dart';
 
-import 'package:integrazoo/view/components/button.dart';
-import 'package:integrazoo/view/components/unexpected_error_alert_dialog.dart';
 
 import 'package:integrazoo/control/bovine_controller.dart';
 
@@ -37,8 +35,6 @@ class _FinishInfoForm extends State<FinishInfoForm> {
   late DateTime date;
   late final TextEditingController dateController;
 
-  final DateFormat formatter = DateFormat('dd/MM/yyyy');
-
   @override
   void initState() {
     super.initState();
@@ -47,7 +43,7 @@ class _FinishInfoForm extends State<FinishInfoForm> {
     reasonController.text = (widget.finish?.reason ?? "").toString();
 
     date = widget.finish?.date ?? DateTime.now();
-    dateController = TextEditingController(text: formatter.format(date));
+    dateController = TextEditingController(text: DateFormat.yMd("pt_BR").format(date));
 
     weightController.text = (widget.finish?.weight ?? "").toString();
     hotCarcassWeightController.text = (widget.finish?.hotCarcassWeight ?? "").toString();
@@ -111,7 +107,7 @@ class _FinishInfoForm extends State<FinishInfoForm> {
       },
     );
 
-    final addButton = Button(text: "SALVAR", color: Colors.green, onPressed: discardBovine);
+    final addButton = TextButton(onPressed: discardBovine, child: const Text("SALVAR"));
 
     final datePicker = TextFormField(
       controller: dateController,
@@ -129,7 +125,7 @@ class _FinishInfoForm extends State<FinishInfoForm> {
         if (pickedDate != null) {
           setState(() {
             date= pickedDate;
-            dateController.text = formatter.format(pickedDate);
+            dateController.text = DateFormat.yMd("pt_BR").format(pickedDate);
           });
         }
       },
@@ -240,7 +236,7 @@ class _FinishInfoForm extends State<FinishInfoForm> {
       weightController.clear();
       reason = null;
       date = DateTime.now();
-      dateController.text = formatter.format(date);
+      dateController.text = DateFormat.yMd("pt_BR").format(date);
     });
   }
 }

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 
-import 'package:integrazoo/view/components/button.dart';
 
 import 'package:integrazoo/control/pregnancy_controller.dart';
 
@@ -176,26 +175,18 @@ class _PopupMenuActionsState extends State<_PopupMenuActions> {
           builder: (context) {
             return AlertDialog(
               icon: const Icon(Icons.info),
-              iconColor: Colors.black,
               title: const Text("Deseja mesmo deletar este diagnóstico?"),
-              actions: [
-                Center(
-                  child: Button(
-                    text: "Confirmar",
-                    color: Colors.green,
-                    onPressed: () =>
-                      PregnancyController.delete(widget.pregnancy.id).then(
-                        (_) {
-                          if (mounted) {
-                            Navigator.of(context).pop();
-                          }
-                          widget.postAction!();
-                        }
-                      )
-                  ),
-                ),
-              ],
-              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(2.0))),
+              actions: [ TextButton(
+                onPressed: () async {
+                  await PregnancyController.delete(widget.pregnancy.id);
+
+                  if (mounted && context.mounted) {
+                    Navigator.of(context).pop();
+                    widget.postAction!();
+                  }
+                },
+                child: const Text("Confirmar"),
+              ) ]
             );
           },
         );

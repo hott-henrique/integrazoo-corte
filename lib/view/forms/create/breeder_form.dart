@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 
 import 'package:integrazoo/base.dart';
 
-import 'package:integrazoo/view/components/button.dart';
-import 'package:integrazoo/view/components/unexpected_error_alert_dialog.dart';
 
 import 'package:integrazoo/control/breeder_controller.dart';
 import 'package:integrazoo/database/database.dart';
@@ -38,16 +36,8 @@ class BreederFormState extends State<BreederForm> {
   final epdWeaningWeightController = TextEditingController();
   final epdYearlingWeightController = TextEditingController();
 
-  Exception? exception;
-
   @override
   Widget build(BuildContext context) {
-    if (exception != null) {
-      return UnexpectedErrorAlertDialog(title: 'Erro Inesperado',
-                                        message: 'Algo de inespearado aconteceu durante a execução do aplicativo.',
-                                        onPressed: () => setState(() => exception = null));
-    }
-
     final nameField = TextFormField(
       keyboardType: TextInputType.text,
       controller: nameController,
@@ -63,7 +53,7 @@ class BreederFormState extends State<BreederForm> {
       keyboardType: TextInputType.text,
       decoration: const InputDecoration(
         border: OutlineInputBorder(),
-        label: Text("Nome do Pai (Opcional)"),
+        label: Text("Nome do Pai"),
         floatingLabelBehavior: FloatingLabelBehavior.always,
         hintText: "Digite o nome do pai"
       ),
@@ -74,7 +64,7 @@ class BreederFormState extends State<BreederForm> {
       keyboardType: TextInputType.text,
       decoration: const InputDecoration(
         border: OutlineInputBorder(),
-        label: Text("Nome da Mãe (Opcional)"),
+        label: Text("Nome da Mãe"),
         floatingLabelBehavior: FloatingLabelBehavior.always,
         hintText: "Digite o nome da avó paterna"
       ),
@@ -128,7 +118,7 @@ class BreederFormState extends State<BreederForm> {
     final epdBirthWeightField = TextFormField(
       keyboardType: TextInputType.number,
       decoration: const InputDecoration(border: OutlineInputBorder(),
-                                        label: Text("Peso ao Nascimento - PN (Opcional)"),
+                                        label: Text("Peso ao Nascimento - PN"),
                                         hintText: "Digite o peso ao nascimento do animal.",
                                         floatingLabelBehavior: FloatingLabelBehavior.always),
       controller: epdBirthWeightController,
@@ -148,7 +138,7 @@ class BreederFormState extends State<BreederForm> {
     final epdWeaningWeightField = TextFormField(
       keyboardType: TextInputType.number,
       decoration: const InputDecoration(border: OutlineInputBorder(),
-                                        label: Text("Peso a Desmama - PD (Opcional)"),
+                                        label: Text("Peso a Desmama - PD"),
                                         hintText: "Digite o peso a desmama do animal.",
                                         floatingLabelBehavior: FloatingLabelBehavior.always),
       controller: epdWeaningWeightController,
@@ -168,7 +158,7 @@ class BreederFormState extends State<BreederForm> {
     final epdYearlingWeightField = TextFormField(
       keyboardType: TextInputType.number,
       decoration: const InputDecoration(border: OutlineInputBorder(),
-                                        label: Text("Peso ao Sobreano - PA (Opcional)"),
+                                        label: Text("Peso ao Sobreano - PA"),
                                         hintText: "Digite o peso do animal ao entrar.",
                                         floatingLabelBehavior: FloatingLabelBehavior.always),
       controller: epdYearlingWeightController,
@@ -185,9 +175,9 @@ class BreederFormState extends State<BreederForm> {
       },
     );
 
-    final addButton = Button(text: "ADICIONAR", color: Colors.green[400]!, onPressed: createBovine);
+    final addButton = TextButton(onPressed: createBovine, child: const Text("SALVAR"));
 
-    const divider = Divider(height: 8, color: Colors.transparent);
+    const divider = Divider(height: 16, color: Colors.transparent);
 
     final column = <Widget>[
       nameField,
@@ -195,31 +185,29 @@ class BreederFormState extends State<BreederForm> {
       fatherNameField,
       divider,
       motherNameField,
-      divider,
+      const Divider(height: 16, color: Colors.black),
       ExpansionTile(
         title: const Text("Avós Paternos (Opcional)"),
-        shape: Border.all(width: 0, color: Colors.transparent),
         children: [
           divider,
           paternalGrandfatherNameField,
           divider,
           paternalGrandmotherNameField,
+          divider,
         ],
       ),
-      divider,
       ExpansionTile(
         title: const Text("Avós Maternos (Opcional)"),
-        shape: Border.all(width: 0, color: Colors.transparent),
         children: [
           divider,
           maternalGrandfatherNameField,
           divider,
           maternalGrandmotherNameField,
+          divider,
         ]
       ),
       ExpansionTile(
         title: const Text("Diferença Esperada na Progênie - DEP (Opcional)"),
-        shape: Border.all(width: 0, color: Colors.transparent),
         children: [
           divider,
           epdBirthWeightField,
@@ -227,6 +215,7 @@ class BreederFormState extends State<BreederForm> {
           epdWeaningWeightField,
           divider,
           epdYearlingWeightField,
+          divider,
         ]
       ),
       divider,
@@ -288,7 +277,6 @@ class BreederFormState extends State<BreederForm> {
             clearForm();
           }
         },
-        onError: (e) => setState(() => exception = e)
       );
     }
   }

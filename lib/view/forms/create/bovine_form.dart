@@ -6,8 +6,6 @@ import 'package:intl/intl.dart';
 
 import 'package:integrazoo/base.dart';
 
-import 'package:integrazoo/view/components/button.dart';
-import 'package:integrazoo/view/components/unexpected_error_alert_dialog.dart';
 
 import 'package:integrazoo/control/bovine_controller.dart';
 
@@ -38,10 +36,6 @@ class BovineFormState extends State<BovineForm> {
 
   final entryWeightController = TextEditingController();
 
-  final DateFormat formatter = DateFormat('dd/MM/yyyy');
-
-  Exception? exception;
-
   @override
   void initState() {
     super.initState();
@@ -51,12 +45,6 @@ class BovineFormState extends State<BovineForm> {
 
   @override
   Widget build(BuildContext context) {
-    if (exception != null) {
-      return UnexpectedErrorAlertDialog(title: 'Erro Inesperado',
-                                        message: 'Algo de inespearado aconteceu durante a execução do aplicativo.',
-                                        onPressed: () => setState(() => exception = null));
-    }
-
     final nameField = TextFormField(
       keyboardType: TextInputType.number,
       decoration: const InputDecoration(
@@ -119,7 +107,7 @@ class BovineFormState extends State<BovineForm> {
           lastDate: DateTime.now(),
         );
         if (pickedDate != null) {
-          setState(() => dateEntryController.text = formatter.format(pickedDate));
+          setState(() => dateEntryController.text = DateFormat.yMd("pt_BR").format(pickedDate));
         }
       },
     );
@@ -155,7 +143,7 @@ class BovineFormState extends State<BovineForm> {
       Text(bovineSex == Sex.male ? "Reprodutor" : "Matriz")
     ]);
 
-    final addButton = Button(text: "SALVAR", color: Colors.green[400]!, onPressed: createBovine);
+    final addButton = TextButton(onPressed: createBovine, child: const Text("SALVAR"));
 
     const divider = Divider(height: 8, color: Colors.transparent);
 

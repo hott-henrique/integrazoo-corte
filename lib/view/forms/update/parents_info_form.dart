@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 
-import 'package:integrazoo/view/components/button.dart';
 
 import 'package:integrazoo/control/bovine_controller.dart';
 import 'package:integrazoo/control/breeder_controller.dart';
@@ -66,10 +65,9 @@ class _ParentsInfoForm extends State<ParentsInfoForm> {
       onChanged: (value) => _validateMother(value),
     );
 
-    final addButton = Button(
-      text: "SALVAR",
-      color: Colors.green,
+    final addButton = TextButton(
       onPressed: saveParents,
+      child: const Text("SALVAR"),
     );
 
     final column = <Widget>[
