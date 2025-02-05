@@ -34,7 +34,7 @@ class _BovinesPregnantListView extends State<BovinesPregnantListView> {
         }
 
         if (snapshot.data! == 0) {
-          return const Center(child: Text("Nenhuma fêmea prenha no momento."));
+          return const Center(child: Text("Nenhuma fêmea prenhe no momento."));
         }
 
         return PaginateBovinesPregnant(numElements: snapshot.data!, postAction: () => setState(() => ()));
@@ -104,7 +104,7 @@ class _PaginateBovinesPregnant extends State<PaginateBovinesPregnant> {
 
   Widget buildTreatments(List<(Bovine, Pregnancy)> bovinesPregnant) {
     if (bovinesPregnant.isEmpty) {
-      return const Center(child: Text("Nenhuma fêmea prenha no momento."));
+      return const Center(child: Text("Nenhuma fêmea prenhe no momento."));
     }
 
     return ListView.separated(

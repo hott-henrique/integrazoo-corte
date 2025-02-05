@@ -179,7 +179,7 @@ class _BirthForm extends State<BirthForm> {
     ];
 
     return IntegrazooBaseApp(
-      title: "REGISTRAR PRENHES",
+      title: "REGISTRAR PRENHEZ",
       body: SingleChildScrollView(child:
         Form(
           autovalidateMode: AutovalidateMode.always,

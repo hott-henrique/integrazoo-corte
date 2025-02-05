@@ -27,7 +27,7 @@ class _HerdRelatory extends State<HerdRelatory> {
       length: 3,
       child: Column(
         children: [
-          TabBar(tabs: [ Tab(text: "Em Tratamento"), Tab(text: "Fêmeas Reproduzindo"), Tab(text: "Fêmeas Prenhas") ]),
+          TabBar(tabs: [ Tab(text: "Em Tratamento"), Tab(text: "Fêmeas Reproduzindo"), Tab(text: "Fêmeas Prenhes") ]),
           Expanded(child: TabBarView(children: [ BovinesInTreatmentListView(), BovinesReproducingListView(), BovinesPregnantListView() ])),
         ],
       ),

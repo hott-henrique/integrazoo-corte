@@ -54,7 +54,7 @@ class _BovineInfoCard extends State<BovineInfoCard> {
           if (bovine.sex == Sex.female) {
             column.addAll([
               buildInfo("Reproduzindo:", bovine.isReproducing ? "Positivo" : "Negativo"),
-              buildInfo("Grávidez:", bovine.isPregnant ? "Positivo" : "Negativo"),
+              buildInfo("Gravidez:", bovine.isPregnant ? "Positivo" : "Negativo"),
               buildInfo("Matriz:", bovine.isBreeder ? "Positivo" : "Negativo")
             ]);
           }

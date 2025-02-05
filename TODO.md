@@ -15,9 +15,9 @@
 7. ~~Substituir o termo 'Diagnosticar Reprodução' por 'Registrar Diagnóstico Reprodução'.~~
 
 8. Checar erros de ortografia. Reportados:
-    - Tirar acento de gravidez.
-    - Registro de prenhe Z.
-    - Tirar o acento do gravidez.
+    - ~~Tirar acento de gravidez.~~
+    - ~~Registro de prenhe Z.~~
+    - ~~Tirar o acento do gravidez.~~
 
 9. ~~Apresentar as funcionalidades na seguinte ordem:~~
     - ~~Relatórios~~
