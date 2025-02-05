@@ -37,16 +37,24 @@ class BovineController {
     return BovinePersistence.saveBovine(bovine);
   }
 
-  static Future<int> saveBovineEntry(BovineEntry bovineEntry) {
-    return BovinePersistence.saveBovineEntry(bovineEntry);
-  }
-
   static Future<Bovine?> getBovine(int earring) async {
     return BovinePersistence.getBovine(earring);
   }
 
+  static Future<int> countBovines() async {
+    return BovinePersistence.countBovines();
+  }
+
+  static Future<List<Bovine>> getBovines(int pageSize, int page) async {
+    return BovinePersistence.getBovines(pageSize, page);
+  }
+
   static Future<int> deleteBovine(int earring) async {
     return BovinePersistence.deleteBovine(earring);
+  }
+
+  static Future<int> saveBovineEntry(BovineEntry bovineEntry) {
+    return BovinePersistence.saveBovineEntry(bovineEntry);
   }
 
   static Future<BovineEntry?> getBovineEntry(int earring) async {

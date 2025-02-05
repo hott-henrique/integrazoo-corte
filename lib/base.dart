@@ -9,16 +9,15 @@ import 'package:integrazoo/view/forms/create/pregnancy_form.dart';
 import 'package:integrazoo/view/forms/create/birth_form.dart';
 import 'package:integrazoo/view/forms/create/weaning_form.dart';
 import 'package:integrazoo/view/forms/create/treatment_form.dart';
-import 'package:integrazoo/view/screens/breeders_list_view.dart';
-import 'package:integrazoo/view/screens/finishes_list_view.dart';
-
-import 'package:integrazoo/view/screens/herd_screen.dart';
-
 
 import 'package:integrazoo/view/screens/relatories/female_breeders_relatory.dart';
 import 'package:integrazoo/view/screens/relatories/herd_relatory.dart';
-import 'package:integrazoo/view/screens/treatments_list_view.dart';
+
+import 'package:integrazoo/view/screens/bovines_list_view.dart';
+import 'package:integrazoo/view/screens/breeders_list_view.dart';
 import 'package:integrazoo/view/screens/weanings_list_view.dart';
+import 'package:integrazoo/view/screens/treatments_list_view.dart';
+import 'package:integrazoo/view/screens/finishes_list_view.dart';
 
 
 class IntegrazooBaseApp extends StatefulWidget {
@@ -109,7 +108,10 @@ class _IntegrazooBaseAppState extends State<IntegrazooBaseApp> {
             onTap: () {
               Navigator.of(context).popUntil((route) => route.isFirst);
               Navigator.of(context)
-                       .push(MaterialPageRoute(builder: (context) => const BovineForm()));
+                       .push(MaterialPageRoute(builder: (context) => const IntegrazooBaseApp(
+                         body: BovineForm(),
+                         title: "REGISTRAR ANIMAL"
+                       )));
             }
           ),
           ListTile(
@@ -117,9 +119,12 @@ class _IntegrazooBaseAppState extends State<IntegrazooBaseApp> {
             onTap: () {
               Navigator.of(context).popUntil((route) => route.isFirst);
               Navigator.of(context)
-                       .push(MaterialPageRoute(builder: (context) => const HerdScreen()));
+                       .push(MaterialPageRoute(builder: (context) => const IntegrazooBaseApp(
+                         body: BovinesListView(),
+                         title: "REBANHO"
+                       )));
             }
-          ),
+          )
         ]
       ),
       ExpansionTile(
@@ -142,7 +147,7 @@ class _IntegrazooBaseAppState extends State<IntegrazooBaseApp> {
               Navigator.of(context)
                        .push(MaterialPageRoute(builder: (context) => const IntegrazooBaseApp(
                          body: BreedersListView(),
-                         title: "Reprodutores"
+                         title: "REPRODUTORES"
                        )));
             }
           )

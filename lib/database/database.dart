@@ -23,12 +23,15 @@ class Bovines extends Table {
   TextColumn get name => text().nullable()();
   IntColumn get sex => intEnum<Sex>()();
 
+  BoolColumn get isBreeder => boolean().withDefault(const Constant(false))();
+
   BoolColumn get hasBeenWeaned => boolean().withDefault(const Constant(false))();
+
   BoolColumn get isReproducing => boolean().withDefault(const Constant(false))();
   BoolColumn get isPregnant => boolean().withDefault(const Constant(false))();
+
   BoolColumn get wasDiscarded => boolean().withDefault(const Constant(false))();
 
-  BoolColumn get isBreeder => boolean().withDefault(const Constant(false))();
 
   RealColumn get weight540 => real().check(weight540.isBiggerThan(const Constant(0.0))).nullable()();
 

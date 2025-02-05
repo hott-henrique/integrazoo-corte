@@ -26,6 +26,30 @@ class BovinePersistence {
     return database.into(database.bovines).insertOnConflictUpdate(companion);
   }
 
+  static Future<Bovine?> getBovine(int earring) async {
+    return (database.select(database.bovines)..where((b) => b.earring.equals(earring))).getSingleOrNull();
+  }
+
+  static Future<int> countBovines() async {
+    final result = await database.customSelect(
+      """
+        SELECT COUNT(*)
+        FROM Bovines b
+      """,
+    ).getSingle();
+
+    return result.read<int>("COUNT(*)");
+  }
+
+  static Future<List<Bovine>> getBovines(int pageSize, int page) async {
+    return (database.select(database.bovines)..limit(pageSize, offset: page * pageSize)).get();
+  }
+
+  static Future<int> deleteBovine(int earring) async {
+    return (database.delete(database.bovines)
+                    ..where((b) => b.earring.equals(earring))).go();
+  }
+
   static Future<int> saveBovineEntry(BovineEntry bovineEntry) async {
     final companion = BovinesEntryCompanion(
       bovine: Value(bovineEntry.bovine),
@@ -34,15 +58,6 @@ class BovinePersistence {
     );
 
     return database.into(database.bovinesEntry).insertOnConflictUpdate(companion);
-  }
-
-  static Future<Bovine?> getBovine(int earring) async {
-    return (database.select(database.bovines)..where((b) => b.earring.equals(earring))).getSingleOrNull();
-  }
-
-  static Future<int> deleteBovine(int earring) async {
-    return (database.delete(database.bovines)
-                    ..where((b) => b.earring.equals(earring))).go();
   }
 
   static Future<BovineEntry?> getBovineEntry(int earring) async {

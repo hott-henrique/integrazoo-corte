@@ -4,9 +4,6 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 
-import 'package:integrazoo/base.dart';
-
-
 import 'package:integrazoo/control/bovine_controller.dart';
 
 import 'package:integrazoo/database/database.dart';
@@ -15,7 +12,10 @@ import 'package:integrazoo/globals.dart';
 
 
 class BovineForm extends StatefulWidget {
-  const BovineForm({ super.key });
+  final Bovine? bovine;
+  final bool shouldPop;
+
+  const BovineForm({ super.key, this.bovine, this.shouldPop = false });
 
   @override
   BovineFormState createState() {
@@ -29,18 +29,43 @@ class BovineFormState extends State<BovineForm> {
   final earringController = TextEditingController();
   final nameController = TextEditingController();
   final sexController = TextEditingController();
+
+  DateTime entryDate = DateTime.now();
+  final entryDateController = TextEditingController();
+  final entryWeightController = TextEditingController();
+
   Sex bovineSex = Sex.female;
   bool isBreeder = false;
-
-  late final TextEditingController dateEntryController;
-
-  final entryWeightController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+
+    entryDateController.text = DateFormat.yMd("pt_BR").format(entryDate);
+
+    if (widget.bovine != null) {
+      earringController.text = widget.bovine!.earring.toString();
+      nameController.text = widget.bovine!.name?.toString() ?? "";
+      bovineSex = widget.bovine!.sex;
+      isBreeder = widget.bovine!.isBreeder;
+
+      loadBovineEntry(widget.bovine!.earring);
+    }
+
     sexController.text = bovineSex.toString();
-    dateEntryController = TextEditingController(text: null);
+  }
+
+  Future<void> loadBovineEntry(int earring) async {
+    final entry = await BovineController.getBovineEntry(earring); // Fetch the entry data
+
+    if (entry != null) {
+      setState(() {
+        entryWeightController.text = entry.weight?.toString() ?? "";
+
+        entryDate = entry.date ?? entryDate;
+        entryDateController.text = DateFormat.yMd("pt_BR").format(entryDate);
+      });
+    }
   }
 
   @override
@@ -92,8 +117,8 @@ class BovineFormState extends State<BovineForm> {
       expandedInsets: EdgeInsets.zero,
     );
 
-    final dateEntryPicker = TextFormField(
-      controller: dateEntryController,
+    final entryDatePicker = TextFormField(
+      controller: entryDateController,
       decoration: const InputDecoration(border: OutlineInputBorder(),
                                         label: Text("Data"),
                                         hintText: "Digite a data de aquisição do animal.",
@@ -107,7 +132,10 @@ class BovineFormState extends State<BovineForm> {
           lastDate: DateTime.now(),
         );
         if (pickedDate != null) {
-          setState(() => dateEntryController.text = DateFormat.yMd("pt_BR").format(pickedDate));
+          setState(() {
+            entryDate = pickedDate;
+            entryDateController.text = DateFormat.yMd("pt_BR").format(pickedDate);
+          });
         }
       },
     );
@@ -148,9 +176,11 @@ class BovineFormState extends State<BovineForm> {
     const divider = Divider(height: 8, color: Colors.transparent);
 
     final column = <Widget>[
+      if (widget.bovine == null) ...[
+        earringField,
+        divider,
+      ],
       nameField,
-      divider,
-      earringField,
       divider,
       sexDropdown,
       divider,
@@ -161,7 +191,7 @@ class BovineFormState extends State<BovineForm> {
         shape: Border.all(width: 0, color: Colors.transparent),
         children: [
           divider,
-          dateEntryPicker,
+          entryDatePicker,
           divider,
           entryWeightField,
         ],
@@ -170,16 +200,13 @@ class BovineFormState extends State<BovineForm> {
       addButton
     ];
 
-    return IntegrazooBaseApp(
-      title: "REGISTRAR ANIMAL",
-      body: SingleChildScrollView(child: Form(
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(8.0),
+      child: Form(
         autovalidateMode: AutovalidateMode.always,
         key: _formKey,
-        child: Container(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: column)
-        )
-      ))
+        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: column)
+      )
     );
   }
 
@@ -195,36 +222,48 @@ class BovineFormState extends State<BovineForm> {
           backgroundColor: Colors.red,
           showCloseIcon: true
         );
+
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
         return;
       }
 
       await database.transaction(() async {
-          final exists = await BovineController.doesEarringExists(int.parse(earringController.text));
+        final exists = await BovineController.doesEarringExists(int.parse(earringController.text));
 
-          if (exists) {
+        if (exists && widget.bovine == null) {
+          if (mounted) {
             SnackBar snackBar = const SnackBar(
               content: Text('Brinco ja foi utilizado.'),
               backgroundColor: Colors.red,
               showCloseIcon: true
             );
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          } else {
-            await saveBovine();
-            if (entryWeightController.text.isNotEmpty || dateEntryController.text.isNotEmpty) {
-              await saveEntry();
-            }
 
-            if (context.mounted) {
-              SnackBar snackBar = const SnackBar(
-                content: Text('Animal adicionado com sucesso.'),
-                backgroundColor: Colors.green,
-                showCloseIcon: true
-              );
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
+        } else {
+          await saveBovine();
+
+          if (entryWeightController.text.isNotEmpty || entryDateController.text.isNotEmpty) {
+            await saveEntry();
+          }
+
+          if (mounted) {
+            SnackBar snackBar = const SnackBar(
+              content: Text('Informações salvas com sucesso.'),
+              backgroundColor: Colors.green,
+              showCloseIcon: true
+            );
+
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+            if (widget.shouldPop) {
+              Navigator.of(context).pop();
+            } else {
               clearForm();
             }
           }
+        }
       });
 
     }
@@ -233,12 +272,12 @@ class BovineFormState extends State<BovineForm> {
   Future<int> saveBovine() {
     final bovine = Bovine.fromJson({
       'name': nameController.text.isEmpty ? null : nameController.text,
-      'sex': bovineSex!.index,
+      'sex': bovineSex.index,
       'earring': int.parse(earringController.text),
-      'wasDiscarded': false,
-      'isReproducing': false,
-      'isPregnant': false,
-      'hasBeenWeaned': false,
+      'wasDiscarded': widget.bovine?.wasDiscarded ?? false,
+      'isReproducing': widget.bovine?.isReproducing ?? false,
+      'isPregnant': widget.bovine?.isPregnant ?? false,
+      'hasBeenWeaned': widget.bovine?.hasBeenWeaned ?? false,
       'isBreeder': isBreeder,
       'weight540': null
     });
@@ -250,7 +289,7 @@ class BovineFormState extends State<BovineForm> {
     final bovineEntry = BovineEntry.fromJson({
       'bovine': int.parse(earringController.text),
       'weight': double.tryParse(entryWeightController.text),
-      'date': DateTime.tryParse(dateEntryController.text),
+      'date': entryDate,
     });
 
     return BovineController.saveBovineEntry(bovineEntry);
@@ -268,10 +307,10 @@ class BovineFormState extends State<BovineForm> {
     setState(() {
       nameController.clear();
       earringController.clear();
-      sexController.clear();
       entryWeightController.clear();
-      dateEntryController.clear();
+      entryDateController.clear();
       bovineSex = Sex.female;
+      sexController.text = bovineSex.toString();
       isBreeder = false;
     });
   }

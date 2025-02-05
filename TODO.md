@@ -75,3 +75,10 @@
         - Sequência de diagnósticos: (+ - - + -) / Retorno: 1
 
 21. Adicionar a informação do item 19 e 20 na tabela de desempenho das matrizes: Ao clicar na linha da matriz mostrar o desempenho das crias.
+
+22. Padronizar todos os formulários:
+  - Reaproveitar os formulários de criação para o update.
+  - Ao editar: PopUp
+  - Ao criar: Página
+
+23. Separar peso ao sobreano em um objeto diferente.

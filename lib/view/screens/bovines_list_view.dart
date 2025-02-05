@@ -2,27 +2,25 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 
-import 'package:intl/intl.dart';
+import 'package:integrazoo/view/forms/create/bovine_form.dart';
 
-import 'package:integrazoo/view/forms/update/weaning_info_form.dart';
-
-import 'package:integrazoo/control/weaning_controller.dart';
+import 'package:integrazoo/control/bovine_controller.dart';
 
 import 'package:integrazoo/database/database.dart';
 
 
-class WeaningsListView extends StatefulWidget {
-  const WeaningsListView({ super.key });
+class BovinesListView extends StatefulWidget {
+  const BovinesListView({ super.key });
 
   @override
-  State<WeaningsListView> createState() => _WeaningsListView();
+  State<BovinesListView> createState() => _BovinesListView();
 }
 
-class _WeaningsListView extends State<WeaningsListView> {
+class _BovinesListView extends State<BovinesListView> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: WeaningController.countWeanings(),
+      future: BovineController.countBovines(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator();
@@ -33,7 +31,7 @@ class _WeaningsListView extends State<WeaningsListView> {
         }
 
         if (snapshot.data! == 0) {
-          return const Center(child: Text("Nenhum desmame registrado até o momento."));
+          return const Center(child: Text("Nenhum animal registrado até o momento."));
         }
 
         return PaginateBovinesReproducing(numElements: snapshot.data!, postAction: () => setState(() => ()));
@@ -80,13 +78,13 @@ class _PaginateBovinesReproducing extends State<PaginateBovinesReproducing> {
         ),
       ]),
       const Divider(color: Colors.black, height: 1),
-      Expanded(child: buildWeanings_())
+      Expanded(child: buildBovines_())
     ]);
   }
 
-  Widget buildWeanings_() {
+  Widget buildBovines_() {
     return FutureBuilder(
-      future: WeaningController.getWeanings(pageSize, page),
+      future: BovineController.getBovines(pageSize, page),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -96,24 +94,24 @@ class _PaginateBovinesReproducing extends State<PaginateBovinesReproducing> {
           return const Text("Algo de errado ocorreu! Por favor, contate o suporte.");
         }
 
-        return buildWeanings(snapshot.data!);
+        return buildBovines(snapshot.data!);
       }
     );
   }
 
-  Widget buildWeanings(List<Weaning> weanings) {
-    if (weanings.isEmpty) {
+  Widget buildBovines(List<Bovine> bovines) {
+    if (bovines.isEmpty) {
       return const Center(child: Text("Nenhum desmame registrado no momento."));
     }
 
     return ListView.separated(
-      itemCount: weanings.length + 1,
+      itemCount: bovines.length + 1,
       itemBuilder: (ctx, idx) {
-        if (idx == weanings.length) {
+        if (idx == bovines.length) {
           return const SizedBox.shrink();
         }
-        final e = weanings[idx];
-        return WeaningTile(weaning: e, postAction: widget.postAction);
+        final e = bovines[idx];
+        return BovineTile(bovine: e, postAction: widget.postAction);
       },
       separatorBuilder: (ctx, idx) {
         return const Divider(color: Colors.black, height: 1);
@@ -122,37 +120,47 @@ class _PaginateBovinesReproducing extends State<PaginateBovinesReproducing> {
   }
 }
 
-class WeaningTile extends StatelessWidget {
-  final Weaning weaning;
+class BovineTile extends StatelessWidget {
+  final Bovine bovine;
 
   final VoidCallback? postAction;
 
-  const WeaningTile({
+  const BovineTile({
     super.key,
-    required this.weaning,
+    required this.bovine,
     this.postAction
   });
 
   @override
   Widget build(BuildContext context) {
+    final breederString = bovine.sex == Sex.female ? "Matriz" : "Reprodutor";
     return ListTile(
-      title: Text('Animal: #${weaning.bovine}'),
+      title: Text('${bovine.name != null ? "${bovine.name!} "  : ""}#${bovine.earring}'),
       subtitle: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        Text('Data: ${DateFormat.yMd("pt_BR").format(weaning.date)}'),
-        Text('Peso: ${weaning.weight}'),
+        Text('Sexo: ${bovine.sex.toString()}'),
+        Text('$breederString: ${bovine.isBreeder ? "Sim" : "Não"}'),
+        Text('Finalizado: ${bovine.wasDiscarded ? "Sim" : "Não"}'),
+        if (!bovine.wasDiscarded) ...[
+          if (bovine.isReproducing) ...[
+            Text('Reproduzindo: ${bovine.isReproducing ? "Sim" : "Não"}')
+          ],
+          if (bovine.isPregnant) ...[
+            Text('Reproduzindo: ${bovine.isPregnant ? "Sim" : "Não"}')
+          ]
+        ],
       ]),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      trailing: _PopupMenuActions(weaning: weaning, postAction: postAction),
+      trailing: _PopupMenuActions(bovine: bovine, postAction: postAction),
     );
   }
 }
 
 class _PopupMenuActions extends StatefulWidget {
-  final Weaning weaning;
+  final Bovine bovine;
 
   final VoidCallback? postAction;
 
-  const _PopupMenuActions({ super.key, required this.weaning, this.postAction });
+  const _PopupMenuActions({ super.key, required this.bovine, this.postAction });
 
   @override
   State<_PopupMenuActions> createState() => _PopupMenuActionsState();
@@ -165,12 +173,8 @@ class _PopupMenuActionsState extends State<_PopupMenuActions> {
       case "Editar":
         showDialog(
           context: context,
-          builder: (context) {
-            return Dialog(
-              child: WeaningInfoForm(earring: widget.weaning.bovine, weaning: widget.weaning, postSaved: widget.postAction ?? () => ())
-            );
-          }
-        );
+          builder: (context) => Dialog(child: BovineForm(bovine: widget.bovine, shouldPop: true))
+        ).then((_) => widget.postAction?.call());
         break;
 
       case "Deletar":
@@ -178,23 +182,19 @@ class _PopupMenuActionsState extends State<_PopupMenuActions> {
           context: context,
           builder: (context) => AlertDialog(
             icon: const Icon(Icons.info),
-            title: const Text("Deseja mesmo deletar o desmame?"),
-            actions: [
-              // Center(child:
-                TextButton(
-                onPressed: () async {
-                  await WeaningController.deleteWeaning(widget.weaning.bovine);
+            title: const Text("Deseja mesmo deletar este animal?"),
+            actions: [ TextButton(
+              onPressed: () async {
+                await BovineController.deleteBovine(widget.bovine.earring);
 
-                  if (mounted) {
-                    Navigator.of(context).pop();
-                  }
+                if (mounted && context.mounted) {
+                  Navigator.of(context).pop();
+                }
 
-                  widget.postAction!();
-                },
-                child: const Text("CONFIRMAR"),
-              )
-              // ),
-            ],
+                widget.postAction!();
+              },
+              child: const Text("CONFIRMAR"),
+            ) ],
           )
         );
         break;
