@@ -10,7 +10,10 @@ import 'package:integrazoo/database/database.dart';
 
 
 class BreederForm extends StatefulWidget {
-  const BreederForm({ super.key });
+  final Breeder? breeder;
+  final bool shoudPop;
+
+  const BreederForm({ super.key, this.breeder, this.shoudPop = false });
 
   @override
   BreederFormState createState() {
@@ -37,6 +40,27 @@ class BreederFormState extends State<BreederForm> {
   final epdYearlingWeightController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+
+    if (widget.breeder != null) {
+      nameController.text = widget.breeder!.name;
+
+      fatherNameController.text = widget.breeder!.father ?? "";
+      motherNameController.text = widget.breeder!.mother ?? "";
+
+      paternalGrandfatherNameController.text = widget.breeder!.paternalGrandfather ?? "";
+      paternalGrandmotherNameController.text = widget.breeder!.paternalGrandmother ?? "";
+      maternalGrandfatherNameController.text = widget.breeder!.maternalGrandfather ?? "";
+      maternalGrandmotherNameController.text = widget.breeder!.maternalGrandfather ?? "";
+
+      epdBirthWeightController.text = widget.breeder?.epdBirthWeight?.toString() ?? "";
+      epdWeaningWeightController.text = widget.breeder?.epdWeaningWeight?.toString() ?? "";
+      epdYearlingWeightController.text = widget.breeder?.epdYearlingWeight?.toString() ?? "";
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final nameField = TextFormField(
       keyboardType: TextInputType.text,
@@ -53,7 +77,7 @@ class BreederFormState extends State<BreederForm> {
       keyboardType: TextInputType.text,
       decoration: const InputDecoration(
         border: OutlineInputBorder(),
-        label: Text("Nome do Pai"),
+        label: Text("Nome do Pai (Opcional)"),
         floatingLabelBehavior: FloatingLabelBehavior.always,
         hintText: "Digite o nome do pai"
       ),
@@ -64,7 +88,7 @@ class BreederFormState extends State<BreederForm> {
       keyboardType: TextInputType.text,
       decoration: const InputDecoration(
         border: OutlineInputBorder(),
-        label: Text("Nome da Mãe"),
+        label: Text("Nome da Mãe (Opcional)"),
         floatingLabelBehavior: FloatingLabelBehavior.always,
         hintText: "Digite o nome da avó paterna"
       ),
@@ -180,8 +204,10 @@ class BreederFormState extends State<BreederForm> {
     const divider = Divider(height: 16, color: Colors.transparent);
 
     final column = <Widget>[
-      nameField,
-      divider,
+      if (widget.breeder != null) ...[
+        nameField,
+        divider,
+      ],
       fatherNameField,
       divider,
       motherNameField,
@@ -222,17 +248,25 @@ class BreederFormState extends State<BreederForm> {
       addButton
     ];
 
-    return IntegrazooBaseApp(
-      title: "REGISTRAR REPRODUTOR",
-      body: SingleChildScrollView(child: Form(
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(8.0),
+      child: Form(
         autovalidateMode: AutovalidateMode.always,
         key: _formKey,
-        child: Container(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: column)
-        )
-      ))
+        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: column)
+      )
     );
+    // return IntegrazooBaseApp(
+    //   title: "REGISTRAR REPRODUTOR",
+    //   body: SingleChildScrollView(child: Form(
+    //     autovalidateMode: AutovalidateMode.always,
+    //     key: _formKey,
+    //     child: Container(
+    //       padding: const EdgeInsets.all(8.0),
+    //       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: column)
+    //     )
+    //   ))
+    // );
   }
 
   void createBovine() {

@@ -40,7 +40,7 @@ class _WeaningForm extends State<WeaningForm> {
 
   @override
   Widget build(BuildContext context) {
-    final addButton = TextButton(onPressed: saveWeaning, child: const Text("Salvar"));
+    final addButton = TextButton(onPressed: saveWeaning, child: const Text("SALVAR"));
 
     final datePicker = InputDatePickerFormField(
       initialDate: date,

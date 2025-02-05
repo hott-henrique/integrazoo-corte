@@ -10,17 +10,42 @@ import 'package:integrazoo/database/database.dart';
 class BreederPersistence {
   BreederPersistence();
 
+  static Future<int> saveBreeder(Breeder breeder) async {
+    final companion = BreedersCompanion.insert(
+      name: breeder.name,
+      father: Value(breeder.father),
+      mother: Value(breeder.mother),
+      paternalGrandmother: Value(breeder.paternalGrandmother),
+      paternalGrandfather: Value(breeder.paternalGrandfather),
+      maternalGrandmother: Value(breeder.maternalGrandmother),
+      maternalGrandfather: Value(breeder.maternalGrandfather),
+      epdBirthWeight: Value(breeder.epdBirthWeight),
+      epdWeaningWeight: Value(breeder.epdWeaningWeight),
+      epdYearlingWeight: Value(breeder.epdYearlingWeight),
+    );
+
+    return database.into(database.breeders).insertOnConflictUpdate(companion);
+  }
+
   static Future<Breeder?> getBreeder(String name) async {
     return (database.select(database.breeders)
                     ..where((b) => b.name.equals(name)))
                     .getSingleOrNull();
   }
 
-  static Future<List<Breeder>> readBreeders(int pageSz, int page) async {
-    return (database.select(database.breeders)
-                    ..limit(pageSz, offset: page * pageSz)
-                    ..orderBy([ (b) => OrderingTerm(expression: b.id, mode: OrderingMode.desc) ]))
-                    .get();
+  static Future<int> countBreeders() async {
+    final result = await database.customSelect(
+      """
+        SELECT COUNT(*)
+        FROM Breeders b
+      """,
+    ).getSingle();
+
+    return result.read<int>("COUNT(*)");
+  }
+
+  static Future<List<Breeder>> getBreeders(int pageSz, int page) async {
+    return (database.select(database.breeders)..limit(pageSz, offset: page * pageSz)).get();
   }
 
   static Future<List<Breeder>> searchBreeder(String? query, int pageSz, int page) async {
@@ -36,6 +61,12 @@ class BreederPersistence {
                     )
                     ..limit(pageSz, offset: page * pageSz))
                     .get();
+  }
+
+  static Future<int> deleteBreeder(String name) {
+    return (database.delete(database.breeders)
+                    ..where((b) => b.name.equals(name)))
+                    .go();
   }
 
   static Future<int> countChildrenOfSex(String breeder, Sex s) async {
@@ -77,20 +108,4 @@ class BreederPersistence {
     return (result.data['avg_weight'] ?? 0.0) as double;
   }
 
-  static Future<int> saveBreeder(Breeder breeder) async {
-    final companion = BreedersCompanion.insert(
-      name: breeder.name,
-      father: Value(breeder.father),
-      mother: Value(breeder.mother),
-      paternalGrandmother: Value(breeder.paternalGrandmother),
-      paternalGrandfather: Value(breeder.paternalGrandfather),
-      maternalGrandmother: Value(breeder.maternalGrandmother),
-      maternalGrandfather: Value(breeder.maternalGrandfather),
-      epdBirthWeight: Value(breeder.epdBirthWeight),
-      epdWeaningWeight: Value(breeder.epdWeaningWeight),
-      epdYearlingWeight: Value(breeder.epdYearlingWeight),
-    );
-
-    return database.into(database.breeders).insertOnConflictUpdate(companion);
-  }
 }
