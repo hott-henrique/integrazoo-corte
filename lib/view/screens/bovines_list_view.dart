@@ -153,9 +153,12 @@ class BovineTile extends StatelessWidget {
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       trailing: _PopupMenuActions(bovine: bovine, postAction: postAction),
       onTap: () {
-        Navigator.of(context)
-                 .push(MaterialPageRoute(builder: (context) => BovineScreen(earring: bovine.earring)))
-                 .then((_) => postAction?.call());
+        showDialog(
+          context: context,
+          builder: (context) {
+            return Dialog(child: BovineScreen(earring: bovine.earring));
+          }
+        ).then((value) => postAction?.call());
       }
     );
   }

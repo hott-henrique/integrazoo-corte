@@ -69,17 +69,15 @@ void main() async {
 }
 
 class IntegrazooApp extends StatefulWidget {
-  const IntegrazooApp({super.key});
+  const IntegrazooApp({ super.key });
 
   @override
   State<StatefulWidget> createState() => _IntegrazooAppState();
 }
 
 class _IntegrazooAppState extends State<IntegrazooApp> {
-  bool isDBLoaded = false;
-
   @override
   Widget build(BuildContext context) {
-    return const IntegrazooBaseApp(body: Center(child: Text('Selecione uma funcionalidade!')));
+    return const IntegrazooBaseApp();
   }
 }

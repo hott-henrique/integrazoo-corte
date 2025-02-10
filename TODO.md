@@ -60,7 +60,7 @@
 
 17. Estilizar o seletor de animais e reprodutores.
 
-18. ~Mover todas as estilização pro argumento 'theme' no arquivo 'main.dart'.~
+18. ~~Mover todas as estilização pro argumento 'theme' no arquivo 'main.dart'.~~
 
 19. Implementar SQL que recupera as mesmas informações do relatório de matrizes para as crias de uma determinada vaca:
     - Nome, Peso ao Nascimento, Peso a Desmama, Pesoa ao Sobreano, Idade ao Primeiro Parto.
@@ -82,3 +82,5 @@
   - ~~Ao criar: Página~~
 
 23. Separar peso ao sobreano em um objeto diferente.
+
+24. Adicionar títulos aos pop-ups. Exemplo: "Editando Desmame do Animal #X"

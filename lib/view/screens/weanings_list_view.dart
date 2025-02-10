@@ -182,7 +182,7 @@ class _PopupMenuActionsState extends State<_PopupMenuActions> {
                 onPressed: () async {
                   await WeaningController.deleteWeaning(widget.weaning.bovine);
 
-                  if (mounted) {
+                  if (context.mounted) {
                     Navigator.of(context).pop();
                   }
 

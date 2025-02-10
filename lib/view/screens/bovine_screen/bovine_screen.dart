@@ -34,10 +34,6 @@ class _BovineScreen extends State<BovineScreen> {
     columnBody.add(WeaningInfoCard(earring: widget.earring));
     columnBody.add(FinishInfoCard(earring: widget.earring));
 
-    return IntegrazooBaseApp(
-      title: "ANIMAL #${widget.earring}",
-      postBackButtonClick: widget.postBackButtonClick,
-      body: ListView(children: columnBody),
-    );
+    return ListView(children: columnBody);
   }
 }

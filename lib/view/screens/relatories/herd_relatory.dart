@@ -6,8 +6,6 @@ import 'package:integrazoo/view/screens/bovines_in_treatment_list_view.dart';
 import 'package:integrazoo/view/screens/bovines_pregnant_list_view.dart';
 import 'package:integrazoo/view/screens/bovines_reproducing_list_view.dart';
 
-import 'package:integrazoo/base.dart';
-
 
 class HerdRelatory extends StatefulWidget {
 
@@ -23,7 +21,7 @@ class _HerdRelatory extends State<HerdRelatory> {
 
   @override
   Widget build(BuildContext context) {
-    const tabs = DefaultTabController(
+    return const DefaultTabController(
       length: 3,
       child: Column(
         children: [
@@ -31,12 +29,6 @@ class _HerdRelatory extends State<HerdRelatory> {
           Expanded(child: TabBarView(children: [ BovinesInTreatmentListView(), BovinesReproducingListView(), BovinesPregnantListView() ])),
         ],
       ),
-    );
-
-    return IntegrazooBaseApp(
-      title: "RESUMO REBANHO",
-      postBackButtonClick: widget.postBackButtonClick,
-      body: tabs
     );
   }
 }

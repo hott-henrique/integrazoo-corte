@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 
-import 'package:integrazoo/base.dart';
 import 'package:integrazoo/control/relatory_controller.dart';
 
 
@@ -23,13 +22,9 @@ class _FemaleBreedersRelatory extends State<FemaleBreedersRelatory> {
 
   @override
   Widget build(BuildContext context) {
-    return IntegrazooBaseApp(
-      title: "Matrizes",
-      postBackButtonClick: widget.postBackButtonClick,
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: buildTable()
-      )
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: buildTable()
     );
   }
 
