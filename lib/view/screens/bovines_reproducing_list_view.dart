@@ -1,14 +1,15 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:integrazoo/view/forms/pregnancy_form.dart';
 
 import 'package:intl/intl.dart';
 
 
 import 'package:integrazoo/control/reproduction_controller.dart';
 
-import 'package:integrazoo/view/forms/create/artificial_insemination_form.dart';
-import 'package:integrazoo/view/forms/create/natural_mating_form.dart';
+import 'package:integrazoo/view/forms/artificial_insemination_form.dart';
+import 'package:integrazoo/view/forms/natural_mating_form.dart';
 
 import 'package:integrazoo/database/database.dart';
 
@@ -171,14 +172,22 @@ class _PopupMenuActionsState extends State<_PopupMenuActions> {
 
   void _handleAction(String action, BuildContext context) {
     switch (action) {
+      case "Diagnosticar":
+        showDialog(
+          context: context,
+          builder: (context) => Dialog(child: PregnancyForm(earring: widget.reproduction.cow, shouldPop: true))
+        ).then((_) => widget.postAction?.call());
+        break;
+
       case "Editar":
-        final page = widget.reproduction.kind == ReproductionKind.coverage ?
+        final form = widget.reproduction.kind == ReproductionKind.coverage ?
                      NaturalMatingForm(reproduction: widget.reproduction, shouldPop: true) :
                      ArtificialInseminationForm(reproduction: widget.reproduction, shouldPop: true);
 
-        Navigator.of(context)
-                 .push(MaterialPageRoute(builder: (context) => page))
-                 .then((_) => widget.postAction!());
+        showDialog(
+          context: context,
+          builder: (context) => Dialog(child: form)
+        ).then((_) => widget.postAction?.call());
         break;
 
       case "Deletar":
@@ -188,7 +197,7 @@ class _PopupMenuActionsState extends State<_PopupMenuActions> {
             return AlertDialog(
               icon: const Icon(Icons.info),
               iconColor: Colors.black,
-              title: const Text("Deseja mesmo deletar o tratamento?"),
+              title: const Text("Deseja mesmo deletar a tentativa de reprodução?"),
               actions: [
                 Center(
                   child: TextButton(
@@ -216,7 +225,7 @@ class _PopupMenuActionsState extends State<_PopupMenuActions> {
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
       onSelected: (action) => _handleAction(action, context),
-      itemBuilder: (BuildContext context) => ["Editar", "Deletar"]
+      itemBuilder: (BuildContext context) => ["Diagnosticar", "Editar", "Deletar"]
           .map((action) => PopupMenuItem<String>(value: action, child: Text(action)))
           .toList(),
     );

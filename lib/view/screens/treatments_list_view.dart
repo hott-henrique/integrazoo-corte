@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 
-import 'package:integrazoo/view/forms/create/treatment_form.dart';
+import 'package:integrazoo/view/forms/treatment_form.dart';
 
 import 'package:integrazoo/control/treatment_controller.dart';
 

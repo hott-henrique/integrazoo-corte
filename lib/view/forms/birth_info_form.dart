@@ -13,11 +13,11 @@ import 'package:integrazoo/globals.dart';
 
 
 class BirthInfoForm extends StatefulWidget {
-  final int earring;
+  final int? earring;
   final Birth? birth;
-  final VoidCallback postSaved;
+  final bool shouldPop;
 
-  const BirthInfoForm({ super.key, required this.earring, this.birth, required this.postSaved });
+  const BirthInfoForm({ super.key, this.earring, this.birth, this.shouldPop = false });
 
   @override
   State<BirthInfoForm> createState() => _BirthInfoForm();
@@ -112,11 +112,11 @@ class _BirthInfoForm extends State<BirthInfoForm> {
       addButton
     ];
 
-    return Form(
-      autovalidateMode: AutovalidateMode.always,
-      key: _formKey,
-      child: Container(
-        padding: const EdgeInsets.all(8.0),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(8.0),
+      child: Form(
+        key: _formKey,
+        autovalidateMode: AutovalidateMode.always,
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: column)
       )
     );
@@ -148,11 +148,16 @@ class _BirthInfoForm extends State<BirthInfoForm> {
           backgroundColor: Colors.green,
           showCloseIcon: true
         );
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-        clearForm();
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-        widget.postSaved();
+          clearForm();
+
+          if (widget.shouldPop) {
+            Navigator.of(context).pop();
+          }
+        }
       });
     }
   }
@@ -161,8 +166,9 @@ class _BirthInfoForm extends State<BirthInfoForm> {
   Future<int> saveBirthInfo() {
     final newBornWeight = double.parse(newBornWeightController.text);
 
+    // TODO: Check/Find pregnancy that generated this animal.
+
     final birth = Birth.fromJson({
-      'id': 0,
       'date': dateBirth,
       'weight': newBornWeight,
       'bcs': newBornBCS!.index,

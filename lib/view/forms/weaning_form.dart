@@ -17,7 +17,12 @@ import 'package:integrazoo/database/database.dart';
 
 
 class WeaningForm extends StatefulWidget {
-  const WeaningForm({ super.key });
+  final int? earring;
+  final Weaning? weaning;
+  final bool shouldPop;
+  final VoidCallback? postSaved;
+
+  const WeaningForm({ super.key, this.earring, this.weaning, this.shouldPop = false, this.postSaved });
 
   @override
   State<WeaningForm> createState() => _WeaningForm();
@@ -35,6 +40,15 @@ class _WeaningForm extends State<WeaningForm> {
   @override
   void initState() {
     super.initState();
+
+    earringController.setEarring(widget.earring);
+
+    if (widget.weaning != null) {
+      earringController.setEarring(widget.weaning!.bovine);
+      weightController.text = widget.weaning!.weight.toString();
+      date = widget.weaning!.date;
+    }
+
     dateController = TextEditingController(text: DateFormat.yMd("pt_BR").format(date));
   }
 
@@ -83,8 +97,10 @@ class _WeaningForm extends State<WeaningForm> {
     Divider divider = const Divider(color: Colors.transparent);
 
     final column = <Widget>[
-      cowSelector,
-      divider,
+      if (widget.weaning == null && widget.earring == null) ...[
+        cowSelector,
+        divider,
+      ],
       datePicker,
       divider,
       weightField,
@@ -92,17 +108,12 @@ class _WeaningForm extends State<WeaningForm> {
       addButton
     ];
 
-    return IntegrazooBaseApp(
-      title: "REGISTRAR DESMAME",
-      body: SingleChildScrollView(child:
-        Form(
-          autovalidateMode: AutovalidateMode.always,
-          key: _formKey,
-          child: Container(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: column)
-          )
-        )
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(8.0),
+      child: Form(
+        autovalidateMode: AutovalidateMode.always,
+        key: _formKey,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: column)
       )
     );
   }
@@ -138,11 +149,17 @@ class _WeaningForm extends State<WeaningForm> {
           showCloseIcon: true
         );
 
-        if (context.mounted) {
+        if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
           clear();
-          // Navigator.of(context).pop();
+
+          if (widget.shouldPop) {
+            Navigator.of(context).pop();
+          }
         }
+
+        widget.postSaved?.call();
       }
     );
   }
@@ -181,7 +198,7 @@ class _WeaningForm extends State<WeaningForm> {
       earringController.clear();
       weightController.clear();
       date = DateTime.now();
-      dateController = TextEditingController(text: DateFormat.yMd("pt_BR").format(date));
+      dateController.text = DateFormat.yMd("pt_BR").format(date);
     });
   }
 }

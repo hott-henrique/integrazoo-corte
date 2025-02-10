@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:integrazoo/view/components/titled_card.dart';
 
-import 'package:integrazoo/view/forms/update/parents_info_form.dart';
+import 'package:integrazoo/view/forms/parents_info_form.dart';
 
 import 'package:integrazoo/control/parents_controller.dart';
 
@@ -28,6 +28,8 @@ class _ParentsInfoCard extends State<ParentsInfoCard> {
 
   @override
   Widget build(BuildContext context) {
+    late Parents parents;
+
     return FutureBuilder<Parents?>(
       future: _parentsFuture,
       builder: (context, AsyncSnapshot<Parents?> snapshot) {
@@ -35,13 +37,9 @@ class _ParentsInfoCard extends State<ParentsInfoCard> {
         if (snapshot.connectionState != ConnectionState.done && !snapshot.hasData) {
           cardContent = const Text("Carregando...", style: TextStyle(fontStyle: FontStyle.italic), textAlign: TextAlign.center);
         } else if (snapshot.connectionState == ConnectionState.done && (!snapshot.hasData || isEditing)) {
-          cardContent = ParentsInfoForm(
-            earring: widget.earring,
-            parents: snapshot.data,
-            postSaved: () => setState(() => isEditing = false)
-          );
+          cardContent = ParentsInfoForm(earring: widget.earring, parents: snapshot.data);
         } else {
-          final parents = snapshot.data!;
+          parents = snapshot.data!;
 
           cardContent = Padding(
             padding: const EdgeInsets.all(8.0),
@@ -55,52 +53,50 @@ class _ParentsInfoCard extends State<ParentsInfoCard> {
           );
         }
 
+        void onAction(String action) {
+          if (action == "Editar") {
+            showDialog(
+              context: context,
+              builder: (context) => Dialog(child: ParentsInfoForm(earring: widget.earring, parents: parents, shouldPop: true))
+            ).then((_) => setState(() => ()));
+            return;
+          }
+
+          if (action == "Deletar") {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                icon: const Icon(Icons.info),
+                title: const Text("Deseja mesmo deletar a finalização?"),
+                actions: [ TextButton(
+                  onPressed: () async {
+                    await ParentsController.deleteParents(parents.bovine);
+
+                    if (mounted && context.mounted) {
+                      Navigator.of(context).pop();
+                    }
+                  },
+                  child: const Text("CONFIRMAR"),
+                ) ],
+              )
+            ).then((_) => setState(() => ()));
+            return;
+          }
+        }
+
         return TitledCard(
           title: "Progenitores",
           content: cardContent,
           actions: [
-            if (snapshot.hasData && !isEditing)
+            if (snapshot.hasData)
               "Deletar",
-            if (snapshot.hasData && !isEditing)
+            if (snapshot.hasData)
               "Editar",
-            if (snapshot.hasData && isEditing)
-              "Cancelar"
           ],
           onAction: onAction
         );
       }
     );
-  }
-
-  void onAction(String action) {
-    if (action == "Cancelar") {
-      setState(() => isEditing = false);
-      return;
-    }
-
-    if (action == "Deletar") {
-      showDialog(context: context, builder: (context) {
-        return AlertDialog(
-          title: const Text('Você deseja mesmo deletar as informações de descarte desse animal?'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                ParentsController.deleteParents(widget.earring);
-                Navigator.of(context).pop();
-              },
-              child: const Text("Confirmar")
-            ),
-            TextButton(onPressed: Navigator.of(context).pop, child: const Text("Cancelar"))
-          ]
-        );
-      }).then((_) => setState(() => ()));
-      return;
-    }
-
-    if (action == "Editar") {
-      setState(() => isEditing = true);
-      return;
-    }
   }
 
   Widget buildInfo(String label, String info) {

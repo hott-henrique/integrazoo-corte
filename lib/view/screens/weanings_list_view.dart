@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 
-import 'package:integrazoo/view/forms/update/weaning_info_form.dart';
+import 'package:integrazoo/view/forms/weaning_form.dart';
 
 import 'package:integrazoo/control/weaning_controller.dart';
 
@@ -166,11 +166,9 @@ class _PopupMenuActionsState extends State<_PopupMenuActions> {
         showDialog(
           context: context,
           builder: (context) {
-            return Dialog(
-              child: WeaningInfoForm(earring: widget.weaning.bovine, weaning: widget.weaning, postSaved: widget.postAction ?? () => ())
-            );
+            return Dialog(child: WeaningForm(earring: widget.weaning.bovine, weaning: widget.weaning));
           }
-        );
+        ).then((value) => widget.postAction?.call());
         break;
 
       case "Deletar":
@@ -180,7 +178,6 @@ class _PopupMenuActionsState extends State<_PopupMenuActions> {
             icon: const Icon(Icons.info),
             title: const Text("Deseja mesmo deletar o desmame?"),
             actions: [
-              // Center(child:
                 TextButton(
                 onPressed: () async {
                   await WeaningController.deleteWeaning(widget.weaning.bovine);
@@ -193,10 +190,9 @@ class _PopupMenuActionsState extends State<_PopupMenuActions> {
                 },
                 child: const Text("CONFIRMAR"),
               )
-              // ),
             ],
           )
-        );
+        ).then((value) => widget.postAction?.call());
         break;
     }
   }

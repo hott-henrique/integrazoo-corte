@@ -1,13 +1,9 @@
 import 'dart:developer';
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:integrazoo/globals.dart';
 
 import 'package:intl/intl.dart';
-
-import 'package:integrazoo/base.dart';
-
 
 import 'package:integrazoo/view/components/bovine/single_bovine_selector.dart';
 import 'package:integrazoo/view/components/bovine/earring_controller.dart';
@@ -20,7 +16,11 @@ import 'package:integrazoo/database/database.dart';
 
 
 class PregnancyForm extends StatefulWidget {
-  const PregnancyForm({ super.key });
+  final int? earring;
+  final Pregnancy? pregnancy;
+  final bool shouldPop;
+
+  const PregnancyForm({ super.key, this.earring, this.pregnancy, this.shouldPop = false });
 
   @override
   State<PregnancyForm> createState() => _PregnancyForm();
@@ -44,6 +44,18 @@ class _PregnancyForm extends State<PregnancyForm> {
   @override
   void initState() {
     super.initState();
+
+    if (widget.earring != null) {
+      earringController.setEarring(widget.earring);
+    }
+
+    if (widget.pregnancy != null) {
+      earringController.setEarring(widget.pregnancy!.cow);
+      dateDiagnostic = widget.pregnancy!.date;
+      dateBirthForecast = widget.pregnancy!.birthForecast;
+      observationController.text = widget.pregnancy!.observation ?? "";
+    }
+
     dateDiagnosticController = TextEditingController(text: DateFormat.yMd("pt_BR").format(dateDiagnostic));
     dateBirthForecastController = TextEditingController(text: DateFormat.yMd("pt_BR").format(dateBirthForecast));
   }
@@ -124,9 +136,14 @@ class _PregnancyForm extends State<PregnancyForm> {
 
     Divider divider = const Divider(color: Colors.transparent);
 
+    inspect(widget.pregnancy);
+    inspect(widget.earring);
+
     final column = <Widget>[
-      cowSelector,
-      divider,
+      if (widget.pregnancy == null && widget.earring == null) ...[
+        cowSelector,
+        divider
+      ],
       diagnosticCheckbox,
       divider,
       dateDiagnosticPicker,
@@ -140,17 +157,12 @@ class _PregnancyForm extends State<PregnancyForm> {
       addButton
     ];
 
-    return IntegrazooBaseApp(
-      title: "REGISTRAR PRENHEZ",
-      body: SingleChildScrollView(child:
-        Form(
-          autovalidateMode: AutovalidateMode.always,
-          key: _formKey,
-          child: Container(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: column)
-          )
-        )
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(8.0),
+      child: Form(
+        autovalidateMode: AutovalidateMode.always,
+        key: _formKey,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: column)
       )
     );
   }
@@ -206,6 +218,11 @@ class _PregnancyForm extends State<PregnancyForm> {
         );
 
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+        if (widget.shouldPop) {
+          Navigator.of(context).pop();
+          return;
+        }
 
         clearForm();
       });

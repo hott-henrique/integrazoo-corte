@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 
-import 'package:integrazoo/view/forms/create/finish_form.dart';
+import 'package:integrazoo/view/forms/finish_form.dart';
 
 import 'package:integrazoo/control/finish_controller.dart';
 

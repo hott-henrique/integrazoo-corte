@@ -14,7 +14,7 @@
 
 7. ~~Substituir o termo 'Diagnosticar Reprodução' por 'Registrar Diagnóstico Reprodução'.~~
 
-8. Checar erros de ortografia. Reportados:
+8. ~~Checar erros de ortografia. Reportados:~~
     - ~~Tirar acento de gravidez.~~
     - ~~Registro de prenhe Z.~~
     - ~~Tirar o acento do gravidez.~~
@@ -76,9 +76,9 @@
 
 21. Adicionar a informação do item 19 e 20 na tabela de desempenho das matrizes: Ao clicar na linha da matriz mostrar o desempenho das crias.
 
-22. Padronizar todos os formulários:
-  - Reaproveitar os formulários de criação para o update.
-  - Ao editar: PopUp
-  - Ao criar: Página
+22. ~~Padronizar todos os formulários:~~
+  - ~~Reaproveitar os formulários de criação para o update.~~
+  - ~~Ao editar: PopUp~~
+  - ~~Ao criar: Página~~
 
 23. Separar peso ao sobreano em um objeto diferente.

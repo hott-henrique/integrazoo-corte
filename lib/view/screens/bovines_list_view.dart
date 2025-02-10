@@ -2,11 +2,12 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 
-import 'package:integrazoo/view/forms/create/bovine_form.dart';
+import 'package:integrazoo/view/forms/bovine_form.dart';
 
 import 'package:integrazoo/control/bovine_controller.dart';
 
 import 'package:integrazoo/database/database.dart';
+import 'package:integrazoo/view/screens/bovine_screen/bovine_screen.dart';
 
 
 class BovinesListView extends StatefulWidget {
@@ -151,6 +152,11 @@ class BovineTile extends StatelessWidget {
       ]),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       trailing: _PopupMenuActions(bovine: bovine, postAction: postAction),
+      onTap: () {
+        Navigator.of(context)
+                 .push(MaterialPageRoute(builder: (context) => BovineScreen(earring: bovine.earring)))
+                 .then((_) => postAction?.call());
+      }
     );
   }
 }

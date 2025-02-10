@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-import 'package:integrazoo/view/forms/create/bovine_form.dart';
-import 'package:integrazoo/view/forms/create/finish_form.dart';
-import 'package:integrazoo/view/forms/create/breeder_form.dart';
-import 'package:integrazoo/view/forms/create/artificial_insemination_form.dart';
-import 'package:integrazoo/view/forms/create/natural_mating_form.dart';
-import 'package:integrazoo/view/forms/create/pregnancy_form.dart';
-import 'package:integrazoo/view/forms/create/birth_form.dart';
-import 'package:integrazoo/view/forms/create/weaning_form.dart';
-import 'package:integrazoo/view/forms/create/treatment_form.dart';
+import 'package:integrazoo/view/forms/bovine_form.dart';
+import 'package:integrazoo/view/forms/finish_form.dart';
+import 'package:integrazoo/view/forms/breeder_form.dart';
+import 'package:integrazoo/view/forms/artificial_insemination_form.dart';
+import 'package:integrazoo/view/forms/natural_mating_form.dart';
+import 'package:integrazoo/view/forms/pregnancy_form.dart';
+import 'package:integrazoo/view/forms/birth_form.dart';
+import 'package:integrazoo/view/forms/weaning_form.dart';
+import 'package:integrazoo/view/forms/treatment_form.dart';
 
 import 'package:integrazoo/view/screens/relatories/female_breeders_relatory.dart';
 import 'package:integrazoo/view/screens/relatories/herd_relatory.dart';
@@ -161,7 +161,10 @@ class _IntegrazooBaseAppState extends State<IntegrazooBaseApp> {
             onTap: () {
               Navigator.of(context).popUntil((route) => route.isFirst);
               Navigator.of(context)
-                       .push(MaterialPageRoute(builder: (context) => const WeaningForm()));
+                       .push(MaterialPageRoute(builder: (context) => const IntegrazooBaseApp(
+                         body: WeaningForm(),
+                         title: "REGISTRAR DESMAME"
+                       )));
             }
           ),
           ListTile(
@@ -185,15 +188,21 @@ class _IntegrazooBaseAppState extends State<IntegrazooBaseApp> {
             onTap: () {
               Navigator.of(context).popUntil((route) => route.isFirst);
               Navigator.of(context)
-                       .push(MaterialPageRoute(builder: (context) => const ArtificialInseminationForm()));
+                       .push(MaterialPageRoute(builder: (context) => const IntegrazooBaseApp(
+                         body: ArtificialInseminationForm(),
+                         title: "REGISTRAR INSEMINAÇÃO ARTIFICIAL"
+                       )));
             }
           ),
           ListTile(
-            title: const Text("Registrar Cobertura"),
+            title: const Text("Registrar Monta"),
             onTap: () {
               Navigator.of(context).popUntil((route) => route.isFirst);
               Navigator.of(context)
-                       .push(MaterialPageRoute(builder: (context) => const NaturalMatingForm()));
+                       .push(MaterialPageRoute(builder: (context) => const IntegrazooBaseApp(
+                         body: NaturalMatingForm(),
+                         title: "REGISTRAR MONTA"
+                       )));
             }
           ),
           ListTile(
@@ -201,7 +210,10 @@ class _IntegrazooBaseAppState extends State<IntegrazooBaseApp> {
             onTap: () {
               Navigator.of(context).popUntil((route) => route.isFirst);
               Navigator.of(context)
-                       .push(MaterialPageRoute(builder: (context) => const PregnancyForm()));
+                       .push(MaterialPageRoute(builder: (context) => const IntegrazooBaseApp(
+                         body: PregnancyForm(),
+                         title: "REGISTRAR PRENHE"
+                       )));
             }
           ),
           ListTile(
@@ -209,7 +221,10 @@ class _IntegrazooBaseAppState extends State<IntegrazooBaseApp> {
             onTap: () {
               Navigator.of(context).popUntil((route) => route.isFirst);
               Navigator.of(context)
-                       .push(MaterialPageRoute(builder: (context) => const BirthForm()));
+                       .push(MaterialPageRoute(builder: (context) => const IntegrazooBaseApp(
+                         body: BirthForm(),
+                         title: "REGISTRAR PARTO"
+                       )));
             }
           )
         ]

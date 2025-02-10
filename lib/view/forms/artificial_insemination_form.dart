@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 
-import 'package:integrazoo/base.dart';
-
 import 'package:integrazoo/view/components/bovine/multi_bovine_selector.dart';
 import 'package:integrazoo/view/components/bovine/multi_earring_controller.dart';
 
@@ -126,17 +124,13 @@ class _ArtificialInseminationForm extends State<ArtificialInseminationForm> {
       addButton
     ];
 
-    return IntegrazooBaseApp(
-      title: "REGISTRAR INSEMINAÇÃO ARTIFICIAL",
-      body: SingleChildScrollView(child:
-        Form(
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(8.0),
+      child: Form(
         autovalidateMode: AutovalidateMode.always,
         key: _formKey,
-        child: Container(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: column)
-        )
-      ))
+        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: column)
+      )
     );
   }
 

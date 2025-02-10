@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:integrazoo/view/components/titled_card.dart';
 
-import 'package:integrazoo/view/forms/update/bovine_info_form.dart';
+import 'package:integrazoo/view/forms/bovine_form.dart';
 
 import 'package:integrazoo/control/bovine_controller.dart';
 
@@ -21,13 +21,12 @@ class BovineInfoCard extends StatefulWidget {
 }
 
 class _BovineInfoCard extends State<BovineInfoCard> {
-
   Future<Bovine?> get _bovineFuture => BovineController.getBovine(widget.earring);
-
-  bool isEditing = false;
 
   @override
   Widget build(BuildContext context) {
+    late Bovine bovine;
+
     return FutureBuilder<Bovine?>(
       future: _bovineFuture,
       builder: (context, AsyncSnapshot<Bovine?> snapshot) {
@@ -35,27 +34,22 @@ class _BovineInfoCard extends State<BovineInfoCard> {
 
         if (snapshot.connectionState != ConnectionState.done && !snapshot.hasData) {
           cardContent = const Text("Carregando...", style: TextStyle(fontStyle: FontStyle.italic), textAlign: TextAlign.center);
-        } else if (snapshot.connectionState == ConnectionState.done && (!snapshot.hasData || isEditing)) {
-          cardContent = BovineInfoForm(
-            earring: widget.earring,
-            bovine: snapshot.data,
-            postSaved: () => setState(() => isEditing = false)
-          );
+        } else if (snapshot.connectionState == ConnectionState.done && !snapshot.hasData) {
+          cardContent = BovineForm(bovine: snapshot.data);
         } else {
-          final bovine = snapshot.data!;
+          bovine = snapshot.data!;
 
           final column = [
             buildInfo("Nome:", bovine.name == null ? "--" : bovine.name!),
             buildInfo("Brinco:", '#${bovine.earring}'),
             buildInfo("Sexo:", bovine.sex.toString()),
-            buildInfo("Peso ao Sobreano:", (bovine.weight540 ?? "--").toString()),
+            buildInfo("${bovine.sex == Sex.female ? "Matriz" : "Reprodutor"}:", bovine.isBreeder ? "Positivo" : "Negativo"),
           ];
 
           if (bovine.sex == Sex.female) {
             column.addAll([
               buildInfo("Reproduzindo:", bovine.isReproducing ? "Positivo" : "Negativo"),
-              buildInfo("Gravidez:", bovine.isPregnant ? "Positivo" : "Negativo"),
-              buildInfo("Matriz:", bovine.isBreeder ? "Positivo" : "Negativo")
+              buildInfo("Gravidez:", bovine.isPregnant ? "Positivo" : "Negativo")
             ]);
           }
 
@@ -68,50 +62,52 @@ class _BovineInfoCard extends State<BovineInfoCard> {
           );
         }
 
+        void onAction(String action) {
+          if (action == "Editar") {
+            showDialog(
+              context: context,
+              builder: (context) => Dialog(child: BovineForm(bovine: bovine, shouldPop: true))
+            ).then((_) => setState(() => ()));
+            return;
+          }
+
+          if (action == "Deletar") {
+            showDialog(context: context, builder: (context) {
+              return AlertDialog(
+                title: const Text('Você deseja mesmo deletar esse animal?'),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      BovineController.deleteBovine(widget.earring);
+                      Navigator.of(context).pop(true);
+                    },
+                    child: const Text("Confirmar")
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: const Text("Cancelar")
+                  )
+                ]
+              );
+            }).then((shouldPop) {
+              if (shouldPop as bool) {
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                }
+              }
+            });
+            return;
+          }
+        }
+
         return TitledCard(
           title: "Animal",
           content: cardContent,
-          actions: [
-            if (!isEditing)
-              "Editar",
-            if (isEditing)
-              "Cancelar"
-          ],
+          actions: const [ "Deletar", "Editar" ],
           onAction: onAction
         );
       }
     );
-  }
-
-  void onAction(String action) {
-    if (action == "Cancelar") {
-      setState(() => isEditing = false);
-      return;
-    }
-
-    if (action == "Deletar") {
-      showDialog(context: context, builder: (context) {
-        return AlertDialog(
-          title: const Text('Você deseja mesmo deletar esse animal?'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                BovineController.deleteBovine(widget.earring);
-                Navigator.of(context).popUntil((page) => page.isFirst);
-              },
-              child: const Text("Confirmar")
-            ),
-            TextButton(onPressed: Navigator.of(context).pop, child: const Text("Cancelar"))
-          ]
-        );
-      }).then((_) => setState(() => Navigator.of(context).pop()));
-      return;
-    }
-
-    if (action == "Editar") {
-      setState(() => isEditing = true);
-      return;
-    }
   }
 
   Widget buildInfo(String label, String info) {

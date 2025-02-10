@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 
-
 import 'package:integrazoo/control/bovine_controller.dart';
 import 'package:integrazoo/control/breeder_controller.dart';
 import 'package:integrazoo/control/parents_controller.dart';
@@ -11,11 +10,11 @@ import 'package:integrazoo/database/database.dart';
 
 
 class ParentsInfoForm extends StatefulWidget {
-  final int earring;
+  final int? earring;
   final Parents? parents;
-  final VoidCallback postSaved;
+  final bool shouldPop;
 
-  const ParentsInfoForm({ super.key, required this.earring, this.parents, required this.postSaved });
+  const ParentsInfoForm({ super.key, this.earring, this.parents, this.shouldPop = false });
 
   @override
   State<ParentsInfoForm> createState() => _ParentsInfoForm();
@@ -100,6 +99,13 @@ class _ParentsInfoForm extends State<ParentsInfoForm> {
       return;
     }
 
+    if ((int.tryParse(value) ?? 0) == widget.earring) {
+      setState(() {
+        fatherError = "Não é possível registrar o mesmo animal como pai.";
+      });
+      return;
+    }
+
     bool exists = await _checkIfFatherExists(value);
 
     setState(() {
@@ -111,6 +117,13 @@ class _ParentsInfoForm extends State<ParentsInfoForm> {
     if (value.isEmpty) {
       setState(() {
         motherError = "Por favor, digite o brinco da mãe.";
+      });
+      return;
+    }
+
+    if ((int.tryParse(value) ?? 0) == widget.earring) {
+      setState(() {
+        motherError = "Não é possível registrar o mesmo animal como mãe.";
       });
       return;
     }
@@ -147,26 +160,34 @@ class _ParentsInfoForm extends State<ParentsInfoForm> {
         if (fatherBreeder != null) {
           createParents(int.parse(motherController.text), null, fatherController.text);
         } else {
-          SnackBar snackBar = const SnackBar(
-            content: Text("Por favor, defina o pai do animal."),
-            backgroundColor: Colors.red,
-            showCloseIcon: true
-          );
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          if (mounted) {
+            SnackBar snackBar = const SnackBar(
+              content: Text("Por favor, defina o pai do animal."),
+              backgroundColor: Colors.red,
+              showCloseIcon: true
+            );
+
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
           return;
         }
       }
 
-      SnackBar snackBar = const SnackBar(
-        content: Text("Informações salvas com sucesso."),
-        backgroundColor: Colors.green,
-        showCloseIcon: true
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      if (mounted) {
+        SnackBar snackBar = const SnackBar(
+          content: Text("Informações salvas com sucesso."),
+          backgroundColor: Colors.green,
+          showCloseIcon: true
+        );
 
-      clearForm();
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-      widget.postSaved();
+        clearForm();
+
+        if (widget.shouldPop) {
+          Navigator.of(context).pop();
+        }
+      }
     }
   }
 

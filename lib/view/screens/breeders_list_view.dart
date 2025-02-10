@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 
-import 'package:integrazoo/view/forms/create/breeder_form.dart';
+import 'package:integrazoo/view/forms/breeder_form.dart';
 
 import 'package:integrazoo/control/breeder_controller.dart';
 

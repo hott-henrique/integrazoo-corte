@@ -32,7 +32,6 @@ class Bovines extends Table {
 
   BoolColumn get wasDiscarded => boolean().withDefault(const Constant(false))();
 
-
   RealColumn get weight540 => real().check(weight540.isBiggerThan(const Constant(0.0))).nullable()();
 
   @override

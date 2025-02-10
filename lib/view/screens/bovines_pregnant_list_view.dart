@@ -1,13 +1,14 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:integrazoo/view/forms/birth_form.dart';
 
 import 'package:intl/intl.dart';
 
 
 import 'package:integrazoo/control/pregnancy_controller.dart';
 
-import 'package:integrazoo/view/forms/update/pregnancy_info_form.dart';
+import 'package:integrazoo/view/forms/pregnancy_form.dart';
 
 import 'package:integrazoo/database/database.dart';
 
@@ -167,9 +168,16 @@ class _PopupMenuActionsState extends State<_PopupMenuActions> {
 
   void _handleAction(String action, BuildContext context) {
     switch (action) {
+      case "Parir":
+        showDialog(
+          context: context,
+          builder: (context) => Dialog(child: BirthForm(earring: widget.pregnancy.cow, shouldPop: true))
+        ).then((_) => widget.postAction?.call());
+        break;
+
       case "Editar":
         Navigator.of(context)
-                 .push(MaterialPageRoute(builder: (context) => PregnancyInfoForm(pregnancy: widget.pregnancy)))
+                 .push(MaterialPageRoute(builder: (context) => PregnancyForm(pregnancy: widget.pregnancy)))
                  .then((value) => widget.postAction!());
         break;
 
@@ -202,7 +210,7 @@ class _PopupMenuActionsState extends State<_PopupMenuActions> {
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
       onSelected: (action) => _handleAction(action, context),
-      itemBuilder: (BuildContext context) => ["Editar", "Deletar"]
+      itemBuilder: (BuildContext context) => ["Parir", "Editar", "Deletar"]
           .map((action) => PopupMenuItem<String>(value: action, child: Text(action)))
           .toList(),
     );

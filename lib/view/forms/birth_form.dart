@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 
-import 'package:integrazoo/base.dart';
 
 import 'package:integrazoo/view/components/bovine/single_bovine_selector.dart';
 import 'package:integrazoo/view/components/bovine/earring_controller.dart';
@@ -21,7 +20,10 @@ import 'package:integrazoo/globals.dart';
 
 
 class BirthForm extends StatefulWidget {
-  const BirthForm({ super.key });
+  final int? earring;
+  final bool shouldPop;
+
+  const BirthForm({ super.key, this.earring, this.shouldPop = false });
 
   @override
   State<BirthForm> createState() => _BirthForm();
@@ -46,6 +48,9 @@ class _BirthForm extends State<BirthForm> {
   @override
   void initState() {
     super.initState();
+
+    motherEarringController.setEarring(widget.earring);
+
     dateBirthController = TextEditingController(text: DateFormat.yMd("pt_BR").format(dateBirth));
   }
 
@@ -159,8 +164,10 @@ class _BirthForm extends State<BirthForm> {
     Divider divider = const Divider(color: Colors.transparent);
 
     final column = <Widget>[
-      cowSelector,
-      divider,
+      if (widget.earring == null) ...[
+        cowSelector,
+        divider
+      ],
       dateBirthPicker,
       divider,
       newBornEarringField,
@@ -178,17 +185,13 @@ class _BirthForm extends State<BirthForm> {
       addButton
     ];
 
-    return IntegrazooBaseApp(
-      title: "REGISTRAR PRENHEZ",
-      body: SingleChildScrollView(child:
-        Form(
-          autovalidateMode: AutovalidateMode.always,
-          key: _formKey,
-          child: Container(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: column)
-          )
-        )
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(8.0),
+      child:
+      Form(
+        autovalidateMode: AutovalidateMode.always,
+        key: _formKey,
+        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: column)
       )
     );
   }
@@ -206,6 +209,7 @@ class _BirthForm extends State<BirthForm> {
             backgroundColor: Colors.red,
             showCloseIcon: true
           );
+
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }
         return;
@@ -214,7 +218,7 @@ class _BirthForm extends State<BirthForm> {
       final newBornEarring = int.parse(newBornEarringController.text);
 
       if (await BovineController.doesEarringExists(newBornEarring)) {
-        if (context.mounted) {
+        if (mounted) {
           SnackBar snackBar = const SnackBar(
             content: Text("O brinco selsecionado para o novo animal ja foi utilizado."),
             backgroundColor: Colors.red,
@@ -225,9 +229,9 @@ class _BirthForm extends State<BirthForm> {
         return;
       }
 
-      final pregnancy = await PregnancyController.getActivePregnancy(motherEarringController.earring!);
-
       await database.transaction(() async {
+        final pregnancy = await PregnancyController.getActivePregnancy(motherEarringController.earring!);
+
         if (pregnancy != null) {
           final updatePregnancy = pregnancy.copyWith(hasEnded: true);
 
@@ -259,6 +263,10 @@ class _BirthForm extends State<BirthForm> {
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
           clearForm();
+
+          if (widget.shouldPop) {
+            Navigator.of(context).pop();
+          }
         }
       });
     }

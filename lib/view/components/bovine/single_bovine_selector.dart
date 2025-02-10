@@ -76,9 +76,10 @@ class _SingleBovineSelector extends State<SingleBovineSelector> {
       initiallyExpanded: true,
       title: TextFormField(
         keyboardType: TextInputType.text,
-        decoration: const InputDecoration(border: OutlineInputBorder(),
-                                          label: Text("Digite nome ou brinco do animal para pesquisar."),
-                                          floatingLabelBehavior: FloatingLabelBehavior.auto),
+        decoration: InputDecoration(border: const OutlineInputBorder(),
+                                    label: Text(widget.label ?? "Pesquisar"),
+                                    hintText: "Digite nome ou brinco do animal para pesquisar.",
+                                    floatingLabelBehavior: FloatingLabelBehavior.always),
         controller: widget.earringController.queryController,
         onEditingComplete: () => setState(() {
           widget.earringController.setHasTriedLoading(false);

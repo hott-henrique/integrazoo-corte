@@ -4,9 +4,6 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 
-import 'package:integrazoo/base.dart';
-
-
 import 'package:integrazoo/view/components/bovine/earring_controller.dart';
 import 'package:integrazoo/view/components/bovine/single_bovine_selector.dart';
 
@@ -103,17 +100,13 @@ class _NaturalMatingForm extends State<NaturalMatingForm> {
       addButton
     ];
 
-    return IntegrazooBaseApp(
-      title: "REGISTRAR COBERTURA",
-      body: SingleChildScrollView(child:
-        Form(
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(8.0),
+      child: Form(
         autovalidateMode: AutovalidateMode.always,
         key: _formKey,
-        child: Container(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: column)
-        )
-      ))
+        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: column)
+      )
     );
   }
 

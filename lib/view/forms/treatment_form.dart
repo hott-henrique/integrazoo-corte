@@ -159,17 +159,6 @@ class _TreatmentFormState extends State<TreatmentForm> {
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: column)
       )
     );
-    return IntegrazooBaseApp(
-      title: "REGISTRAR TRATAMENTO",
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(8.0),
-        child: Form(
-          autovalidateMode: AutovalidateMode.always,
-          key: _formKey,
-          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: column)
-        )
-      )
-    );
   }
 
   void registerTreatment() {

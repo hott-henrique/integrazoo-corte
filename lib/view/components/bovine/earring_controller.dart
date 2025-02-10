@@ -40,6 +40,7 @@ class EarringController with ChangeNotifier {
 
     return elements;
   }
+
   void setEarring(int? value) {
     _earring = value;
     notifyListeners();

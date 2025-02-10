@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 
 import 'package:integrazoo/view/components/titled_card.dart';
 
-import 'package:integrazoo/view/forms/update/weaning_info_form.dart';
+import 'package:integrazoo/view/forms/weaning_form.dart';
 
 import 'package:integrazoo/control/weaning_controller.dart';
 
@@ -23,27 +23,27 @@ class WeaningInfoCard extends StatefulWidget {
 }
 
 class _WeaningInfoCard extends State<WeaningInfoCard> {
-
   Future<Weaning?> get _weaningFuture => WeaningController.getWeaning(widget.earring);
-
-  bool isEditing = false;
 
   @override
   Widget build(BuildContext context) {
+    late Weaning weaning;
+
     return FutureBuilder<Weaning?>(
       future: _weaningFuture,
       builder: (context, AsyncSnapshot<Weaning?> snapshot) {
         late Widget cardContent;
+
         if (snapshot.connectionState != ConnectionState.done && !snapshot.hasData) {
           cardContent = const Text("Carregando...", style: TextStyle(fontStyle: FontStyle.italic), textAlign: TextAlign.center);
-        } else if (snapshot.connectionState == ConnectionState.done && (!snapshot.hasData || isEditing)) {
-          cardContent = WeaningInfoForm(
+        } else if (snapshot.connectionState == ConnectionState.done && !snapshot.hasData) {
+          cardContent = WeaningForm(
             earring: widget.earring,
             weaning: snapshot.data,
-            postSaved: () => setState(() => isEditing = false)
+            postSaved: () => setState(() => ())
           );
         } else {
-          final weaning = snapshot.data!;
+          weaning = snapshot.data!;
 
           cardContent = Padding(
             padding: const EdgeInsets.all(8.0),
@@ -57,52 +57,50 @@ class _WeaningInfoCard extends State<WeaningInfoCard> {
           );
         }
 
+        void onAction(String action) {
+          if (action == "Editar") {
+            showDialog(
+              context: context,
+              builder: (context) => Dialog(child: WeaningForm(weaning: weaning, shouldPop: true))
+            ).then((_) => setState(() => ()));
+            return;
+          }
+
+          if (action == "Deletar") {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                icon: const Icon(Icons.info),
+                title: const Text("Deseja mesmo deletar as informações sobre o desame?"),
+                actions: [ TextButton(
+                  onPressed: () async {
+                    await WeaningController.deleteWeaning(weaning.bovine);
+
+                    if (context.mounted) {
+                      Navigator.of(context).pop();
+                    }
+                  },
+                  child: const Text("CONFIRMAR"),
+                ) ],
+              )
+            ).then((_) => setState(() => ()));
+            return;
+          }
+        }
+
         return TitledCard(
           title: "Desmame",
           content: cardContent,
           actions: [
-            if (snapshot.hasData && !isEditing)
+            if (snapshot.hasData)
               "Deletar",
-            if (snapshot.hasData && !isEditing)
+            if (snapshot.hasData)
               "Editar",
-            if (snapshot.hasData && isEditing)
-              "Cancelar"
           ],
           onAction: onAction
         );
       }
     );
-  }
-
-  void onAction(String action) {
-    if (action == "Cancelar") {
-      setState(() => isEditing = false);
-      return;
-    }
-
-    if (action == "Deletar") {
-      showDialog(context: context, builder: (context) {
-        return AlertDialog(
-          title: const Text('Você deseja mesmo deletar as informações de desmame desse animal?'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                WeaningController.deleteWeaning(widget.earring);
-                Navigator.of(context).pop();
-              },
-              child: const Text("Confirmar"),
-            ),
-            TextButton(onPressed: Navigator.of(context).pop, child: const Text("Cancelar"))
-          ]
-        );
-      }).then((_) => setState(() => ()));
-      return;
-    }
-
-    if (action == "Editar") {
-      setState(() => isEditing = true);
-      return;
-    }
   }
 
   Widget buildInfo(String label, String info) {

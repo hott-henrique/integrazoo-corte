@@ -1,72 +1,78 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:integrazoo/control/finish_controller.dart';
 
 import 'package:intl/intl.dart';
 
+import 'package:integrazoo/view/components/bovine/single_bovine_selector.dart';
+import 'package:integrazoo/view/components/bovine/earring_controller.dart';
 
 import 'package:integrazoo/control/bovine_controller.dart';
+import 'package:integrazoo/control/finish_controller.dart';
 
 import 'package:integrazoo/database/database.dart';
 
 
-class FinishInfoForm extends StatefulWidget {
-  final int earring;
+class FinishForm extends StatefulWidget {
+  final int? earring;
   final Finish? finish;
-  final VoidCallback postSaved;
 
-  const FinishInfoForm({ super.key, required this.earring, this.finish, required this.postSaved});
+  final bool shouldPop;
+  final VoidCallback? postSaved;
+
+  const FinishForm({ super.key, this.earring, this.finish, this.shouldPop = false, this.postSaved });
 
   @override
-  State<FinishInfoForm> createState() => _FinishInfoForm();
+  State<FinishForm> createState() => _FinishForm();
 }
 
-class _FinishInfoForm extends State<FinishInfoForm> {
+class _FinishForm extends State<FinishForm> {
   final _formKey = GlobalKey<FormState>();
 
-  final observationController = TextEditingController();
+  final earringController = EarringController();
+
+  FinishingReason? reason;
+
+  final reasonController = TextEditingController();
   final weightController = TextEditingController();
   final hotCarcassWeightController = TextEditingController();
 
-  final reasonController = TextEditingController();
-  FinishingReason? reason;
+  final observationController = TextEditingController();
 
-  late DateTime date;
   late final TextEditingController dateController;
+  DateTime date = DateTime.now();
 
   @override
   void initState() {
     super.initState();
 
-    reason = widget.finish?.reason;
-    reasonController.text = (widget.finish?.reason ?? "").toString();
+    earringController.setEarring(widget.earring);
 
-    date = widget.finish?.date ?? DateTime.now();
+    if (widget.finish != null) {
+      date = widget.finish!.date;
+      reason = widget.finish!.reason;
+      reasonController.text = widget.finish!.reason.toString();
+      weightController.text = widget.finish!.weight?.toString() ?? "";
+      hotCarcassWeightController.text = widget.finish!.hotCarcassWeight?.toString() ?? "";
+      observationController.text = widget.finish!.observation ?? "";
+
+      earringController.setEarring(widget.finish!.bovine);
+    }
+
     dateController = TextEditingController(text: DateFormat.yMd("pt_BR").format(date));
-
-    weightController.text = (widget.finish?.weight ?? "").toString();
-    hotCarcassWeightController.text = (widget.finish?.hotCarcassWeight ?? "").toString();
-
-    observationController.text = widget.finish?.observation ?? "";
   }
 
   @override
   Widget build(BuildContext context) {
+    final bovineSelector = SingleBovineSelector(earringController: earringController, wasDiscarded: false);
+
     final reasonDropdown = DropdownMenu<FinishingReason>(
+      initialSelection: reason,
       dropdownMenuEntries: FinishingReason.values.map((r) => DropdownMenuEntry(value: r, label: r.toString())).toList(),
       onSelected: (value) => setState(() => reason = value!),
       label: const Text('Motivação'),
-      controller: reasonController,
-      expandedInsets: EdgeInsets.zero
-    );
-
-    final observationField = TextFormField(
-      keyboardType: TextInputType.text,
-      controller: observationController,
-      decoration: const InputDecoration(border: OutlineInputBorder(),
-                                        label: Text("Observação"),
-                                        floatingLabelBehavior: FloatingLabelBehavior.auto)
+      expandedInsets: EdgeInsets.zero,
+      controller:  reasonController
     );
 
     final weightField = TextFormField(
@@ -76,6 +82,12 @@ class _FinishInfoForm extends State<FinishInfoForm> {
                                         floatingLabelBehavior: FloatingLabelBehavior.auto),
       controller: weightController,
       validator: (String? value) {
+        if (reason == FinishingReason.slaughter) {
+          if (weightController.text.isEmpty) {
+            return 'Por favor, digite o peso vivo do animal ao abate.';
+          }
+        }
+
         if (value == null) {
           return null;
         }
@@ -91,10 +103,17 @@ class _FinishInfoForm extends State<FinishInfoForm> {
     final hotCarcassWeightField = TextFormField(
       keyboardType: TextInputType.number,
       decoration: const InputDecoration(border: OutlineInputBorder(),
-                                        label: Text("Peso da Carcaça Quente- Kilogramas"),
-                                        floatingLabelBehavior: FloatingLabelBehavior.auto),
+                                        label: Text("Peso da Carcaça Quente - Kilogramas"),
+                                        floatingLabelBehavior: FloatingLabelBehavior.auto,
+                                        hintText: "Digite o peso da carcaça quente em kilogramas."),
       controller: hotCarcassWeightController,
       validator: (String? value) {
+        if (reason == FinishingReason.slaughter) {
+          if (hotCarcassWeightController.text.isEmpty) {
+            return 'Por favor, digite o peso da carcaça quente do animal.';
+          }
+        }
+
         if (value == null) {
           return null;
         }
@@ -107,7 +126,14 @@ class _FinishInfoForm extends State<FinishInfoForm> {
       },
     );
 
-    final addButton = TextButton(onPressed: discardBovine, child: const Text("SALVAR"));
+    final observationField = TextFormField(
+      keyboardType: TextInputType.text,
+      controller: observationController,
+      decoration: const InputDecoration(border: OutlineInputBorder(),
+                                        label: Text("Observação (Opcional)"),
+                                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                                        hintText: "Digite alguma observação sobre essa finalização.")
+    );
 
     final datePicker = TextFormField(
       controller: dateController,
@@ -131,9 +157,15 @@ class _FinishInfoForm extends State<FinishInfoForm> {
       },
     );
 
+    final addButton = TextButton(onPressed: discardBovine, child: const Text("SALVAR"));
+
     Divider divider = const Divider(color: Colors.transparent);
 
     final column = <Widget>[
+      if (widget.finish == null && widget.earring == null) ...[
+        bovineSelector,
+        divider,
+      ],
       reasonDropdown,
       divider,
       observationField,
@@ -149,11 +181,11 @@ class _FinishInfoForm extends State<FinishInfoForm> {
       addButton
     ];
 
-    return Form(
-      autovalidateMode: AutovalidateMode.always,
-      key: _formKey,
-      child: Container(
-        padding: const EdgeInsets.all(8.0),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(8.0),
+      child: Form(
+        key: _formKey,
+        autovalidateMode: AutovalidateMode.always,
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: column)
       )
     );
@@ -177,30 +209,34 @@ class _FinishInfoForm extends State<FinishInfoForm> {
 
       updateBovineStatus();
 
+      int earring = earringController.earring!;
+
       final finish = Finish.fromJson({
-        'id': 0,
-        'bovine': widget.earring,
+        'bovine': earring,
         'date': date,
         'reason': reason!.index,
         'observation': observationController.text.isEmpty ? null : observationController.text,
-        'weight': double.tryParse(weightController.text),
-        'hotCarcassWeight': double.tryParse(hotCarcassWeightController.text)
+        'weight': reason == FinishingReason.slaughter ? double.parse(weightController.text) : null,
+        'hotCarcassWeight': reason == FinishingReason.slaughter ? double.parse(hotCarcassWeightController.text) : null
       });
 
-      FinishController.save(widget.earring, finish).then(
+      FinishController.save(earring, finish).then(
         (_) {
           if (mounted) {
             SnackBar snackBar = const SnackBar(
-              content: Text('Informações de finalização salvas com sucesso.'),
+              content: Text('Finalização salva com sucesso.'),
               backgroundColor: Colors.green,
               showCloseIcon: true
             );
-
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
-            clearForm();
+            if (widget.shouldPop) {
+              Navigator.of(context).pop();
+            } else {
+              clearForm();
+            }
 
-            widget.postSaved();
+            widget.postSaved?.call();
           }
         }
       );
@@ -208,7 +244,7 @@ class _FinishInfoForm extends State<FinishInfoForm> {
   }
 
   void updateBovineStatus() {
-    BovineController.getBovine(widget.earring).then(
+    BovineController.getBovine(earringController.earring!).then(
       (bovine) {
         if (bovine == null) {
           // TODO: RAISE ERROR.
@@ -227,13 +263,19 @@ class _FinishInfoForm extends State<FinishInfoForm> {
       return 'Por favor, escolha a razão do descarte.';
     }
 
+    if (earringController.earring == null) {
+      return 'Por favor, escolha um animal.';
+    }
+
     return null;
   }
 
   void clearForm() {
     setState(() {
+      earringController.clear();
       observationController.clear();
       weightController.clear();
+      reasonController.clear();
       reason = null;
       date = DateTime.now();
       dateController.text = DateFormat.yMd("pt_BR").format(date);
