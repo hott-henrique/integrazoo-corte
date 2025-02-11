@@ -71,7 +71,7 @@ class BovineFormState extends State<BovineForm> {
   @override
   Widget build(BuildContext context) {
     final nameField = TextFormField(
-      keyboardType: TextInputType.number,
+      keyboardType: TextInputType.text,
       decoration: const InputDecoration(
         border: OutlineInputBorder(),
         label: Text("Nome do Animal (Opcional)"),
