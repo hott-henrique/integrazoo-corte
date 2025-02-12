@@ -5,7 +5,6 @@ import 'package:integrazoo/database/database.dart';
 import 'package:integrazoo/control/bovine_controller.dart';
 import 'package:integrazoo/view/components/bovine/multi_earring_controller.dart';
 
-
 class MultiBovineSelector extends StatefulWidget {
   final MultiEarringController earringsController;
 
@@ -39,96 +38,141 @@ class _MultiBovineSelector extends State<MultiBovineSelector> {
   @override
   Widget build(BuildContext context) {
     return ListenableBuilder(
-      listenable: widget.earringsController,
-      builder: (BuildContext context, Widget? child) {
-        return buildDropdown();
-      }
-    );
+        listenable: widget.earringsController,
+        builder: (BuildContext context, Widget? child) {
+          return buildDropdown();
+        });
   }
 
   void loadMore() async {
     BovineController.searchHerd(
-      widget.earringsController.queryController.text,
-      widget.earringsController.pageSize,
-      widget.earringsController.page,
-      widget.sex,
-      widget.wasDiscarded,
-      widget.isReproducing,
-      widget.isPregnant,
-      widget.hasBeenWeaned
-    ).then(
-      (cattle) => setState(() {
-        widget.earringsController.bovines.addAll(cattle);
-        if (cattle.isNotEmpty) {
-          widget.earringsController.setPage(widget.earringsController.page + 1);
-        }
-        widget.earringsController.setHasTriedLoading(true);
-      })
-    );
+            widget.earringsController.queryController.text,
+            widget.earringsController.pageSize,
+            widget.earringsController.page,
+            widget.sex,
+            widget.wasDiscarded,
+            widget.isReproducing,
+            widget.isPregnant,
+            widget.hasBeenWeaned)
+        .then((cattle) => setState(() {
+              widget.earringsController.bovines.addAll(cattle);
+              if (cattle.isNotEmpty) {
+                widget.earringsController
+                    .setPage(widget.earringsController.page + 1);
+              }
+              widget.earringsController.setHasTriedLoading(true);
+            }));
   }
 
   Widget buildDropdown() {
-    if (widget.earringsController.bovines.isEmpty && !widget.earringsController.hasTriedLoading) {
+    if (widget.earringsController.bovines.isEmpty &&
+        !widget.earringsController.hasTriedLoading) {
       loadMore();
     }
 
     final scrollController = ScrollController();
 
-    return ExpansionTile(
-      title: TextFormField(
-        keyboardType: TextInputType.text,
-        decoration: InputDecoration(border: const OutlineInputBorder(),
-                                    label: Text(widget.label ?? "Pesquisar"),
-                                    hintText: widget.hintText ?? "Digite o nome ou brinco do animal para pesquisar.",
-                                    floatingLabelBehavior: FloatingLabelBehavior.always),
-        controller: widget.earringsController.queryController,
-        onEditingComplete: () => setState(() {
-          widget.earringsController.setHasTriedLoading(false);
-        })
-      ),
-      initiallyExpanded: true,
-      children: [ Card.outlined(
-        shape: const RoundedRectangleBorder(side: BorderSide(width: 1)),
-        child: NotificationListener<ScrollNotification>(
-          child:  SizedBox(
-            height: 100,
-            child: Scrollbar(
-              thumbVisibility: true,
-              controller: scrollController,
-              child: SingleChildScrollView(
-                controller: scrollController,
-                child: Column(children: widget.earringsController.sorted().map((Bovine b) => buildOption(b)).toList())
-              )
-            )
-          ),
-          onNotification: (n) {
-            if (n is ScrollEndNotification) {
-              loadMore();
-            }
-            return true;
-          }
-        )
-      ) ]
-    );
+    return Container(
+        margin: const EdgeInsets.only(bottom: 10),
+        child: Column(
+          spacing: 0,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Selecione as vacas",
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            TextFormField(
+                keyboardType: TextInputType.text,
+                decoration: InputDecoration(
+                    suffixIcon: const Icon(Icons.search, color: Colors.green),
+                    focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Color.fromARGB(255, 38, 109, 40), width: 2),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(10),
+                        )),
+                    enabledBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.green, width: 1),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(10),
+                        )),
+                    hintText: widget.hintText ??
+                        "Digite o nome ou brinco do animal para pesquisar.",
+                    floatingLabelBehavior: FloatingLabelBehavior.always),
+                controller: widget.earringsController.queryController,
+                onEditingComplete: () => setState(() {
+                      widget.earringsController.setHasTriedLoading(false);
+                    })),
+            Card.outlined(
+                elevation: 3,
+                margin: EdgeInsets.zero,
+                shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(10),
+                      bottomRight: Radius.circular(10),
+                    ),
+                    side: BorderSide(color: Colors.green, width: 1)),
+                child: NotificationListener<ScrollNotification>(
+                    child: SizedBox(
+                        height: 120,
+                        child: Scrollbar(
+                            thumbVisibility: true,
+                            controller: scrollController,
+                            child: SingleChildScrollView(
+                                controller: scrollController,
+                                child: Column(
+                                  children:
+                                      widget.earringsController.sorted().isEmpty
+                                          ? [
+                                              const Padding(
+                                                padding: EdgeInsets.all(16.0),
+                                                child: SizedBox(
+                                                  width: double.infinity,
+                                                  child: Text(
+                                                    "Nenhum animal encontrado.",
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        color: Colors.grey),
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                ),
+                                              ),
+                                            ]
+                                          : widget.earringsController
+                                              .sorted()
+                                              .map((Bovine b) => buildOption(b))
+                                              .toList(),
+                                )))),
+                    onNotification: (n) {
+                      if (n is ScrollEndNotification) {
+                        loadMore();
+                      }
+                      return true;
+                    })),
+          ],
+        ));
   }
 
   Widget buildOption(Bovine b) {
     return Row(children: [
-      Checkbox(value: widget.earringsController.earrings.contains(b.earring), onChanged: (value) => (
-        setState(() {
-          if (value == null) return;
+      Checkbox(
+          value: widget.earringsController.earrings.contains(b.earring),
+          onChanged: (value) => (setState(() {
+                if (value == null) return;
 
-          if (value) {
-            setState(() {
-              widget.earringsController.addEarring(b.earring);
-            });
-          } else {
-            setState(() {
-              widget.earringsController.removeEarring(b.earring);
-            });
-          }
-        })
-      )),
+                if (value) {
+                  setState(() {
+                    widget.earringsController.addEarring(b.earring);
+                  });
+                } else {
+                  setState(() {
+                    widget.earringsController.removeEarring(b.earring);
+                  });
+                }
+              }))),
       Text("${b.name ?? 'Sem Nome'} #${b.earring}")
     ]);
   }

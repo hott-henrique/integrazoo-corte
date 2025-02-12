@@ -35,6 +35,11 @@ void main() async {
           fontSize: 20,
           fontWeight: FontWeight.w800
         ),
+        titleMedium: TextStyle(
+          color: Colors.green,
+          fontSize: 24,
+          fontWeight: FontWeight.w800
+        )
       ),
       textButtonTheme: const TextButtonThemeData(
         style: ButtonStyle(
