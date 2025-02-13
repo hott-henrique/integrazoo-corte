@@ -8,7 +8,18 @@ import 'package:integrazoo/globals.dart';
 class RelatoryPersistence {
   RelatoryPersistence();
 
-  static Future<List<(String, double?, double?, double?, int?)>> getFemaleBreedersStatistics(int pageSize, int page) async {
+  static Future<int> countNonDiscardedFemaleBreeders() async {
+    final result = (await database.customSelect("""
+      SELECT
+        COUNT(*)
+      FROM Bovines bov
+      WHERE bov.sex = 1 AND bov.was_discarded = 0 AND bov.is_breeder = 1
+    """).getSingle());
+
+    return result.read<int>("COUNT(*)");
+  }
+
+  static Future<List<(String, double?, double?, double?, int?, int)>> getFemaleBreedersStatistics(int pageSize, int page) async {
     final results = (await database.customSelect("""
       SELECT
           CASE
@@ -43,9 +54,17 @@ class RelatoryPersistence {
       final birthWeight = row.readNullable<double>('birth_weight');
       final weaningWeight = row.readNullable<double>('weaning_weight');
       final afb = row.readNullable<int>('afb');
-      inspect((name, weight540, birthWeight, weaningWeight, afb));
-      return (name, weight540, birthWeight, weaningWeight, afb);
+      const attempts = 0;
+      inspect((name, weight540, birthWeight, weaningWeight, afb, attempts));
+      return (name, weight540, birthWeight, weaningWeight, afb, attempts);
     }).toList();
   }
 
+  static Future<List<(String, double?, double?, double?, int?, int)>> getOffspringStatistics(int earring) async {
+    return [
+      ("Test A", 1.0, 1.0, 6.0, null, 0),
+      ("Test B", 2.0, 4.0, 5.0, null, 1),
+      ("Test C", 3.0, 3.0, 3.0, null, 2),
+    ];
+  }
 }

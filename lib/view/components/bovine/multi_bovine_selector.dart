@@ -75,7 +75,7 @@ class _MultiBovineSelector extends State<MultiBovineSelector> {
     return Container(
         margin: const EdgeInsets.only(bottom: 10),
         child: Column(
-          spacing: 0,
+        // spacing: 0,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
@@ -111,8 +111,8 @@ class _MultiBovineSelector extends State<MultiBovineSelector> {
                 margin: EdgeInsets.zero,
                 shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(10),
-                      bottomRight: Radius.circular(10),
+                      bottomLeft: Radius.circular(0),
+                      bottomRight: Radius.circular(0),
                     ),
                     side: BorderSide(color: Colors.green, width: 1)),
                 child: NotificationListener<ScrollNotification>(

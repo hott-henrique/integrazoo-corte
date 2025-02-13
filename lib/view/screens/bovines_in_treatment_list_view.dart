@@ -20,8 +20,6 @@ class BovinesInTreatmentListView extends StatefulWidget {
 }
 
 class _BovinesInTreatmentListView extends State<BovinesInTreatmentListView> {
-  bool hasTriedLoading = false;
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(

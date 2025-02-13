@@ -67,7 +67,7 @@ class _IntegrazooBaseAppState extends State<IntegrazooBaseApp> {
         children: [
           ListTile(
             title: const Text("Desempenho das Matrizes"),
-            onTap: () => setState(() => body = const FemaleBreedersRelatory())
+            onTap: () => setState(() => body = const FemaleBreedersRelatoryListView())
           ),
           ListTile(
             title: const Text("Rebanho"),
