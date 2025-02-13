@@ -11,7 +11,7 @@ class MultiEarringController with ChangeNotifier {
 
   final queryController = TextEditingController();
 
-  int page = 0, pageSize = 25;
+  int page = 0, pageSize = 10;
 
   List<Bovine> bovines = List.empty(growable: true);
 
@@ -21,6 +21,7 @@ class MultiEarringController with ChangeNotifier {
     elements.sort((a, b) {
       bool aSelected = earrings.contains(a.earring);
       bool bSelected = earrings.contains(b.earring);
+
       if (aSelected && !bSelected) {
         return -1;
       }
@@ -33,7 +34,7 @@ class MultiEarringController with ChangeNotifier {
         return 0;
       }
 
-      return a.earring.compareTo(b.earring);
+      return b.earring.compareTo(a.earring);
     });
 
     return elements;
@@ -59,10 +60,12 @@ class MultiEarringController with ChangeNotifier {
     notifyListeners();
   }
 
-  void clear() {
+  void clear({ bool shouldClearQuery = true }) {
     page = 0;
     _hasTriedLoading = false;
-    queryController.text = "";
+    if (shouldClearQuery) {
+      queryController.text = "";
+    }
     bovines.clear();
     earrings.clear();
     notifyListeners();

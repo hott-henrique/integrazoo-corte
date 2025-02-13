@@ -115,8 +115,8 @@ class BovinePersistence {
                         return cond;
                       }
                     )
-                    ..limit(pageSz, offset: page * pageSz)
-                    ..orderBy([ (b) => OrderingTerm(expression: b.earring, mode: OrderingMode.desc) ]))
+                    ..orderBy([ (b) => OrderingTerm(expression: b.earring, mode: OrderingMode.desc) ])
+                    ..limit(pageSz, offset: page * pageSz))
                     .get();
   }
 
