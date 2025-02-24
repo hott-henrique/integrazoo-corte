@@ -58,7 +58,7 @@
     - ~~Fazer com que cada painel seja paginável para carregar mais objetos.~~
     - ~~Cada painel em uma *tab* diferente.~~
 
-17. Estilizar o seletor de animais e reprodutores.
+17. ~~Estilizar o seletor de animais e reprodutores.~~
 
 18. ~~Mover todas as estilização pro argumento 'theme' no arquivo 'main.dart'.~~
 
