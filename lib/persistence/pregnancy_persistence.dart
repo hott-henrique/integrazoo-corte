@@ -81,6 +81,8 @@ class PregnancyPersistence {
       variables: [ Variable(pageSize), Variable(page * pageSize)],
     ).get();
 
+    inspect(result);
+
     return result.map((row) {
       Bovine b = Bovine.fromJson({
         'earring': row.data["earring"] as int,
@@ -94,6 +96,8 @@ class PregnancyPersistence {
         'weight540': row.data["weight540"] as int?,
       });
 
+      inspect(b);
+
       Pregnancy p = Pregnancy.fromJson({
         'id': row.data["id"] as int,
         'cow': row.data["cow"] as int,
@@ -103,6 +107,8 @@ class PregnancyPersistence {
         'hasEnded': (row.data["has_ended"] as int) == 0 ? false : true,
         'observation': row.data["observation"] as String,
       });
+
+      inspect(p);
 
       return (b, p);
     }).toList();

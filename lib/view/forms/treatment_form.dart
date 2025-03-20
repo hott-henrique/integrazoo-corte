@@ -133,9 +133,16 @@ class _TreatmentFormState extends State<TreatmentForm> {
 
     final saveButton = TextButton(onPressed: registerTreatment, child: const Text("SALVAR"));
 
+    final header = Text(
+      widget.treatment == null ? "REGISTRANDO TRATAMENTO" : "EDITANDO TRATAMENTO DO ANIMAL #${widget.treatment!.bovine}",
+      textAlign: TextAlign.center,
+      textScaler: const TextScaler.linear(1.5)
+    );
+
     Divider divider = const Divider(color: Colors.transparent);
 
     final column = <Widget>[
+      header,
       if (widget.treatment == null) ...[
         bovineSelector,
         divider,

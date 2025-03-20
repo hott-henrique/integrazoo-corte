@@ -40,7 +40,8 @@ class _FinishInfoCard extends State<FinishInfoCard> {
           cardContent = FinishForm(
             earring: widget.earring,
             shouldPop: false,
-            postSaved: () => setState(() => ())
+            postSaved: () => setState(() => ()),
+            shouldShowHeader: false
           );
         } else {
           finish = snapshot.data!;

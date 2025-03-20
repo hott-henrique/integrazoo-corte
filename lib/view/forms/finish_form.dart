@@ -18,9 +18,10 @@ class FinishForm extends StatefulWidget {
   final Finish? finish;
 
   final bool shouldPop;
+  final bool shouldShowHeader;
   final VoidCallback? postSaved;
 
-  const FinishForm({ super.key, this.earring, this.finish, this.shouldPop = false, this.postSaved });
+  const FinishForm({ super.key, this.earring, this.finish, this.shouldPop = false, this.postSaved, this.shouldShowHeader = true });
 
   @override
   State<FinishForm> createState() => _FinishForm();
@@ -157,11 +158,22 @@ class _FinishForm extends State<FinishForm> {
       },
     );
 
+    final header = Text(
+      widget.earring == null && widget.finish == null ?
+      "REGISTRANDO FINALIZAÇÃO" :
+      (widget.earring != null ?
+       "REGISTRANDO FINALIZAÇÃO DO ANIMAL #${widget.earring!}" :
+       "EDITANDO FINALIZAÇÃO DO ANIMAL #${widget.finish!.bovine}"),
+      textAlign: TextAlign.center,
+      textScaler: const TextScaler.linear(1.5)
+    );
+
     final addButton = TextButton(onPressed: discardBovine, child: const Text("SALVAR"));
 
     Divider divider = const Divider(color: Colors.transparent);
 
     final column = <Widget>[
+      if (widget.shouldShowHeader) header,
       if (widget.finish == null && widget.earring == null) ...[
         bovineSelector,
         divider,

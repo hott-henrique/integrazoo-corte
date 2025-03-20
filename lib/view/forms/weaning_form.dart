@@ -21,8 +21,9 @@ class WeaningForm extends StatefulWidget {
   final Weaning? weaning;
   final bool shouldPop;
   final VoidCallback? postSaved;
+  final bool shouldShowHeader;
 
-  const WeaningForm({ super.key, this.earring, this.weaning, this.shouldPop = false, this.postSaved });
+  const WeaningForm({ super.key, this.earring, this.weaning, this.shouldPop = false, this.postSaved, this.shouldShowHeader = true });
 
   @override
   State<WeaningForm> createState() => _WeaningForm();
@@ -96,7 +97,18 @@ class _WeaningForm extends State<WeaningForm> {
 
     Divider divider = const Divider(color: Colors.transparent);
 
+    final header = Text(
+      widget.earring == null && widget.weaning == null ?
+      "REGISTRANDO DESMAME" :
+      (widget.earring != null ?
+       "REGISTRANDO DESMAME DO ANIMAL #${widget.earring!}" :
+       "EDITANDO DESMAME DO ANIMAL #${widget.weaning!.bovine}"),
+      textAlign: TextAlign.center,
+      textScaler: const TextScaler.linear(1.5)
+    );
+
     final column = <Widget>[
+      if (widget.shouldShowHeader) header,
       if (widget.weaning == null && widget.earring == null) ...[
         cowSelector,
         divider,

@@ -88,9 +88,16 @@ class _NaturalMatingForm extends State<NaturalMatingForm> {
       label: "Touro",
     );
 
+    final header = Text(
+      widget.reproduction == null ? "REGISTRANDO MONTA" : "EDITANDO MONTA NA VACA #${widget.reproduction!.cow}",
+      textAlign: TextAlign.center,
+      textScaler: const TextScaler.linear(1.5)
+    );
+
     Divider divider = const Divider(color: Colors.transparent);
 
     final column = <Widget>[
+      header,
       if (widget.reproduction == null) cowSelector,
       divider,
       bullSelector,

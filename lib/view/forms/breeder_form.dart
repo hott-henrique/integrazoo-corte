@@ -2,8 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 
-
-
 import 'package:integrazoo/control/breeder_controller.dart';
 import 'package:integrazoo/database/database.dart';
 
@@ -200,9 +198,16 @@ class BreederFormState extends State<BreederForm> {
 
     final addButton = TextButton(onPressed: createBovine, child: const Text("SALVAR"));
 
+    final header = Text(
+      widget.breeder == null ? "REGISTRANDO REPRODUTOR" : "EDITANDO REPRODUTOR: ${widget.breeder!.name}",
+      textAlign: TextAlign.center,
+      textScaler: const TextScaler.linear(1.5)
+    );
+
     const divider = Divider(height: 16, color: Colors.transparent);
 
     final column = <Widget>[
+      header,
       if (widget.breeder != null) ...[
         nameField,
         divider,

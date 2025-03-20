@@ -95,6 +95,7 @@ class _PaginateBovinesPregnant extends State<PaginateBovinesPregnant> {
         }
 
         if (snapshot.connectionState == ConnectionState.done && !snapshot.hasData) {
+          inspect(snapshot.data);
           return const Text("Algo de errado ocorreu! Por favor, contate o suporte.");
         }
 
@@ -176,9 +177,10 @@ class _PopupMenuActionsState extends State<_PopupMenuActions> {
         break;
 
       case "Editar":
-        Navigator.of(context)
-                 .push(MaterialPageRoute(builder: (context) => PregnancyForm(pregnancy: widget.pregnancy)))
-                 .then((value) => widget.postAction!());
+        showDialog(
+          context: context,
+          builder: (context) => Dialog(child: PregnancyForm(pregnancy: widget.pregnancy, shouldPop: true))
+        ).then((_) => widget.postAction?.call());
         break;
 
       case "Deletar":

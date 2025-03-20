@@ -40,7 +40,8 @@ class _WeaningInfoCard extends State<WeaningInfoCard> {
           cardContent = WeaningForm(
             earring: widget.earring,
             weaning: snapshot.data,
-            postSaved: () => setState(() => ())
+            postSaved: () => setState(() => ()),
+            shouldShowHeader: false
           );
         } else {
           weaning = snapshot.data!;

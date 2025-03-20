@@ -16,8 +16,9 @@ class BirthInfoForm extends StatefulWidget {
   final int? earring;
   final Birth? birth;
   final bool shouldPop;
+  final bool shouldShowHeader;
 
-  const BirthInfoForm({ super.key, this.earring, this.birth, this.shouldPop = false });
+  const BirthInfoForm({ super.key, this.earring, this.birth, this.shouldPop = false, this.shouldShowHeader = true });
 
   @override
   State<BirthInfoForm> createState() => _BirthInfoForm();
@@ -100,9 +101,18 @@ class _BirthInfoForm extends State<BirthInfoForm> {
       controller: newBornBCSController
     );
 
+    final header = Text(
+      widget.earring != null ?
+      "REGISTRANDO NASCIMENTO DO ANIMAL #${widget.earring!}" :
+      "EDITANDO NASCIMENTO DO ANIMAL #${widget.birth!.bovine}",
+      textAlign: TextAlign.center,
+      textScaler: const TextScaler.linear(1.5)
+    );
+
     Divider divider = const Divider(color: Colors.transparent);
 
     final column = <Widget>[
+      if (widget.shouldShowHeader) header,
       dateBirthPicker,
       divider,
       newBornWeightField,

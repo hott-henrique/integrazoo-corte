@@ -134,12 +134,16 @@ class _PregnancyForm extends State<PregnancyForm> {
                                         floatingLabelBehavior: FloatingLabelBehavior.always),
     );
 
+    final header = Text(
+      widget.pregnancy == null ? "REGISTRANDO DIAGNÓSTICO" : "EDITANDO PRENHE DO ANIMAL #${widget.pregnancy!.cow}",
+      textAlign: TextAlign.center,
+      textScaler: const TextScaler.linear(1.5)
+    );
+
     Divider divider = const Divider(color: Colors.transparent);
 
-    inspect(widget.pregnancy);
-    inspect(widget.earring);
-
     final column = <Widget>[
+      header,
       if (widget.pregnancy == null && widget.earring == null) ...[
         cowSelector,
         divider
@@ -182,30 +186,51 @@ class _PregnancyForm extends State<PregnancyForm> {
       }
 
       database.transaction(() async {
-        updateCowStatus(isPregnant: diagnostic);
-        final reproduction = await ReproductionController.getActiveReproduction(earringController.earring!);
-
-        if (reproduction != null) {
-          final d = diagnostic ? ReproductionDiagonostic.positive : ReproductionDiagonostic.negative;
-
-          final updateReproduction = reproduction.copyWith(diagnostic: d);
-
-          await ReproductionController.saveReproduction(updateReproduction);
-        }
-
-        if (diagnostic) {
+        if (widget.pregnancy != null) {
           final pregnancy = Pregnancy.fromJson({
-            "id": 0,
+            "id": widget.pregnancy?.id ?? 0,
             "cow": earringController.earring!,
             "date": dateDiagnostic,
             "birthForecast": dateBirthForecast,
-            "reproduction": reproduction?.id,
+            "reproduction": widget.pregnancy!.reproduction,
             "observation": observationController.text,
-            "hasEnded": false
+            "hasEnded": !diagnostic
+          });
+
+          await PregnancyController.savePregnancy(pregnancy);
+
+          return;
+        }
+
+        updateCowStatus(isPregnant: diagnostic);
+
+        final reproduction = await ReproductionController.getActiveReproduction(earringController.earring!);
+
+        if (reproduction == null) {
+          throw Exception("Não foi possivel reprodução ativa relacionada a esse animal!");
+        }
+
+        final d = diagnostic ? ReproductionDiagonostic.positive : ReproductionDiagonostic.negative;
+
+        final updateReproduction = reproduction.copyWith(diagnostic: d);
+
+        await ReproductionController.saveReproduction(updateReproduction);
+
+        if (diagnostic) {
+          final pregnancy = Pregnancy.fromJson({
+            "id": widget.pregnancy?.id ?? 0,
+            "cow": earringController.earring!,
+            "date": dateDiagnostic,
+            "birthForecast": dateBirthForecast,
+            "reproduction": reproduction.id,
+            "observation": observationController.text,
+            "hasEnded": !diagnostic
           });
 
           await PregnancyController.savePregnancy(pregnancy);
         }
+
+        throw Exception("Testing");
       }).then((_) {
         if (!mounted) {
           return;

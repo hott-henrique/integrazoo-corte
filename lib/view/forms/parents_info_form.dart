@@ -13,8 +13,9 @@ class ParentsInfoForm extends StatefulWidget {
   final int? earring;
   final Parents? parents;
   final bool shouldPop;
+  final bool shouldShowHeader;
 
-  const ParentsInfoForm({ super.key, this.earring, this.parents, this.shouldPop = false });
+  const ParentsInfoForm({ super.key, this.earring, this.parents, this.shouldPop = false, this.shouldShowHeader = true });
 
   @override
   State<ParentsInfoForm> createState() => _ParentsInfoForm();
@@ -64,12 +65,21 @@ class _ParentsInfoForm extends State<ParentsInfoForm> {
       onChanged: (value) => _validateMother(value),
     );
 
+    final header = Text(
+      widget.earring != null ?
+      "REGISTRANDO PROGENITORES DO ANIMAL #${widget.earring!}" :
+      "EDITANDO PROGENITORES DO ANIMAL #${widget.parents!.bovine}",
+      textAlign: TextAlign.center,
+      textScaler: const TextScaler.linear(1.5)
+    );
+
     final addButton = TextButton(
       onPressed: saveParents,
       child: const Text("SALVAR"),
     );
 
     final column = <Widget>[
+      if (widget.shouldShowHeader) header,
       fatherField,
       const Divider(color: Colors.transparent),
       motherField,

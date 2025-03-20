@@ -163,7 +163,14 @@ class _BirthForm extends State<BirthForm> {
 
     Divider divider = const Divider(color: Colors.transparent);
 
+    final header = Text(
+      widget.earring == null ? "REGISTRANDO PARTO" : "EDITANDO NASCIMENTO DO ANIMAL #${widget.earring!}",
+      textAlign: TextAlign.center,
+      textScaler: const TextScaler.linear(1.5)
+    );
+
     final column = <Widget>[
+      header,
       if (widget.earring == null) ...[
         cowSelector,
         divider

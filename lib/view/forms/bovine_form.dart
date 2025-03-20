@@ -175,7 +175,14 @@ class BovineFormState extends State<BovineForm> {
 
     const divider = Divider(height: 8, color: Colors.transparent);
 
+    final header = Text(
+      widget.bovine == null ? "REGISTRANDO ANIMAL" : "EDITANDO ANIMAL #${widget.bovine!.earring}",
+      textAlign: TextAlign.center,
+      textScaler: const TextScaler.linear(1.5)
+    );
+
     final column = <Widget>[
+      header,
       if (widget.bovine == null) ...[
         earringField,
         divider,
