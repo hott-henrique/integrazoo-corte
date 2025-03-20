@@ -2,8 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 
-import 'package:integrazoo/base.dart';
-
 import 'package:integrazoo/view/screens/bovine_screen/components/birth_info_card.dart';
 import 'package:integrazoo/view/screens/bovine_screen/components/bovine_info_card.dart';
 import 'package:integrazoo/view/screens/bovine_screen/components/finish_info_card.dart';

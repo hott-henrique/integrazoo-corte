@@ -14,8 +14,9 @@ import 'package:integrazoo/globals.dart';
 class BovineForm extends StatefulWidget {
   final Bovine? bovine;
   final bool shouldPop;
+  final VoidCallback? postSaved;
 
-  const BovineForm({ super.key, this.bovine, this.shouldPop = false });
+  const BovineForm({ super.key, this.bovine, this.shouldPop = false, this.postSaved });
 
   @override
   BovineFormState createState() {
@@ -269,6 +270,8 @@ class BovineFormState extends State<BovineForm> {
             } else {
               clearForm();
             }
+
+            widget.postSaved?.call();
           }
         }
       });

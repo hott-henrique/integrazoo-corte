@@ -37,7 +37,12 @@ class _ParentsInfoCard extends State<ParentsInfoCard> {
         if (snapshot.connectionState != ConnectionState.done && !snapshot.hasData) {
           cardContent = const Text("Carregando...", style: TextStyle(fontStyle: FontStyle.italic), textAlign: TextAlign.center);
         } else if (snapshot.connectionState == ConnectionState.done && (!snapshot.hasData || isEditing)) {
-          cardContent = ParentsInfoForm(earring: widget.earring, parents: snapshot.data, shouldShowHeader: false);
+          cardContent = ParentsInfoForm(
+            earring: widget.earring,
+            parents: snapshot.data,
+            shouldShowHeader: false,
+            postSaved: () => setState(() => ())
+          );
         } else {
           parents = snapshot.data!;
 

@@ -35,7 +35,7 @@ class _BovineInfoCard extends State<BovineInfoCard> {
         if (snapshot.connectionState != ConnectionState.done && !snapshot.hasData) {
           cardContent = const Text("Carregando...", style: TextStyle(fontStyle: FontStyle.italic), textAlign: TextAlign.center);
         } else if (snapshot.connectionState == ConnectionState.done && !snapshot.hasData) {
-          cardContent = BovineForm(bovine: snapshot.data);
+          cardContent = BovineForm(bovine: snapshot.data, postSaved: () => setState(() => ()));
         } else {
           bovine = snapshot.data!;
 

@@ -83,4 +83,4 @@
 
 23. Separar peso ao sobreano em um objeto diferente.
 
-24. Adicionar títulos aos pop-ups. Exemplo: "Editando Desmame do Animal #X"
+24. ~~Adicionar títulos aos pop-ups. Exemplo: "Editando Desmame do Animal #X"~~

@@ -14,8 +14,16 @@ class ParentsInfoForm extends StatefulWidget {
   final Parents? parents;
   final bool shouldPop;
   final bool shouldShowHeader;
+  final VoidCallback? postSaved;
 
-  const ParentsInfoForm({ super.key, this.earring, this.parents, this.shouldPop = false, this.shouldShowHeader = true });
+  const ParentsInfoForm({
+    super.key,
+    this.earring,
+    this.parents,
+    this.shouldPop = false,
+    this.shouldShowHeader = true,
+    this.postSaved
+  });
 
   @override
   State<ParentsInfoForm> createState() => _ParentsInfoForm();
@@ -197,6 +205,8 @@ class _ParentsInfoForm extends State<ParentsInfoForm> {
         if (widget.shouldPop) {
           Navigator.of(context).pop();
         }
+
+        widget.postSaved?.call();
       }
     }
   }

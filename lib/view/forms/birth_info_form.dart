@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 
-
 import 'package:integrazoo/control/birth_controller.dart';
 
 import 'package:integrazoo/database/database.dart';
@@ -17,8 +16,16 @@ class BirthInfoForm extends StatefulWidget {
   final Birth? birth;
   final bool shouldPop;
   final bool shouldShowHeader;
+  final VoidCallback? postSaved;
 
-  const BirthInfoForm({ super.key, this.earring, this.birth, this.shouldPop = false, this.shouldShowHeader = true });
+  const BirthInfoForm({
+    super.key,
+    this.earring,
+    this.birth,
+    this.shouldPop = false,
+    this.shouldShowHeader = true,
+    this.postSaved
+  });
 
   @override
   State<BirthInfoForm> createState() => _BirthInfoForm();
@@ -167,6 +174,8 @@ class _BirthInfoForm extends State<BirthInfoForm> {
           if (widget.shouldPop) {
             Navigator.of(context).pop();
           }
+
+          widget.postSaved?.call();
         }
       });
     }
