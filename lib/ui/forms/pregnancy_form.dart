@@ -179,7 +179,7 @@ class _PregnancyForm extends State<PregnancyForm> {
         return;
       }
 
-      database.transaction(() async {
+      transaction(() async {
         if (widget.pregnancy != null) {
           final pregnancy = Pregnancy.fromJson({
             "id": widget.pregnancy?.id ?? 0,

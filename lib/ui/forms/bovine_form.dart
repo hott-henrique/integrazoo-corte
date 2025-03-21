@@ -232,7 +232,7 @@ class BovineFormState extends State<BovineForm> {
         return;
       }
 
-      await database.transaction(() async {
+      await transaction(() async {
         final exists = await BovineService.doesEarringExists(int.parse(earringController.text));
 
         if (exists && widget.bovine == null) {

@@ -153,7 +153,7 @@ class _BirthInfoForm extends State<BirthInfoForm> {
         return;
       }
 
-      await database.transaction(() async {
+      await transaction(() async {
         await saveBirthInfo();
 
         SnackBar snackBar = const SnackBar(

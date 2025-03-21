@@ -226,7 +226,7 @@ class _BirthForm extends State<BirthForm> {
         return;
       }
 
-      await database.transaction(() async {
+      await transaction(() async {
         final pregnancy = await PregnancyService.getActivePregnancy(motherEarringController.earring!);
 
         if (pregnancy != null) {
