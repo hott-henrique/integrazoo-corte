@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 
-import 'package:integrazoo/view/forms/bovine_form.dart';
-import 'package:integrazoo/view/forms/finish_form.dart';
-import 'package:integrazoo/view/forms/breeder_form.dart';
-import 'package:integrazoo/view/forms/artificial_insemination_form.dart';
-import 'package:integrazoo/view/forms/natural_mating_form.dart';
-import 'package:integrazoo/view/forms/pregnancy_form.dart';
-import 'package:integrazoo/view/forms/birth_form.dart';
-import 'package:integrazoo/view/forms/weaning_form.dart';
-import 'package:integrazoo/view/forms/treatment_form.dart';
+import 'package:integrazoo/ui/forms/bovine_form.dart';
+import 'package:integrazoo/ui/forms/finish_form.dart';
+import 'package:integrazoo/ui/forms/breeder_form.dart';
+import 'package:integrazoo/ui/forms/artificial_insemination_form.dart';
+import 'package:integrazoo/ui/forms/natural_mating_form.dart';
+import 'package:integrazoo/ui/forms/pregnancy_form.dart';
+import 'package:integrazoo/ui/forms/birth_form.dart';
+import 'package:integrazoo/ui/forms/weaning_form.dart';
+import 'package:integrazoo/ui/forms/treatment_form.dart';
 
-import 'package:integrazoo/view/screens/relatories/female_breeders_relatory.dart';
-import 'package:integrazoo/view/screens/relatories/herd_relatory.dart';
+import 'package:integrazoo/ui/screens/relatories/female_breeders_relatory.dart';
+import 'package:integrazoo/ui/screens/relatories/herd_relatory.dart';
 
-import 'package:integrazoo/view/screens/bovines_list_view.dart';
-import 'package:integrazoo/view/screens/breeders_list_view.dart';
-import 'package:integrazoo/view/screens/weanings_list_view.dart';
-import 'package:integrazoo/view/screens/treatments_list_view.dart';
-import 'package:integrazoo/view/screens/finishes_list_view.dart';
+import 'package:integrazoo/ui/screens/bovines_list_view.dart';
+import 'package:integrazoo/ui/screens/breeders_list_view.dart';
+import 'package:integrazoo/ui/screens/weanings_list_view.dart';
+import 'package:integrazoo/ui/screens/treatments_list_view.dart';
+import 'package:integrazoo/ui/screens/finishes_list_view.dart';
 
 
 class IntegrazooBaseApp extends StatefulWidget {

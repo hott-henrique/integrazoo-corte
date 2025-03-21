@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:integrazoo/base.dart';
-import 'package:integrazoo/globals.dart';
-import 'package:integrazoo/database/database.dart';
+
+import 'package:integrazoo/backend/database/database.dart';
 
 
 void main() async {
