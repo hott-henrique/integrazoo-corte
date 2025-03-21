@@ -4,15 +4,9 @@ import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
 
-import 'package:integrazoo/domain/enumerations.dart';
+import 'package:integrazoo/backend.dart';
 
-import 'package:integrazoo/backend/database/database.dart';
-
-import 'package:integrazoo/backend/services/reproduction_service.dart';
-
-import 'package:integrazoo/ui/forms/pregnancy_form.dart';
-import 'package:integrazoo/ui/forms/artificial_insemination_form.dart';
-import 'package:integrazoo/ui/forms/natural_mating_form.dart';
+import 'package:integrazoo/ui/forms.dart';
 
 
 

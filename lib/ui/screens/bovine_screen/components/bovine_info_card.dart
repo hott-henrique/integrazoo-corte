@@ -2,15 +2,10 @@ import 'dart:developer'; // ignore: unused_import
 
 import 'package:flutter/material.dart';
 
-import 'package:integrazoo/domain/enumerations.dart';
+import 'package:integrazoo/backend.dart';
 
-import 'package:integrazoo/backend/database/database.dart';
-
-import 'package:integrazoo/backend/services/bovine_service.dart';
-
-import 'package:integrazoo/ui/components/titled_card.dart';
-
-import 'package:integrazoo/ui/forms/bovine_form.dart';
+import 'package:integrazoo/ui/components.dart';
+import 'package:integrazoo/ui/forms.dart';
 
 
 class BovineInfoCard extends StatefulWidget {

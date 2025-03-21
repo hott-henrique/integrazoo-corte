@@ -2,11 +2,7 @@ import 'dart:developer'; // ignore: unused_import
 
 import 'package:flutter/material.dart';
 
-import 'package:integrazoo/backend/database/database.dart';
-
-import 'package:integrazoo/backend/services/breeder_service.dart';
-
-import 'package:integrazoo/domain/enumerations.dart';
+import 'package:integrazoo/backend.dart';
 
 
 class BreederExpansionTile extends StatefulWidget {

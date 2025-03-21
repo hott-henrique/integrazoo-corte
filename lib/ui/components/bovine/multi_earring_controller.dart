@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:integrazoo/backend/database/database.dart';
+import 'package:integrazoo/backend.dart';
 
 
 class MultiEarringController with ChangeNotifier {

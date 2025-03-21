@@ -4,18 +4,9 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 
-import 'package:integrazoo/domain/enumerations.dart';
+import 'package:integrazoo/backend.dart';
 
-import 'package:integrazoo/backend/database/database.dart';
-
-import 'package:integrazoo/backend/services/bovine_service.dart';
-import 'package:integrazoo/backend/services/reproduction_service.dart';
-
-import 'package:integrazoo/ui/components/bovine/multi_bovine_selector.dart';
-import 'package:integrazoo/ui/components/bovine/multi_earring_controller.dart';
-
-import 'package:integrazoo/ui/components/breeder/single_breeder_selector.dart';
-import 'package:integrazoo/ui/components/breeder/single_breeder_selector_controller.dart';
+import 'package:integrazoo/ui/components.dart';
 
 
 class ArtificialInseminationForm extends StatefulWidget {

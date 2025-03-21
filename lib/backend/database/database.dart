@@ -16,6 +16,8 @@ import 'package:integrazoo/domain/finish.dart';
 // INFO: This import fix errors in 'database.g.dart'.
 import 'package:integrazoo/domain/enumerations.dart';
 
+export 'package:integrazoo/domain/enumerations.dart';
+
 part 'database.g.dart';
 
 

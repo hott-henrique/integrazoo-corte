@@ -2,12 +2,9 @@ import 'dart:developer'; // ignore: unused_import
 
 import 'package:flutter/material.dart';
 
-import 'package:integrazoo/backend/database/database.dart';
+import 'package:integrazoo/backend.dart';
 
-import 'package:integrazoo/backend/services/bovine_service.dart';
 import 'package:integrazoo/ui/components/bovine/earring_controller.dart';
-
-import 'package:integrazoo/domain/enumerations.dart';
 
 
 class SingleBovineSelector extends StatefulWidget {

@@ -4,13 +4,9 @@ import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
 
-import 'package:integrazoo/domain/enumerations.dart';
+import 'package:integrazoo/backend.dart';
 
-import 'package:integrazoo/backend/database/database.dart';
-
-import 'package:integrazoo/backend/services/finish_service.dart';
-
-import 'package:integrazoo/ui/forms/finish_form.dart';
+import 'package:integrazoo/ui/forms.dart';
 
 
 class FinishesListView extends StatefulWidget {

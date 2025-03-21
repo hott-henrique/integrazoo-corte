@@ -2,7 +2,7 @@ import 'dart:developer'; // ignore: unused_import
 
 import 'package:flutter/material.dart';
 
-import 'package:integrazoo/backend/services/relatory_service.dart';
+import 'package:integrazoo/backend.dart';
 
 
 class FemaleBreedersRelatoryListView extends StatefulWidget {

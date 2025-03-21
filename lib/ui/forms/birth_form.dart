@@ -4,18 +4,9 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 
-import 'package:integrazoo/domain/enumerations.dart';
+import 'package:integrazoo/backend.dart';
 
-import 'package:integrazoo/backend/database/database.dart';
-
-import 'package:integrazoo/backend/services/bovine_service.dart';
-import 'package:integrazoo/backend/services/birth_service.dart';
-import 'package:integrazoo/backend/services/pregnancy_service.dart';
-import 'package:integrazoo/backend/services/reproduction_service.dart';
-import 'package:integrazoo/backend/services/parents_service.dart';
-
-import 'package:integrazoo/ui/components/bovine/single_bovine_selector.dart';
-import 'package:integrazoo/ui/components/bovine/earring_controller.dart';
+import 'package:integrazoo/ui/components.dart';
 
 
 class BirthForm extends StatefulWidget {

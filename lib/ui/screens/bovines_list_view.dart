@@ -2,13 +2,9 @@ import 'dart:developer'; // ignore: unused_import
 
 import 'package:flutter/material.dart';
 
-import 'package:integrazoo/domain/enumerations.dart';
+import 'package:integrazoo/backend.dart';
 
-import 'package:integrazoo/backend/database/database.dart';
-
-import 'package:integrazoo/backend/services/bovine_service.dart';
-
-import 'package:integrazoo/ui/forms/bovine_form.dart';
+import 'package:integrazoo/ui/forms.dart';
 
 import 'package:integrazoo/ui/screens/bovine_screen/bovine_screen.dart';
 
@@ -38,23 +34,23 @@ class _BovinesListView extends State<BovinesListView> {
           return const Center(child: Text("Nenhum animal registrado até o momento."));
         }
 
-        return PaginateBovinesReproducing(numElements: snapshot.data!, postAction: () => setState(() => ()));
+        return PaginateBovines(numElements: snapshot.data!, postAction: () => setState(() => ()));
       }
     );
   }
 }
 
-class PaginateBovinesReproducing extends StatefulWidget {
+class PaginateBovines extends StatefulWidget {
   final int numElements;
   final VoidCallback? postAction;
 
-  const PaginateBovinesReproducing({ super.key, required this.numElements, this.postAction });
+  const PaginateBovines({ super.key, required this.numElements, this.postAction });
 
   @override
-  State<PaginateBovinesReproducing> createState() => _PaginateBovinesReproducing();
+  State<PaginateBovines> createState() => _PaginateBovines();
 }
 
-class _PaginateBovinesReproducing extends State<PaginateBovinesReproducing> {
+class _PaginateBovines extends State<PaginateBovines> {
   int page = 0, pageSize = 25;
 
   int get maxPages => (widget.numElements / pageSize).ceil();

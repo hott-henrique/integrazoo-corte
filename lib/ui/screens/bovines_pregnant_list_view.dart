@@ -4,13 +4,10 @@ import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
 
-import 'package:integrazoo/ui/forms/birth_form.dart';
+import 'package:integrazoo/backend.dart';
 
-import 'package:integrazoo/backend/services/pregnancy_service.dart';
+import 'package:integrazoo/ui/forms.dart';
 
-import 'package:integrazoo/ui/forms/pregnancy_form.dart';
-
-import 'package:integrazoo/backend/database/database.dart';
 
 
 class BovinesPregnantListView extends StatefulWidget {

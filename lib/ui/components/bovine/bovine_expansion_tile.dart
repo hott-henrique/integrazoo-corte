@@ -4,17 +4,9 @@ import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
 
-import 'package:integrazoo/backend/database/database.dart';
-
-import 'package:integrazoo/backend/services/bovine_service.dart';
-import 'package:integrazoo/backend/services/birth_service.dart';
-import 'package:integrazoo/backend/services/reproduction_service.dart';
-import 'package:integrazoo/backend/services/weaning_service.dart';
-import 'package:integrazoo/backend/services/finish_service.dart';
+import 'package:integrazoo/backend.dart';
 
 import 'package:integrazoo/ui/screens/bovine_screen/bovine_screen.dart';
-
-import 'package:integrazoo/domain/enumerations.dart';
 
 
 class BovineExpansionTile extends StatefulWidget {

@@ -2,9 +2,7 @@ import 'dart:developer'; // ignore: unused_import
 
 import 'package:flutter/material.dart';
 
-import 'package:integrazoo/backend/database/database.dart';
-
-import 'package:integrazoo/backend/services/breeder_service.dart';
+import 'package:integrazoo/backend.dart';
 
 import 'package:integrazoo/ui/components/breeder/single_breeder_selector_controller.dart';
 

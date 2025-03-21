@@ -2,11 +2,9 @@ import 'dart:developer'; // ignore: unused_import
 
 import 'package:flutter/material.dart';
 
-import 'package:integrazoo/backend/database/database.dart';
+import 'package:integrazoo/backend.dart';
 
-import 'package:integrazoo/backend/services/breeder_service.dart';
-
-import 'package:integrazoo/ui/forms/breeder_form.dart';
+import 'package:integrazoo/ui/forms.dart';
 
 
 class BreedersListView extends StatefulWidget {
@@ -30,23 +28,23 @@ class _BreedersListView extends State<BreedersListView> {
           return const Text("Algo de errado ocorreu! Por favor, contate o suporte.");
         }
 
-        return PaginateBovinesReproducing(numElements: snapshot.data!, postAction: () => setState(() => ()));
+        return PaginateBreeders(numElements: snapshot.data!, postAction: () => setState(() => ()));
       }
     );
   }
 }
 
-class PaginateBovinesReproducing extends StatefulWidget {
+class PaginateBreeders extends StatefulWidget {
   final int numElements;
   final VoidCallback? postAction;
 
-  const PaginateBovinesReproducing({ super.key, required this.numElements, this.postAction });
+  const PaginateBreeders({ super.key, required this.numElements, this.postAction });
 
   @override
-  State<PaginateBovinesReproducing> createState() => _PaginateBovinesReproducing();
+  State<PaginateBreeders> createState() => _PaginateBreeders();
 }
 
-class _PaginateBovinesReproducing extends State<PaginateBovinesReproducing> {
+class _PaginateBreeders extends State<PaginateBreeders> {
   int page = 0, pageSize = 25;
 
   int get maxPages => (widget.numElements / pageSize).ceil();

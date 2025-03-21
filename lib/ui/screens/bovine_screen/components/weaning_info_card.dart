@@ -4,13 +4,10 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 
-import 'package:integrazoo/backend/services/weaning_service.dart';
+import 'package:integrazoo/backend.dart';
 
-import 'package:integrazoo/backend/database/database.dart';
-
-import 'package:integrazoo/ui/components/titled_card.dart';
-
-import 'package:integrazoo/ui/forms/weaning_form.dart';
+import 'package:integrazoo/ui/components.dart';
+import 'package:integrazoo/ui/forms.dart';
 
 
 class WeaningInfoCard extends StatefulWidget {

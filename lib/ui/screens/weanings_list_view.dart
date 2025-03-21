@@ -4,11 +4,9 @@ import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
 
-import 'package:integrazoo/ui/forms/weaning_form.dart';
+import 'package:integrazoo/backend.dart';
 
-import 'package:integrazoo/backend/database/database.dart';
-
-import 'package:integrazoo/backend/services/weaning_service.dart';
+import 'package:integrazoo/ui/forms.dart';
 
 
 class WeaningsListView extends StatefulWidget {
@@ -36,23 +34,23 @@ class _WeaningsListView extends State<WeaningsListView> {
           return const Center(child: Text("Nenhum desmame registrado até o momento."));
         }
 
-        return PaginateBovinesReproducing(numElements: snapshot.data!, postAction: () => setState(() => ()));
+        return PaginateWeanings(numElements: snapshot.data!, postAction: () => setState(() => ()));
       }
     );
   }
 }
 
-class PaginateBovinesReproducing extends StatefulWidget {
+class PaginateWeanings extends StatefulWidget {
   final int numElements;
   final VoidCallback? postAction;
 
-  const PaginateBovinesReproducing({ super.key, required this.numElements, this.postAction });
+  const PaginateWeanings({ super.key, required this.numElements, this.postAction });
 
   @override
-  State<PaginateBovinesReproducing> createState() => _PaginateBovinesReproducing();
+  State<PaginateWeanings> createState() => _PaginateWeanings();
 }
 
-class _PaginateBovinesReproducing extends State<PaginateBovinesReproducing> {
+class _PaginateWeanings extends State<PaginateWeanings> {
   int page = 0, pageSize = 25;
 
   int get maxPages => (widget.numElements / pageSize).ceil();

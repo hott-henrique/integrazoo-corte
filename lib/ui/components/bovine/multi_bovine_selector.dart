@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:integrazoo/backend/database/database.dart';
-
-import 'package:integrazoo/backend/services/bovine_service.dart';
-
-import 'package:integrazoo/domain/enumerations.dart';
+import 'package:integrazoo/backend.dart';
 
 import 'package:integrazoo/ui/components/bovine/multi_earring_controller.dart';
 

@@ -2,13 +2,10 @@ import 'dart:developer'; // ignore: unused_import
 
 import 'package:flutter/material.dart';
 
-import 'package:integrazoo/backend/database/database.dart';
+import 'package:integrazoo/backend.dart';
 
-import 'package:integrazoo/backend/services/parents_service.dart';
-
-import 'package:integrazoo/ui/components/titled_card.dart';
-
-import 'package:integrazoo/ui/forms/parents_info_form.dart';
+import 'package:integrazoo/ui/components.dart';
+import 'package:integrazoo/ui/forms.dart';
 
 
 class ParentsInfoCard extends StatefulWidget {

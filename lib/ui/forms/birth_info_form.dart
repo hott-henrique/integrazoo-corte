@@ -4,12 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 
-import 'package:integrazoo/backend/database/database.dart';
-
-import 'package:integrazoo/domain/enumerations.dart';
-
-import 'package:integrazoo/backend/services/birth_service.dart';
-
+import 'package:integrazoo/backend.dart';
 
 
 class BirthInfoForm extends StatefulWidget {
