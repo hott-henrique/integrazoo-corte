@@ -66,13 +66,13 @@
     - Nome, Peso ao Nascimento, Peso a Desmama, Pesoa ao Sobreano, Idade ao Primeiro Parto.
     - static Future<List<(String, double?, double?, double?, int?)>> getOffspringStatistics(int brinco);
 
-20. ~~Implementar SQL que recupera quantas vezes em sequência a tentativa de reprodução vem falhando para uma vaca:
-    - Exemplos:
-        - Sequência de diagnósticos: () / Retorno: 0
-        - Sequência de diagnósticos: (+ - - -) / Retorno: 3
-        - Sequência de diagnósticos: (+) / Retorno: 0
-        - Sequência de diagnósticos: (+ - -) / Retorno: 2
-        - Sequência de diagnósticos: (+ - - + -) / Retorno: 1~~
+20. ~~Implementar SQL que recupera quantas vezes em sequência a tentativa de reprodução vem falhando para uma vaca:~~
+    - ~~Exemplos:~~
+        - ~~Sequência de diagnósticos: () / Retorno: 0~~
+        - ~~Sequência de diagnósticos: (+ - - -) / Retorno: 3~~
+        - ~~Sequência de diagnósticos: (+) / Retorno: 0~~
+        - ~~Sequência de diagnósticos: (+ - -) / Retorno: 2~~
+        - ~~Sequência de diagnósticos: (+ - - + -) / Retorno: 1~~
 
 21. Adicionar a informação do item 19 e ~~20~~ na tabela de desempenho das matrizes: Ao clicar na linha da matriz mostrar o desempenho das crias.
 
