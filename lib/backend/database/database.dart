@@ -13,6 +13,8 @@ import 'package:integrazoo/domain/pregnancy.dart';
 import 'package:integrazoo/domain/treatment.dart';
 import 'package:integrazoo/domain/finish.dart';
 
+export 'package:integrazoo/domain/relatories/female_breeder_statistics.dart';
+
 // INFO: This import fix errors in 'database.g.dart'.
 import 'package:integrazoo/domain/enumerations.dart';
 
@@ -41,7 +43,7 @@ class AppDatabase extends _$AppDatabase {
   int get schemaVersion => 1;
 
   static QueryExecutor _openConnection() {
-    return driftDatabase(name: 'integrazoo');
+    return driftDatabase(name: 'BANCO_DE_DADOS_INTEGRAZOO_BOVINO_DE_CORTE');
   }
 }
 

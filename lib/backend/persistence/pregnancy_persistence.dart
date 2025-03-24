@@ -2,12 +2,7 @@ import 'dart:developer';
 
 import 'package:drift/drift.dart';
 
-import 'package:integrazoo/backend/services/bovine_service.dart';
-import 'package:integrazoo/backend/services/reproduction_service.dart';
-
-import 'package:integrazoo/backend/database/database.dart';
-
-import 'package:integrazoo/domain/enumerations.dart';
+import 'package:integrazoo/backend.dart';
 
 
 class PregnancyPersistence {

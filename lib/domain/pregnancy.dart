@@ -14,7 +14,7 @@ class Pregnancies extends Table {
 
   DateTimeColumn get birthForecast => dateTime()();
 
-  IntColumn get reproduction => integer().nullable().references(Reproductions, #id)();
+  IntColumn get reproduction => integer().references(Reproductions, #id)();
 
   BoolColumn get hasEnded => boolean().withDefault(const Constant(false))();
 

@@ -99,19 +99,61 @@ class _FemaleBreedersRelatory extends State<FemaleBreedersRelatory> {
     return buildTable();
   }
 
-  List<DataRow> _buildRows(List<(String, double?, double?, double?, int?, int)> data) {
+  Widget buildTable() {
+    final columns = <DataColumn>[
+      const DataColumn(label: Expanded(child: Text('Animal'))),
+      const DataColumn(label: Expanded(child: Text('Peso ao Sobreano (Kg)'))),
+      const DataColumn(label: Expanded(child: Text('Peso ao Nascer (Kg)'))),
+      const DataColumn(label: Expanded(child: Text('Peso a Desmama (Kg)'))),
+      const DataColumn(label: Expanded(child: Text('IPP (Meses)'))),
+      const DataColumn(label: Expanded(child: Text('# Tentativas')))
+    ];
+
+    return FutureBuilder<List<FemaleBreederStatistics>>(
+      future: RelatoryService.getFemaleBreedersStatistics(widget.pageSize, widget.page),
+      builder: (context, AsyncSnapshot<List<FemaleBreederStatistics>> snapshot) {
+        late List<DataRow> rows;
+
+        if (snapshot.connectionState != ConnectionState.done && !snapshot.hasData) {
+          inspect("S1");
+          rows = [];
+        } else if (snapshot.connectionState == ConnectionState.done && !snapshot.hasData) {
+          inspect("S2");
+          rows = [];
+          inspect(snapshot.data);
+        } else {
+          inspect("S3");
+          rows = _buildRows(snapshot.data!);
+        }
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SingleChildScrollView(child: DataTable(
+              rows: rows,
+              columns: columns,
+              sortAscending: isAscending,
+              sortColumnIndex: sortColumnIndex,
+            ))
+          ]
+        );
+      }
+    );
+  }
+
+  List<DataRow> _buildRows(List<FemaleBreederStatistics> data) {
     int index = 0;
     return data.map((rowData) {
       Color? c = (index % 2) == 0 ? const Color.fromRGBO(201, 201, 201, 1.0) : null;
       index = index + 1;
       return DataRow(
         cells: [
-          DataCell(Text(rowData.$1)),
-          DataCell(Text((rowData.$2?.toStringAsFixed(2) ?? "-"))),
-          DataCell(Text((rowData.$3?.toStringAsFixed(2)?? "-"))),
-          DataCell(Text((rowData.$4?.toStringAsFixed(2)?? "-"))),
-          DataCell(Text((rowData.$5?.toString()?? "-"))),
-          DataCell(Text(rowData.$6.toString()))
+          DataCell(Text(rowData.earring.toString())),
+          DataCell(Text((rowData.weightBirth?.toStringAsFixed(2) ?? "-"))),
+          DataCell(Text((rowData.weightWeaning?.toStringAsFixed(2) ?? "-"))),
+          DataCell(Text((rowData.weightYearling?.toStringAsFixed(2) ?? "-"))),
+          DataCell(Text((rowData.monthsAfterFirstBirth?.toString() ?? "-"))),
+          DataCell(Text(rowData.countFailedReproductions?.toString() ?? "-"))
         ],
         color: WidgetStatePropertyAll<Color?>(c)
       );
@@ -120,67 +162,5 @@ class _FemaleBreedersRelatory extends State<FemaleBreedersRelatory> {
 
   DataCell buildCell(String content) {
     return DataCell(Text(content));
-  }
-
-  Widget buildTable() {
-    void onSort(idx, asc) {
-      setState(() {
-        previousSortColumnIndex = sortColumnIndex;
-        sortColumnIndex = idx;
-
-        if (previousSortColumnIndex == sortColumnIndex) {
-          isAscending = !isAscending;
-        } else {
-          isAscending = true;
-        }
-      });
-    }
-
-    final columns = <DataColumn>[
-      const DataColumn(label: Expanded(child: Text('Animal'))),
-      DataColumn(label: const Expanded(child: Text('Peso ao Sobreano (Kg)')), onSort: onSort),
-      DataColumn(label: const Expanded(child: Text('Peso ao Nascer (Kg)')), onSort: onSort),
-      DataColumn(label: const Expanded(child: Text('Peso a Desmama (Kg)')), onSort: onSort),
-      DataColumn(label: const Expanded(child: Text('IPP (Meses)')), onSort: onSort),
-      DataColumn(label: const Expanded(child: Text('# Tentativas')), onSort: onSort)
-    ];
-
-    return FutureBuilder<List<dynamic>>(
-      future: RelatoryService.getFemaleBreedersStatistics(widget.pageSize, widget.page),
-      builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
-        late List<DataRow> rows;
-
-        if (snapshot.connectionState != ConnectionState.done && !snapshot.hasData) {
-          rows = [];
-        } else if (snapshot.connectionState == ConnectionState.done && !snapshot.hasData) {
-          rows = [];
-        } else {
-          final data = snapshot.data as List<(String, double?, double?, double?, int?, int)>;
-
-          rows = _buildRows(data);
-        }
-
-        rows.sort((a, b) {
-          final valueA = double.tryParse((a.cells[sortColumnIndex].child as Text).data!) ?? 0.0;
-          final valueB = double.tryParse((b.cells[sortColumnIndex].child as Text).data!) ?? 0.0;
-
-          return isAscending ? valueA.compareTo(valueB) : valueB.compareTo(valueA);
-        });
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            SingleChildScrollView(
-              child: DataTable(
-                rows: rows,
-                columns: columns,
-                sortAscending: isAscending,
-                sortColumnIndex: sortColumnIndex,
-              )
-            )
-          ]
-        );
-      }
-    );
   }
 }

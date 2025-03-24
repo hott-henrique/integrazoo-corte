@@ -2,6 +2,18 @@ library backend.dart;
 
 export 'package:integrazoo/backend/database/database.dart';
 
+export 'package:integrazoo/backend/persistence/bovine_persistence.dart';
+export 'package:integrazoo/backend/persistence/birth_persistence.dart';
+export 'package:integrazoo/backend/persistence/breeder_persistence.dart';
+export 'package:integrazoo/backend/persistence/finish_persistence.dart';
+export 'package:integrazoo/backend/persistence/parents_persistence.dart';
+export 'package:integrazoo/backend/persistence/pregnancy_persistence.dart';
+export 'package:integrazoo/backend/persistence/relatory_persistence.dart';
+export 'package:integrazoo/backend/persistence/reproduction_persistence.dart';
+export 'package:integrazoo/backend/persistence/treatment_persistence.dart';
+export 'package:integrazoo/backend/persistence/weaning_persistence.dart';
+export 'package:integrazoo/backend/persistence/yearling_weight_persistence.dart';
+
 export 'package:integrazoo/backend/services/bovine_service.dart';
 export 'package:integrazoo/backend/services/birth_service.dart';
 export 'package:integrazoo/backend/services/breeder_service.dart';

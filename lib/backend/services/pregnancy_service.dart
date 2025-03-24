@@ -1,8 +1,4 @@
-import 'dart:developer'; // ignore: unused_import
-
-import 'package:integrazoo/backend/persistence/pregnancy_persistence.dart';
-
-import 'package:integrazoo/backend/database/database.dart';
+import 'package:integrazoo/backend.dart';
 
 
 class PregnancyService {

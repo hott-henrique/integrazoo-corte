@@ -1,8 +1,4 @@
-import 'package:integrazoo/backend/persistence/bovine_persistence.dart';
-
-import 'package:integrazoo/backend/database/database.dart';
-
-import 'package:integrazoo/domain/enumerations.dart';
+import 'package:integrazoo/backend.dart';
 
 
 enum SearchSorting {

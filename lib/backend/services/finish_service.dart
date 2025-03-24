@@ -1,6 +1,4 @@
-import 'package:integrazoo/backend/database/database.dart';
-
-import 'package:integrazoo/backend/persistence/finish_persistence.dart';
+import 'package:integrazoo/backend.dart';
 
 
 class FinishService {

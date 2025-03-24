@@ -1,8 +1,8 @@
-import 'dart:developer';
+import 'dart:developer'; // ignore: unused_import
 
 import 'package:drift/drift.dart';
 
-import 'package:integrazoo/backend/database/database.dart';
+import 'package:integrazoo/backend.dart';
 
 
 class RelatoryPersistence {
@@ -19,45 +19,82 @@ class RelatoryPersistence {
     return result.read<int>("COUNT(*)");
   }
 
-  static Future<List<(String, double?, double?, double?, int?, int)>> getFemaleBreedersStatistics(int pageSize, int page) async {
-    final results = (await database.customSelect("""
-      SELECT
-          CASE
-              WHEN bov.name IS NOT NULL THEN CONCAT(bov.name, ' #', bov.earring)
-              ELSE CONCAT('#', bov.earring)
-          END AS name,
-          bov.weight540,
-          bir.weight birth_weight,
-          wea.weight weaning_weight,
-          CAST(((JULIANDAY(DATE(fb_date, 'unixepoch')) - JULIANDAY(DATE(bir.date, 'unixepoch'))) / 30) AS INTEGER) afb
-      FROM Bovines bov
-      LEFT JOIN Births bir ON bov.earring = bir.bovine
-      LEFT JOIN Weanings wea ON bov.earring = wea.bovine
-      LEFT JOIN (
-          SELECT p1.cow as cow, b.date as fb_date
-          FROM Pregnancies p1
-          JOIN Births b ON b.pregnancy = p1.id
-          WHERE p1.reproduction = (
-              SELECT r1.id
-              FROM Reproductions r1
-              WHERE r1.date = (SELECT MIN(date) FROM Reproductions r2 WHERE r1.cow = r2.cow AND r1.diagnostic = 0)
-          )
-      ) first_birth ON bov.earring = first_birth.cow
-      WHERE bov.sex = 1 AND bov.was_discarded = 0 AND bov.is_breeder = 1
+  static Future<List<FemaleBreederStatistics>> getFemaleBreedersStatistics(int pageSize, int page) async {
+    final cows = await (database.customSelect("""
+      SELECT b.earring, b.name
+      FROM Bovines b
+      WHERE b.sex = 1 AND b.was_discarded = 0 AND b.is_breeder = 1
       LIMIT ?
       OFFSET ?;
-    """, variables: [ Variable(pageSize), Variable(page * pageSize) ]).get());
+    """, variables:[ Variable(pageSize), Variable(page * pageSize) ]).get());
 
-    return results.map((row) {
-      final name = row.read<String>('name');
-      final weight540 = row.readNullable<double>('weight540');
-      final birthWeight = row.readNullable<double>('birth_weight');
-      final weaningWeight = row.readNullable<double>('weaning_weight');
-      final afb = row.readNullable<int>('afb');
-      const attempts = 0;
-      inspect((name, weight540, birthWeight, weaningWeight, afb, attempts));
-      return (name, weight540, birthWeight, weaningWeight, afb, attempts);
-    }).toList();
+    inspect(cows);
+
+    List<FemaleBreederStatistics> statistics = List.empty(growable: true);
+
+    for (final c in cows) {
+      final earring = c.read<int>("earring");
+      final name = c.read<String?>("name");
+
+      final futureFirstBirthDate = (database.customSelect("""
+        SELECT b.date AS date
+        FROM Births b JOIN Pregnancies p ON b.pregnancy = p.id
+                      JOIN Reproductions r ON p.reproduction = r.id
+        WHERE r.cow = ?
+        ORDER BY b.date ASC
+        LIMIT 1;
+      """, variables: [ Variable(earring) ]).getSingleOrNull());
+
+      final futureCountFailedReproductions = database.customSelect("""
+        SELECT COUNT(*) AS failures
+        FROM Reproductions r1
+        WHERE date > (
+            SELECT COALESCE((
+                SELECT r3.date
+                FROM Reproductions r3
+                WHERE r3.cow = ? AND r3.diagnostic = 0
+                ORDER BY r3.date DESC
+                LIMIT 1
+            ), 0)
+        ) AND r1.cow = ?;
+      """, variables: [ Variable(earring), Variable(earring) ]).getSingle();
+
+      final futureBirth = BirthService.getBirth(earring);
+      final futureWeaning = WeaningService.getWeaning(earring);
+      final futureYearlingWeight = YearlingWeightService.getYearlingWeight(earring);
+
+      final countFailedReproductions = (await futureCountFailedReproductions).read<int>("failures");
+      final weaningWeight = (await futureWeaning)?.weight;
+      final yearlingWeight = (await futureYearlingWeight)?.value;
+
+      final birth = await futureBirth;
+      final firstBirthDate = (await futureFirstBirthDate)?.read<int?>("date");
+
+      int? monthsAfterFirstBirth;
+
+      if (birth != null && firstBirthDate != null) {
+        monthsAfterFirstBirth = (
+          (firstBirthDate - (birth.date.millisecondsSinceEpoch / 1000)) /
+          (60 * 60 * 24 * 30.44)
+        ).round();
+      }
+
+      final birthWeight = birth?.weight;
+
+      final s = FemaleBreederStatistics(
+        earring: earring,
+        name: name,
+        weightBirth: birthWeight,
+        weightWeaning: weaningWeight,
+        weightYearling: yearlingWeight,
+        monthsAfterFirstBirth: monthsAfterFirstBirth,
+        countFailedReproductions: countFailedReproductions
+      );
+
+      statistics.add(s);
+    }
+
+    return statistics;
   }
 
   static Future<List<(String, double?, double?, double?, int?, int)>> getOffspringStatistics(int earring) async {

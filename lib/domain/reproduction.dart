@@ -2,8 +2,8 @@ import 'package:drift/drift.dart';
 
 import 'package:integrazoo/domain/bovine.dart';
 import 'package:integrazoo/domain/breeder.dart';
-import 'package:integrazoo/domain/enumerations.dart';
 
+import 'package:integrazoo/domain/enumerations.dart';
 
 
 class Reproductions extends Table {
