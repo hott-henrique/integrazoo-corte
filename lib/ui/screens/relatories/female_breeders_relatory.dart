@@ -115,14 +115,10 @@ class _FemaleBreedersRelatory extends State<FemaleBreedersRelatory> {
         late List<DataRow> rows;
 
         if (snapshot.connectionState != ConnectionState.done && !snapshot.hasData) {
-          inspect("S1");
           rows = [];
         } else if (snapshot.connectionState == ConnectionState.done && !snapshot.hasData) {
-          inspect("S2");
           rows = [];
-          inspect(snapshot.data);
         } else {
-          inspect("S3");
           rows = _buildRows(snapshot.data!);
         }
 
@@ -153,8 +149,14 @@ class _FemaleBreedersRelatory extends State<FemaleBreedersRelatory> {
           DataCell(Text((rowData.weightWeaning?.toStringAsFixed(2) ?? "-"))),
           DataCell(Text((rowData.weightYearling?.toStringAsFixed(2) ?? "-"))),
           DataCell(Text((rowData.monthsAfterFirstBirth?.toString() ?? "-"))),
-          DataCell(Text(rowData.countFailedReproductions?.toString() ?? "-"))
+          DataCell(Text(rowData.countFailedReproductions.toString()))
         ],
+        onLongPress: () {
+          showDialog(
+            context: context,
+            builder: (context) => Dialog(child: buildOffspringInfo(rowData.earring))
+          );
+        },
         color: WidgetStatePropertyAll<Color?>(c)
       );
     }).toList();
@@ -162,5 +164,44 @@ class _FemaleBreedersRelatory extends State<FemaleBreedersRelatory> {
 
   DataCell buildCell(String content) {
     return DataCell(Text(content));
+  }
+
+  Widget buildOffspringInfo(int earring) {
+    final columns = <DataColumn>[
+      const DataColumn(label: Expanded(child: Text('Animal'))),
+      const DataColumn(label: Expanded(child: Text('Peso ao Sobreano (Kg)'))),
+      const DataColumn(label: Expanded(child: Text('Peso ao Nascer (Kg)'))),
+      const DataColumn(label: Expanded(child: Text('Peso a Desmama (Kg)'))),
+      const DataColumn(label: Expanded(child: Text('IPP (Meses)'))),
+      const DataColumn(label: Expanded(child: Text('# Tentativas')))
+    ];
+
+    return FutureBuilder<List<FemaleBreederStatistics>>(
+      future: RelatoryService.getOffspringStatistics(earring),
+      builder: (context, AsyncSnapshot<List<FemaleBreederStatistics>> snapshot) {
+        late List<DataRow> rows;
+
+        if (snapshot.connectionState != ConnectionState.done && !snapshot.hasData) {
+          rows = [];
+        } else if (snapshot.connectionState == ConnectionState.done && !snapshot.hasData) {
+          rows = [];
+        } else {
+          rows = _buildRows(snapshot.data!);
+        }
+
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            DataTable(
+              rows: rows,
+              columns: columns,
+              sortAscending: isAscending,
+              sortColumnIndex: sortColumnIndex,
+            ),
+            if (rows.isEmpty) const Text("Nenhum animal para mostrar.")
+          ]
+        );
+      }
+    );
   }
 }

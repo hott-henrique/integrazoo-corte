@@ -10,16 +10,10 @@ class RelatoryService {
     return RelatoryPersistence.countNonDiscardedFemaleBreeders();
   }
   static Future<List<FemaleBreederStatistics>> getFemaleBreedersStatistics(int pageSize, int page) {
-    try {
-      return RelatoryPersistence.getFemaleBreedersStatistics(pageSize, page);
-    } catch (e) {
-      print(e);
-      inspect(e);
-      rethrow;
-    }
+    return RelatoryPersistence.getFemaleBreedersStatistics(pageSize, page);
   }
 
-  static Future<List<(String, double?, double?, double?, int?, int)>> getOffspringStatistics(int earring) {
+  static Future<List<FemaleBreederStatistics>> getOffspringStatistics(int earring) {
     return RelatoryPersistence.getOffspringStatistics(earring);
   }
 }
