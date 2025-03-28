@@ -1,4 +1,4 @@
-class FemaleBreederStatistics {
+class BovineStatistics {
   int earring;
   String? name;
 
@@ -10,7 +10,7 @@ class FemaleBreederStatistics {
 
   int countFailedReproductions;
 
-  FemaleBreederStatistics({
+  BovineStatistics({
     required this.earring,
     this.name,
     this.weightBirth,

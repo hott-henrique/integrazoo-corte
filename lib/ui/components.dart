@@ -14,3 +14,10 @@ export 'package:integrazoo/ui/components/breeder/breeder_expansion_tile.dart';
 
 export 'package:integrazoo/ui/components/breeder/single_breeder_selector_controller.dart';
 export 'package:integrazoo/ui/components/breeder/single_breeder_selector.dart';
+
+export 'package:integrazoo/ui/components/search/bovines_search_notifier.dart';
+
+export 'package:integrazoo/ui/components/pagination/base/paginator.dart';
+export 'package:integrazoo/ui/components/pagination/base/data_loader.dart';
+
+export 'package:integrazoo/ui/components/pagination/data_loaders/bovine_statistics_data_loader.dart';

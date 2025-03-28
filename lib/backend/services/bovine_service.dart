@@ -40,6 +40,14 @@ class BovineService {
     return BovinePersistence.getBovine(earring);
   }
 
+  static Future<int> countBovines_({ BovinesFilter? filter }) async {
+    return BovinePersistence.countBovines_(filter: filter);
+  }
+
+  static Future<List<Bovine>> getBovines_(int pageSize, int page, { BovinesSearch? search }) async {
+    return BovinePersistence.getBovines_(pageSize, page, search: search);
+  }
+
   static Future<int> countBovines() async {
     return BovinePersistence.countBovines();
   }

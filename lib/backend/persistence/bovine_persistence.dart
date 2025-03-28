@@ -23,6 +23,223 @@ class BovinePersistence {
     return database.into(database.bovines).insertOnConflictUpdate(companion);
   }
 
+  static Future<List<Bovine>> getBovines_(int pageSize, int page, { BovinesSearch? search }) async {
+    final queryAsEarring = int.tryParse(search?.filter?.query ?? '');
+
+    final whereConditions = <String>[];
+
+    final filter = search?.filter;
+
+    if (filter?.query.isNotEmpty ?? false) {
+      whereConditions.add("(bovines.name LIKE '%${filter!.query}%' ${queryAsEarring != null ? 'OR bovines.earring = $queryAsEarring' : ''})");
+    }
+
+    if (filter != null) {
+      if (filter.sex != null) {
+        whereConditions.add('bovines.sex = ${filter.sex!.index}');
+      }
+      if (filter.isBreeder != null) {
+        whereConditions.add('bovines.is_breeder = ${filter.isBreeder! ? 1 : 0}');
+      }
+      if (filter.hasBeenWeaned != null) {
+        whereConditions.add('bovines.has_been_weaned = ${filter.hasBeenWeaned! ? 1 : 0}');
+      }
+      if (filter.isReproducing != null) {
+        whereConditions.add('bovines.is_reproducing = ${filter.isReproducing! ? 1 : 0}');
+      }
+      if (filter.isPregnant != null) {
+        whereConditions.add('bovines.is_pregnant = ${filter.isPregnant! ? 1 : 0}');
+      }
+      if (filter.wasDiscarded != null) {
+        whereConditions.add('bovines.was_discarded = ${filter.wasDiscarded! ? 1 : 0}');
+      }
+    }
+
+    final whereClause = whereConditions.isNotEmpty ? 'WHERE ${whereConditions.join(" AND ")}' : '';
+
+    final order = search?.order;
+
+    final ascOrDec = search?.ascendent ?? false ? "ASC" : "DESC";
+    final nullsPosition = search?.ascendent ?? false ? "FIRST" : "LAST";
+
+    String joinClause = "";
+
+    String orderClause = "ORDER BY bovines.earring $ascOrDec";
+
+    if (order != null) {
+      switch (order) {
+        case BovinesOrderField.earring:
+          orderClause = "ORDER BY bovines.earring $ascOrDec";
+        break;
+
+        case BovinesOrderField.birthWeight:
+          orderClause = "ORDER BY births.weight $ascOrDec";
+          joinClause = "LEFT OUTER JOIN births ON births.bovine = bovines.earring";
+        break;
+
+        case BovinesOrderField.weaningWeight:
+          orderClause = "ORDER BY weanings.weight $ascOrDec";
+          joinClause = "LEFT OUTER JOIN weanings ON weanings.bovine = bovines.earring";
+        break;
+
+        case BovinesOrderField.yearlingWeight:
+          orderClause = "ORDER BY yearling_weights.value $ascOrDec";
+          joinClause = "LEFT OUTER JOIN yearling_weights ON yearling_weights.bovine = bovines.earring";
+        break;
+
+        case BovinesOrderField.ageFirstBirth:
+          orderClause = "ORDER BY first_birth_age $ascOrDec";
+        break;
+
+        case BovinesOrderField.recentFailedReproductionAttempts:
+          orderClause = "ORDER BY failures $ascOrDec";
+        break;
+      }
+    }
+
+    const failuresSql = """
+      (
+        SELECT COUNT(*)
+        FROM Reproductions r1
+        WHERE r1.date > (
+          SELECT COALESCE((
+            SELECT r3.date
+            FROM Reproductions r3
+            WHERE r3.cow = bovines.earring AND r3.diagnostic = 0
+            ORDER BY r3.date DESC
+            LIMIT 1
+          ), 0)
+        ) AND r1.cow = bovines.earring
+      ) AS failures
+    """;
+
+    const firstBirthAgeSql = """
+      (
+        SELECT b.date AS date
+        FROM Births b JOIN Pregnancies p ON b.pregnancy = p.id
+                      JOIN Reproductions r ON p.reproduction = r.id
+        WHERE r.cow = bovines.earring
+        ORDER BY b.date ASC
+        LIMIT 1
+      ) AS first_birth_age
+    """;
+
+    final sql = '''
+      SELECT
+        bovines.*, $failuresSql, $firstBirthAgeSql
+      FROM bovines
+      $joinClause
+      $whereClause
+      $orderClause NULLS $nullsPosition
+      LIMIT $pageSize OFFSET ${page * pageSize}
+    ''';
+
+    final result = await database.customSelect(sql).get();
+
+    return result.map((row) {
+      final data = row.data;
+
+      final bovine = Bovine(
+        earring: data["earring"],
+        name: data["name"] as String?,
+        sex: Sex.values[data["sex"]],
+        isBreeder: data["is_breeder"] == 1,
+        hasBeenWeaned: data["has_been_weaned"] == 1,
+        isReproducing: data["is_reproducing"] == 1,
+        isPregnant: data["is_pregnant"] == 1,
+        wasDiscarded: data["was_discarded"] == 1,
+      );
+
+      return bovine;
+    }).toList();
+  }
+
+  // static Future<List<Bovine>> getBovines_(int pageSize, int page, { BovinesFilter? filter }) async {
+  //   int? queryAsEarring = int.tryParse(filter?.query ?? "");
+
+  //   // TODO: Sorting, peso ao nascimento, peso a demama, peso ao sobreano, peso ao abate.
+  //   // Ascendente e descedente.
+  //   final bovinesQuery = (database.selectOnly(database.bovines)
+  //     ..addColumns(database.bovines.$columns)
+  //     ..join([
+  //       innerJoin(
+  //         database.weanings,
+  //         database.weanings.bovine.equalsExp(database.bovines.earring),
+  //       )
+  //     ])
+  //     ..where(
+  //       Expression.and([
+  //         Expression.or([
+  //           database.bovines.name.like("%${filter?.query ?? ''}%"),
+  //           if (queryAsEarring != null) database.bovines.earring.equals(queryAsEarring),
+  //         ]),
+  //         if (filter != null) ...[
+  //           if (filter.sex != null) database.bovines.sex.equals(filter.sex!.index),
+  //           if (filter.isBreeder != null) database.bovines.isBreeder.equals(filter.isBreeder!),
+  //           if (filter.hasBeenWeaned != null) database.bovines.hasBeenWeaned.equals(filter.hasBeenWeaned!),
+  //           if (filter.isReproducing != null) database.bovines.isReproducing.equals(filter.isReproducing!),
+  //           if (filter.isPregnant != null) database.bovines.isPregnant.equals(filter.isPregnant!),
+  //           if (filter.wasDiscarded != null) database.bovines.wasDiscarded.equals(filter.wasDiscarded!),
+  //         ]
+  //       ])
+  //     )
+  //     ..orderBy([
+  //       // if (sortColumn != null)
+  //       OrderingTerm(expression: database.weanings.weight, mode: OrderingMode.desc, nulls: NullsOrder.last)
+  //     ])
+  //     ..limit(pageSize, offset: page * pageSize)
+  //   );
+
+  //   final rows = await bovinesQuery.get();
+
+  //   inspect(rows);
+
+  //   return rows.map((row) {
+  //     final data = row.rawData.data;
+  //     return Bovine(
+  //       earring: data["bovines.earring"],
+  //       name: data["bovines.name"] as String?,
+  //       sex: Sex.values[data["bovines.sex"]],
+  //       isBreeder: data["bovines.is_breeder"] == 1,
+  //       hasBeenWeaned: data["bovines.has_been_weaned"] == 1,
+  //       isReproducing: data["bovines.is_reproducing"] == 1,
+  //       isPregnant: data["bovines.is_pregnant"] == 1,
+  //       wasDiscarded: data["bovines.was_discarded"] == 1,
+  //     );
+  //   }).toList();
+
+  //   // return rows.map((row) => row.readTable(database.bovines)).toList();
+  // }
+
+  static Future<int> countBovines_({ BovinesFilter? filter }) async {
+    int? queryAsEarring = int.tryParse(filter?.query ?? "");
+
+    final countExp = database.bovines.earring.count();
+    final countQuery = (database.selectOnly(database.bovines)
+      ..addColumns([ countExp ])
+      ..where(
+        Expression.and([
+          Expression.or([
+            database.bovines.name.like("%${filter?.query ?? ''}%"),
+            if (queryAsEarring != null) database.bovines.earring.equals(queryAsEarring),
+          ]),
+          if (filter != null) ...[
+            if (filter.sex != null) database.bovines.sex.equals(filter.sex!.index),
+            if (filter.isBreeder != null) database.bovines.isBreeder.equals(filter.isBreeder!),
+            if (filter.hasBeenWeaned != null) database.bovines.hasBeenWeaned.equals(filter.hasBeenWeaned!),
+            if (filter.isReproducing != null) database.bovines.isReproducing.equals(filter.isReproducing!),
+            if (filter.isPregnant != null) database.bovines.isPregnant.equals(filter.isPregnant!),
+            if (filter.wasDiscarded != null) database.bovines.wasDiscarded.equals(filter.wasDiscarded!),
+          ]
+        ])
+      )
+    );
+
+    final countRow = await countQuery.getSingle();
+
+    return countRow.read(countExp)!;
+  }
+
   static Future<Bovine?> getBovine(int earring) async {
     return (database.select(database.bovines)..where((b) => b.earring.equals(earring))).getSingleOrNull();
   }

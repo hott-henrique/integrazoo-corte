@@ -13,7 +13,7 @@ import 'package:integrazoo/domain/pregnancy.dart';
 import 'package:integrazoo/domain/treatment.dart';
 import 'package:integrazoo/domain/finish.dart';
 
-export 'package:integrazoo/domain/relatories/female_breeder_statistics.dart';
+export 'package:integrazoo/domain/relatories/bovine_statistics.dart';
 
 // INFO: This import fix errors in 'database.g.dart'.
 import 'package:integrazoo/domain/enumerations.dart';
