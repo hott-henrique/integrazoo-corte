@@ -35,7 +35,24 @@ class _BirthInfoCard extends State<BirthInfoCard> {
         if (snapshot.connectionState != ConnectionState.done && !snapshot.hasData) {
           cardContent = const Text("Carregando...", style: TextStyle(fontStyle: FontStyle.italic), textAlign: TextAlign.center);
         } else if (snapshot.connectionState == ConnectionState.done && !snapshot.hasData) {
-          cardContent = BirthInfoForm(earring: widget.earring, shouldShowHeader: false, postSaved: () => setState(() => ()));
+          cardContent = Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Column(
+              spacing: 10.0,
+              children: [
+                const Text("Dados ainda não registrados."),
+                TextButton(onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) => Dialog(
+                                child: BirthInfoForm(earring: widget.earring, shouldPop: true, shouldShowHeader: false, postSaved: () => setState(() => ()))));
+                      },
+                  child: const Text("Registrar Informações")
+                ),
+              ],
+            ),
+          );
+          //BirthInfoForm(earring: widget.earring, shouldShowHeader: false, postSaved: () => setState(() => ()));
         } else {
           birth = snapshot.data!;
 

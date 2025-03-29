@@ -1,6 +1,7 @@
 import 'dart:developer'; // ignore: unused_import
 
 import 'package:flutter/material.dart';
+import 'package:integrazoo/styles/app_text_styles.dart';
 
 import 'package:intl/intl.dart';
 
@@ -131,7 +132,7 @@ class _PregnancyForm extends State<PregnancyForm> {
     final header = Text(
       widget.pregnancy == null ? "REGISTRANDO DIAGNÓSTICO" : "EDITANDO PRENHE DO ANIMAL #${widget.pregnancy!.cow}",
       textAlign: TextAlign.center,
-      textScaler: const TextScaler.linear(1.5)
+      style: AppTextStyles.pageHeading,
     );
 
     Divider divider = const Divider(color: Colors.transparent);

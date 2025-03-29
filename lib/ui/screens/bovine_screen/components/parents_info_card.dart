@@ -34,11 +34,26 @@ class _ParentsInfoCard extends State<ParentsInfoCard> {
         if (snapshot.connectionState != ConnectionState.done && !snapshot.hasData) {
           cardContent = const Text("Carregando...", style: TextStyle(fontStyle: FontStyle.italic), textAlign: TextAlign.center);
         } else if (snapshot.connectionState == ConnectionState.done && (!snapshot.hasData || isEditing)) {
-          cardContent = ParentsInfoForm(
-            earring: widget.earring,
-            parents: snapshot.data,
-            shouldShowHeader: false,
-            postSaved: () => setState(() => ())
+          cardContent = Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Column(
+              spacing: 10.0,
+              children: [
+                const Text("Dados ainda não registrados."),
+                TextButton(onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (context) => Dialog(
+                                child: ParentsInfoForm(
+                                    earring: widget.earring,
+                                    parents: snapshot.data,
+                                    shouldPop: true,
+                                    postSaved: () => setState(() => ()))));
+                      },
+                  child: const Text("Registrar Informações")
+                ),
+              ],
+            ),
           );
         } else {
           parents = snapshot.data!;
@@ -69,7 +84,7 @@ class _ParentsInfoCard extends State<ParentsInfoCard> {
               context: context,
               builder: (context) => AlertDialog(
                 icon: const Icon(Icons.info),
-                title: const Text("Deseja mesmo deletar a finalização?"),
+                title: const Text("Deseja mesmo deletar os progenitores?"),
                 actions: [ TextButton(
                   onPressed: () async {
                     await ParentsService.deleteParents(parents.bovine);

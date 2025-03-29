@@ -1,6 +1,7 @@
 import 'dart:developer'; // ignore: unused_import
 
 import 'package:flutter/material.dart';
+import 'package:integrazoo/styles/app_text_styles.dart';
 
 import 'package:intl/intl.dart';
 
@@ -87,7 +88,7 @@ class _NaturalMatingForm extends State<NaturalMatingForm> {
     final header = Text(
       widget.reproduction == null ? "REGISTRANDO MONTA" : "EDITANDO MONTA NA VACA #${widget.reproduction!.cow}",
       textAlign: TextAlign.center,
-      textScaler: const TextScaler.linear(1.5)
+      style: AppTextStyles.pageHeading,
     );
 
     Divider divider = const Divider(color: Colors.transparent);

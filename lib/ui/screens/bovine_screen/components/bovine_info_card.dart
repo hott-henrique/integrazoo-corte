@@ -3,6 +3,7 @@ import 'dart:developer'; // ignore: unused_import
 import 'package:flutter/material.dart';
 
 import 'package:integrazoo/backend.dart';
+import 'package:integrazoo/styles/app_text_styles.dart';
 
 import 'package:integrazoo/ui/components.dart';
 import 'package:integrazoo/ui/forms.dart';
@@ -51,7 +52,7 @@ class _BovineInfoCard extends State<BovineInfoCard> {
           }
 
           cardContent = Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: column
@@ -110,11 +111,11 @@ class _BovineInfoCard extends State<BovineInfoCard> {
   Widget buildInfo(String label, String info) {
     const textScaler = TextScaler.linear(1.125);
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(label, textScaler: textScaler),
-        Text(info, textScaler: textScaler),
-      ]
-    );
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, textScaler: textScaler, style: AppTextStyles.cardInfoText,),
+          Text(info, textScaler: textScaler, style: AppTextStyles.cardInfoText,),
+        ]
+      );
   }
 }

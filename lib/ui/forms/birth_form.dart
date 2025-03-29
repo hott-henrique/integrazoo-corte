@@ -1,6 +1,7 @@
 import 'dart:developer'; // ignore: unused_import
 
 import 'package:flutter/material.dart';
+import 'package:integrazoo/styles/app_text_styles.dart';
 
 import 'package:intl/intl.dart';
 
@@ -156,7 +157,7 @@ class _BirthForm extends State<BirthForm> {
     final header = Text(
       widget.earring == null ? "REGISTRANDO PARTO" : "EDITANDO NASCIMENTO DO ANIMAL #${widget.earring!}",
       textAlign: TextAlign.center,
-      textScaler: const TextScaler.linear(1.5)
+      style: AppTextStyles.pageHeading,
     );
 
     final column = <Widget>[

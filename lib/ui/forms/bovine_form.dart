@@ -1,6 +1,7 @@
 import 'dart:developer'; // ignore: unused_import
 
 import 'package:flutter/material.dart';
+import 'package:integrazoo/styles/app_text_styles.dart';
 
 import 'package:intl/intl.dart';
 
@@ -175,7 +176,7 @@ class BovineFormState extends State<BovineForm> {
     final header = Text(
       widget.bovine == null ? "REGISTRANDO ANIMAL" : "EDITANDO ANIMAL #${widget.bovine!.earring}",
       textAlign: TextAlign.center,
-      textScaler: const TextScaler.linear(1.5)
+      style: AppTextStyles.pageHeading,
     );
 
     final column = <Widget>[

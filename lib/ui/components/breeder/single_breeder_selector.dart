@@ -3,6 +3,7 @@ import 'dart:developer'; // ignore: unused_import
 import 'package:flutter/material.dart';
 
 import 'package:integrazoo/backend.dart';
+import 'package:integrazoo/styles/app_text_styles.dart';
 
 import 'package:integrazoo/ui/components/breeder/single_breeder_selector_controller.dart';
 
@@ -56,9 +57,9 @@ class _SingleBreederSelector extends State<SingleBreederSelector> {
           // spacing: 0,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               "Selecione o Reprodutor",
-              style: Theme.of(context).textTheme.titleMedium,
+              style: AppTextStyles.inputsLabel,
             ),
             TextFormField(
                 keyboardType: TextInputType.text,

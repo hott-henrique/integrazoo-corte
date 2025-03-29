@@ -1,6 +1,7 @@
 import 'dart:developer'; // ignore: unused_import
 
 import 'package:flutter/material.dart';
+import 'package:integrazoo/styles/app_text_styles.dart';
 
 import 'package:intl/intl.dart';
 
@@ -97,7 +98,7 @@ class _WeaningForm extends State<WeaningForm> {
        "REGISTRANDO DESMAME DO ANIMAL #${widget.earring!}" :
        "EDITANDO DESMAME DO ANIMAL #${widget.weaning!.bovine}"),
       textAlign: TextAlign.center,
-      textScaler: const TextScaler.linear(1.5)
+      style: AppTextStyles.pageHeading,
     );
 
     final column = <Widget>[

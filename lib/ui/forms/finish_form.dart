@@ -1,6 +1,7 @@
 import 'dart:developer'; // ignore: unused_import
 
 import 'package:flutter/material.dart';
+import 'package:integrazoo/styles/app_text_styles.dart';
 
 import 'package:intl/intl.dart';
 
@@ -161,7 +162,7 @@ class _FinishForm extends State<FinishForm> {
        "REGISTRANDO FINALIZAÇÃO DO ANIMAL #${widget.earring!}" :
        "EDITANDO FINALIZAÇÃO DO ANIMAL #${widget.finish!.bovine}"),
       textAlign: TextAlign.center,
-      textScaler: const TextScaler.linear(1.5)
+      style: AppTextStyles.pageHeading,
     );
 
     final addButton = TextButton(onPressed: discardBovine, child: const Text("SALVAR"));

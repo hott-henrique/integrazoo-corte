@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:integrazoo/backend.dart';
+import 'package:integrazoo/styles/app_text_styles.dart';
 
 import 'package:integrazoo/ui/components/bovine/multi_earring_controller.dart';
 
@@ -153,7 +154,7 @@ class _MultiBovineSelector extends State<MultiBovineSelector> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Selecione as vacas", style: Theme.of(context).textTheme.titleMedium),
+          const Text("Selecione as vacas", style: AppTextStyles.inputsLabel),
           searchBar,
           bovinesCard,
         ],

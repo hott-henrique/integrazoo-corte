@@ -1,6 +1,7 @@
 import 'dart:developer'; // ignore: unused_import
 
 import 'package:flutter/material.dart';
+import 'package:integrazoo/styles/app_text_styles.dart';
 
 import 'package:intl/intl.dart';
 
@@ -109,7 +110,7 @@ class _BirthInfoForm extends State<BirthInfoForm> {
       "REGISTRANDO NASCIMENTO DO ANIMAL #${widget.earring!}" :
       "EDITANDO NASCIMENTO DO ANIMAL #${widget.birth!.bovine}",
       textAlign: TextAlign.center,
-      textScaler: const TextScaler.linear(1.5)
+      style: AppTextStyles.pageHeading,
     );
 
     Divider divider = const Divider(color: Colors.transparent);
