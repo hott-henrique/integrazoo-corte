@@ -68,22 +68,9 @@ class _NaturalMatingForm extends State<NaturalMatingForm> {
       },
     );
 
-    final cowSelector = SingleBovineSelector(
-      earringController: cowEarringController,
-      sex: Sex.female,
-      wasFinished: false,
-      isReproducing: false,
-      isPregnant: false,
-      label: "Vaca",
-    );
+    final cowSelector = SingleBovineSelector(earringController: cowEarringController);
 
-    final bullSelector = SingleBovineSelector(
-      earringController: bullEarringController,
-      sex: Sex.male,
-      wasFinished: false,
-      isReproducing: false,
-      label: "Touro",
-    );
+    final bullSelector = SingleBovineSelector(earringController: bullEarringController);
 
     final header = Text(
       widget.reproduction == null ? "REGISTRANDO MONTA" : "EDITANDO MONTA NA VACA #${widget.reproduction!.cow}",

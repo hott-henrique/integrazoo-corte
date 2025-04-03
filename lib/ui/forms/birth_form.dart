@@ -49,14 +49,7 @@ class _BirthForm extends State<BirthForm> {
   Widget build(BuildContext context) {
     final addButton = TextButton(onPressed: saveBirth, child: const Text("SALVAR"));
 
-    final cowSelector = SingleBovineSelector(
-      sex: Sex.female,
-      wasFinished: false,
-      isReproducing: false,
-      isPregnant: true,
-      label: "Vaca",
-      earringController: motherEarringController,
-    );
+    final cowSelector = SingleBovineSelector(earringController: motherEarringController);
 
     final dateBirthPicker = TextFormField(
       controller: dateBirthController,

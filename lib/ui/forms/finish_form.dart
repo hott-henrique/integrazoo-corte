@@ -62,7 +62,7 @@ class _FinishForm extends State<FinishForm> {
 
   @override
   Widget build(BuildContext context) {
-    final bovineSelector = SingleBovineSelector(earringController: earringController, wasFinished: false);
+    final bovineSelector = SingleBovineSelector(earringController: earringController);
 
     final reasonDropdown = DropdownMenu<FinishingReason>(
       initialSelection: reason,

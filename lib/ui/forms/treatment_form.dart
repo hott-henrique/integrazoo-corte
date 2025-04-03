@@ -52,14 +52,7 @@ class _TreatmentFormState extends State<TreatmentForm> {
 
   @override
   Widget build(BuildContext context) {
-    final bovineSelector = SingleBovineSelector(
-      sex: null,
-      wasFinished: false,
-      isReproducing: null,
-      isPregnant: null,
-      label: "Animal",
-      earringController: earringController,
-    );
+    final bovineSelector = SingleBovineSelector(earringController: earringController);
 
     final medicineNameField = TextFormField(
       controller: medicineController,

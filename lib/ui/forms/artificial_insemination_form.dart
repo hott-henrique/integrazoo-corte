@@ -23,8 +23,8 @@ class ArtificialInseminationForm extends StatefulWidget {
 class _ArtificialInseminationForm extends State<ArtificialInseminationForm> {
   final _formKey = GlobalKey<FormState>();
 
-  final earringsService = MultiEarringController();
-  final breederService = SingleBreederSelectorController();
+  final earringsController = MultiEarringController();
+  final breederController = SingleBreederSelectorController();
 
   DateTime date = DateTime.now();
   late final TextEditingController dateController;
@@ -37,8 +37,8 @@ class _ArtificialInseminationForm extends State<ArtificialInseminationForm> {
 
     if (widget.reproduction != null) {
       date = widget.reproduction!.date;
-      earringsService.earrings.add(widget.reproduction!.cow);
-      breederService.setBreeder(widget.reproduction!.breeder);
+      earringsController.earrings.add(widget.reproduction!.cow);
+      breederController.setBreeder(widget.reproduction!.breeder);
       strawNumberController.text = widget.reproduction!.strawNumber.toString();
     }
 
@@ -71,16 +71,9 @@ class _ArtificialInseminationForm extends State<ArtificialInseminationForm> {
       },
     );
 
-    final cowSelector = MultiBovineSelector(
-      earringsService: earringsService,
-      sex: Sex.female,
-      wasFinished: false,
-      isReproducing: false,
-      isPregnant: false,
-      label: "Vacas",
-    );
+    final cowSelector = MultiBovineSelector(earringsController: earringsController);
 
-    final breederSelector = SingleBreederSelector(breederService: breederService);
+    final breederSelector = SingleBreederSelector(breederService: breederController);
 
     final strawNumberField = TextFormField(
       keyboardType: TextInputType.number,
@@ -153,7 +146,7 @@ class _ArtificialInseminationForm extends State<ArtificialInseminationForm> {
 
       List<Future<int>> futures = List.empty(growable: true);
 
-      for (final earring in earringsService.earrings) {
+      for (final earring in earringsController.earrings) {
         BovineService.getBovine(earring).then(
           (bovine) {
             if (bovine == null) {
@@ -175,7 +168,7 @@ class _ArtificialInseminationForm extends State<ArtificialInseminationForm> {
           'date': date,
           'cow': earring,
           'bull': null,
-          'breeder': breederService.breeder,
+          'breeder': breederController.breeder,
           'strawNumber': int.parse(strawNumberController.text),
         });
 
@@ -207,7 +200,7 @@ class _ArtificialInseminationForm extends State<ArtificialInseminationForm> {
   }
 
   String? validateAllFields() {
-    if (earringsService.earrings.isEmpty) {
+    if (earringsController.earrings.isEmpty) {
       return 'Por favor, escolha ao menos uma vaca.';
     }
 
@@ -215,7 +208,7 @@ class _ArtificialInseminationForm extends State<ArtificialInseminationForm> {
       return 'Por favor, digite o número da pipeta.';
     }
 
-    if (breederService.breeder == null) {
+    if (breederController.breeder == null) {
       return 'Por favor, escolha o reprodutor.';
     }
 
@@ -224,8 +217,8 @@ class _ArtificialInseminationForm extends State<ArtificialInseminationForm> {
 
   void clearForm() {
     setState(() {
-      earringsService.clear();
-      breederService.clear();
+      earringsController.clear();
+      breederController.clear();
       strawNumberController.clear();
       date = DateTime.now();
       dateController.text = DateFormat.yMd('pt_BR').format(date);

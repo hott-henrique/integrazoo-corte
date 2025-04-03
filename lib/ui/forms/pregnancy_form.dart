@@ -111,14 +111,7 @@ class _PregnancyForm extends State<PregnancyForm> {
       },
     );
 
-    final cowSelector = SingleBovineSelector(
-      sex: Sex.female,
-      wasFinished: false,
-      isReproducing: true,
-      isPregnant: false,
-      label: "Vacas",
-      earringController: earringController,
-    );
+    final cowSelector = SingleBovineSelector(earringController: earringController);
 
     final observationField = TextFormField(
       keyboardType: TextInputType.text,

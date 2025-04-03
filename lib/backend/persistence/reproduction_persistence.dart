@@ -52,11 +52,11 @@ class ReproductionPersistence {
 
     final pregnancy = await PregnancyPersistence.getById(birth.pregnancy!);
 
-    if (pregnancy == null || pregnancy.reproduction == null) {
+    if (pregnancy == null) {
       return null;
     }
 
-    return (database.select(database.reproductions)..where((r) => r.id.equals(pregnancy.reproduction!))).getSingleOrNull();
+    return (database.select(database.reproductions)..where((r) => r.id.equals(pregnancy.reproduction))).getSingleOrNull();
   }
 
   static Future<int> countBovinesReproducing() async {

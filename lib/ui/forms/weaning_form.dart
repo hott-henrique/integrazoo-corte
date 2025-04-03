@@ -61,11 +61,7 @@ class _WeaningForm extends State<WeaningForm> {
       onDateSaved: (value) => date = value,
     );
 
-    final cowSelector = SingleBovineSelector(
-      hasBeenWeaned: false,
-      label: "Animais",
-      earringController: earringController,
-    );
+    final cowSelector = SingleBovineSelector(earringController: earringController);
 
     final weightField = TextFormField(
       keyboardType: TextInputType.number,
