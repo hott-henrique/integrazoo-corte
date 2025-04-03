@@ -22,20 +22,28 @@ class BovineTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final breederString = bovine.sex == Sex.female ? "Matriz" : "Reprodutor";
+    final suffixString = bovine.sex == Sex.female ? "a" : "o";
+    final sexColor = bovine.sex == Sex.female ? Colors.pink : Colors.blue;
     return ListTile(
-      title: Text('${bovine.name != null ? "${bovine.name!} "  : ""}#${bovine.earring}'),
-      subtitle: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        Text('Sexo: ${bovine.sex.toString()}'),
-        Text('$breederString: ${bovine.isBreeder ? "Sim" : "Não"}'),
-        Text('Finalizado: ${bovine.wasFinished ? "Sim" : "Não"}'),
-        if (!bovine.wasFinished) ...[
-          if (bovine.isReproducing) ...[
-            Text('Reproduzindo: ${bovine.isReproducing ? "Sim" : "Não"}')
+      title: RichText(
+        text: TextSpan(
+          style: DefaultTextStyle.of(context).style, // inherit default style
+          children: [
+            TextSpan(text: bovine.name != null ? "${bovine.name!} " : ""),
+            TextSpan(
+              text: "#${bovine.earring}",
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
           ],
-          if (bovine.isPregnant) ...[
-            Text('Reproduzindo: ${bovine.isPregnant ? "Sim" : "Não"}')
-          ]
-        ],
+        ),
+      ),
+      subtitle: Wrap(spacing: 8, children: [
+        Badge(label: Text(bovine.sex.toString()), backgroundColor: sexColor),
+        if (bovine.hasBeenWeaned) Badge(label: Text("Desmamad$suffixString"), backgroundColor: Colors.orange),
+        if (bovine.isBreeder) Badge(label: Text(breederString), backgroundColor: Colors.amber),
+        if (bovine.isReproducing) const Badge(label: Text("Reproduzindo"), backgroundColor: Colors.green),
+        if (bovine.isPregnant) const Badge(label: Text("Prenha"), backgroundColor: Colors.purple),
+        if (bovine.wasFinished) Badge(label: Text("Finalizad$suffixString"), backgroundColor: Colors.grey),
       ]),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       trailing: _PopupMenuActions(bovine: bovine, postAction: postAction),
