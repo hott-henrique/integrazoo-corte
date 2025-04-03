@@ -14,7 +14,7 @@ class PregnancyPersistence {
       cow: p.cow,
       date: p.date,
       birthForecast: p.birthForecast,
-      reproduction: Value(p.reproduction),
+      reproduction: p.reproduction,
       observation: Value(p.observation)
     );
 
@@ -30,11 +30,9 @@ class PregnancyPersistence {
   static Future<int> delete(int id) async {
     final pregnancy = await getById(id);
 
-    if (pregnancy!.reproduction != null) {
-      final reproduction = await ReproductionService.getById(pregnancy.reproduction!);
+    final reproduction = await ReproductionService.getById(pregnancy!.reproduction);
 
-      await ReproductionService.saveReproduction(reproduction!.copyWith(diagnostic: ReproductionDiagonostic.waiting));
-    }
+    await ReproductionService.saveReproduction(reproduction!.copyWith(diagnostic: ReproductionDiagonostic.waiting));
 
     final cow = (await BovineService.getBovine(pregnancy.cow))!;
 

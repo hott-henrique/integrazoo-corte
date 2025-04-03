@@ -17,7 +17,7 @@ class Paginator extends StatefulWidget {
     super.key,
     required this.loader,
     required this.pageBuilder,
-    required this.filtersDialog,
+    this.filtersDialog,
     this.queryHintText,
     this.onQueryChanged,
     this.onQueryEditingComplete,

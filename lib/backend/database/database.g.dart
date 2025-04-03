@@ -662,22 +662,11 @@ class $BreedersTable extends Breeders with TableInfo<$BreedersTable, Breeder> {
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
   $BreedersTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
       'name', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: true,
-      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
+      type: DriftSqlType.string, requiredDuringInsert: true);
   static const VerificationMeta _fatherMeta = const VerificationMeta('father');
   @override
   late final GeneratedColumn<String> father = GeneratedColumn<String>(
@@ -732,7 +721,6 @@ class $BreedersTable extends Breeders with TableInfo<$BreedersTable, Breeder> {
           type: DriftSqlType.double, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns => [
-        id,
         name,
         father,
         mother,
@@ -754,9 +742,6 @@ class $BreedersTable extends Breeders with TableInfo<$BreedersTable, Breeder> {
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
     if (data.containsKey('name')) {
       context.handle(
           _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
@@ -817,13 +802,11 @@ class $BreedersTable extends Breeders with TableInfo<$BreedersTable, Breeder> {
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {id};
+  Set<GeneratedColumn> get $primaryKey => {name};
   @override
   Breeder map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return Breeder(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       name: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       father: attachedDatabase.typeMapping
@@ -854,7 +837,6 @@ class $BreedersTable extends Breeders with TableInfo<$BreedersTable, Breeder> {
 }
 
 class Breeder extends DataClass implements Insertable<Breeder> {
-  final int id;
   final String name;
   final String? father;
   final String? mother;
@@ -866,8 +848,7 @@ class Breeder extends DataClass implements Insertable<Breeder> {
   final double? epdWeaningWeight;
   final double? epdYearlingWeight;
   const Breeder(
-      {required this.id,
-      required this.name,
+      {required this.name,
       this.father,
       this.mother,
       this.paternalGrandmother,
@@ -880,7 +861,6 @@ class Breeder extends DataClass implements Insertable<Breeder> {
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
     map['name'] = Variable<String>(name);
     if (!nullToAbsent || father != null) {
       map['father'] = Variable<String>(father);
@@ -914,7 +894,6 @@ class Breeder extends DataClass implements Insertable<Breeder> {
 
   BreedersCompanion toCompanion(bool nullToAbsent) {
     return BreedersCompanion(
-      id: Value(id),
       name: Value(name),
       father:
           father == null && nullToAbsent ? const Value.absent() : Value(father),
@@ -948,7 +927,6 @@ class Breeder extends DataClass implements Insertable<Breeder> {
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Breeder(
-      id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       father: serializer.fromJson<String?>(json['father']),
       mother: serializer.fromJson<String?>(json['mother']),
@@ -970,7 +948,6 @@ class Breeder extends DataClass implements Insertable<Breeder> {
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
       'father': serializer.toJson<String?>(father),
       'mother': serializer.toJson<String?>(mother),
@@ -985,8 +962,7 @@ class Breeder extends DataClass implements Insertable<Breeder> {
   }
 
   Breeder copyWith(
-          {int? id,
-          String? name,
+          {String? name,
           Value<String?> father = const Value.absent(),
           Value<String?> mother = const Value.absent(),
           Value<String?> paternalGrandmother = const Value.absent(),
@@ -997,7 +973,6 @@ class Breeder extends DataClass implements Insertable<Breeder> {
           Value<double?> epdWeaningWeight = const Value.absent(),
           Value<double?> epdYearlingWeight = const Value.absent()}) =>
       Breeder(
-        id: id ?? this.id,
         name: name ?? this.name,
         father: father.present ? father.value : this.father,
         mother: mother.present ? mother.value : this.mother,
@@ -1024,7 +999,6 @@ class Breeder extends DataClass implements Insertable<Breeder> {
       );
   Breeder copyWithCompanion(BreedersCompanion data) {
     return Breeder(
-      id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
       father: data.father.present ? data.father.value : this.father,
       mother: data.mother.present ? data.mother.value : this.mother,
@@ -1055,7 +1029,6 @@ class Breeder extends DataClass implements Insertable<Breeder> {
   @override
   String toString() {
     return (StringBuffer('Breeder(')
-          ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('father: $father, ')
           ..write('mother: $mother, ')
@@ -1072,7 +1045,6 @@ class Breeder extends DataClass implements Insertable<Breeder> {
 
   @override
   int get hashCode => Object.hash(
-      id,
       name,
       father,
       mother,
@@ -1087,7 +1059,6 @@ class Breeder extends DataClass implements Insertable<Breeder> {
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Breeder &&
-          other.id == this.id &&
           other.name == this.name &&
           other.father == this.father &&
           other.mother == this.mother &&
@@ -1101,7 +1072,6 @@ class Breeder extends DataClass implements Insertable<Breeder> {
 }
 
 class BreedersCompanion extends UpdateCompanion<Breeder> {
-  final Value<int> id;
   final Value<String> name;
   final Value<String?> father;
   final Value<String?> mother;
@@ -1112,8 +1082,8 @@ class BreedersCompanion extends UpdateCompanion<Breeder> {
   final Value<double?> epdBirthWeight;
   final Value<double?> epdWeaningWeight;
   final Value<double?> epdYearlingWeight;
+  final Value<int> rowid;
   const BreedersCompanion({
-    this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.father = const Value.absent(),
     this.mother = const Value.absent(),
@@ -1124,9 +1094,9 @@ class BreedersCompanion extends UpdateCompanion<Breeder> {
     this.epdBirthWeight = const Value.absent(),
     this.epdWeaningWeight = const Value.absent(),
     this.epdYearlingWeight = const Value.absent(),
+    this.rowid = const Value.absent(),
   });
   BreedersCompanion.insert({
-    this.id = const Value.absent(),
     required String name,
     this.father = const Value.absent(),
     this.mother = const Value.absent(),
@@ -1137,9 +1107,9 @@ class BreedersCompanion extends UpdateCompanion<Breeder> {
     this.epdBirthWeight = const Value.absent(),
     this.epdWeaningWeight = const Value.absent(),
     this.epdYearlingWeight = const Value.absent(),
+    this.rowid = const Value.absent(),
   }) : name = Value(name);
   static Insertable<Breeder> custom({
-    Expression<int>? id,
     Expression<String>? name,
     Expression<String>? father,
     Expression<String>? mother,
@@ -1150,9 +1120,9 @@ class BreedersCompanion extends UpdateCompanion<Breeder> {
     Expression<double>? epdBirthWeight,
     Expression<double>? epdWeaningWeight,
     Expression<double>? epdYearlingWeight,
+    Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
-      if (id != null) 'id': id,
       if (name != null) 'name': name,
       if (father != null) 'father': father,
       if (mother != null) 'mother': mother,
@@ -1167,12 +1137,12 @@ class BreedersCompanion extends UpdateCompanion<Breeder> {
       if (epdBirthWeight != null) 'epd_birth_weight': epdBirthWeight,
       if (epdWeaningWeight != null) 'epd_weaning_weight': epdWeaningWeight,
       if (epdYearlingWeight != null) 'epd_yearling_weight': epdYearlingWeight,
+      if (rowid != null) 'rowid': rowid,
     });
   }
 
   BreedersCompanion copyWith(
-      {Value<int>? id,
-      Value<String>? name,
+      {Value<String>? name,
       Value<String?>? father,
       Value<String?>? mother,
       Value<String?>? paternalGrandmother,
@@ -1181,9 +1151,9 @@ class BreedersCompanion extends UpdateCompanion<Breeder> {
       Value<String?>? maternalGrandfather,
       Value<double?>? epdBirthWeight,
       Value<double?>? epdWeaningWeight,
-      Value<double?>? epdYearlingWeight}) {
+      Value<double?>? epdYearlingWeight,
+      Value<int>? rowid}) {
     return BreedersCompanion(
-      id: id ?? this.id,
       name: name ?? this.name,
       father: father ?? this.father,
       mother: mother ?? this.mother,
@@ -1194,15 +1164,13 @@ class BreedersCompanion extends UpdateCompanion<Breeder> {
       epdBirthWeight: epdBirthWeight ?? this.epdBirthWeight,
       epdWeaningWeight: epdWeaningWeight ?? this.epdWeaningWeight,
       epdYearlingWeight: epdYearlingWeight ?? this.epdYearlingWeight,
+      rowid: rowid ?? this.rowid,
     );
   }
 
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
@@ -1233,13 +1201,15 @@ class BreedersCompanion extends UpdateCompanion<Breeder> {
     if (epdYearlingWeight.present) {
       map['epd_yearling_weight'] = Variable<double>(epdYearlingWeight.value);
     }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
     return map;
   }
 
   @override
   String toString() {
     return (StringBuffer('BreedersCompanion(')
-          ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('father: $father, ')
           ..write('mother: $mother, ')
@@ -1249,7 +1219,8 @@ class BreedersCompanion extends UpdateCompanion<Breeder> {
           ..write('maternalGrandfather: $maternalGrandfather, ')
           ..write('epdBirthWeight: $epdBirthWeight, ')
           ..write('epdWeaningWeight: $epdWeaningWeight, ')
-          ..write('epdYearlingWeight: $epdYearlingWeight')
+          ..write('epdYearlingWeight: $epdYearlingWeight, ')
+          ..write('rowid: $rowid')
           ..write(')'))
         .toString();
   }
@@ -1728,9 +1699,9 @@ class $PregnanciesTable extends Pregnancies
       const VerificationMeta('reproduction');
   @override
   late final GeneratedColumn<int> reproduction = GeneratedColumn<int>(
-      'reproduction', aliasedName, true,
+      'reproduction', aliasedName, false,
       type: DriftSqlType.int,
-      requiredDuringInsert: false,
+      requiredDuringInsert: true,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('REFERENCES reproductions (id)'));
   static const VerificationMeta _hasEndedMeta =
@@ -1790,6 +1761,8 @@ class $PregnanciesTable extends Pregnancies
           _reproductionMeta,
           reproduction.isAcceptableOrUnknown(
               data['reproduction']!, _reproductionMeta));
+    } else if (isInserting) {
+      context.missing(_reproductionMeta);
     }
     if (data.containsKey('has_ended')) {
       context.handle(_hasEndedMeta,
@@ -1819,7 +1792,7 @@ class $PregnanciesTable extends Pregnancies
       birthForecast: attachedDatabase.typeMapping.read(
           DriftSqlType.dateTime, data['${effectivePrefix}birth_forecast'])!,
       reproduction: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}reproduction']),
+          .read(DriftSqlType.int, data['${effectivePrefix}reproduction'])!,
       hasEnded: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}has_ended'])!,
       observation: attachedDatabase.typeMapping
@@ -1838,7 +1811,7 @@ class Pregnancy extends DataClass implements Insertable<Pregnancy> {
   final int cow;
   final DateTime date;
   final DateTime birthForecast;
-  final int? reproduction;
+  final int reproduction;
   final bool hasEnded;
   final String? observation;
   const Pregnancy(
@@ -1846,7 +1819,7 @@ class Pregnancy extends DataClass implements Insertable<Pregnancy> {
       required this.cow,
       required this.date,
       required this.birthForecast,
-      this.reproduction,
+      required this.reproduction,
       required this.hasEnded,
       this.observation});
   @override
@@ -1856,9 +1829,7 @@ class Pregnancy extends DataClass implements Insertable<Pregnancy> {
     map['cow'] = Variable<int>(cow);
     map['date'] = Variable<DateTime>(date);
     map['birth_forecast'] = Variable<DateTime>(birthForecast);
-    if (!nullToAbsent || reproduction != null) {
-      map['reproduction'] = Variable<int>(reproduction);
-    }
+    map['reproduction'] = Variable<int>(reproduction);
     map['has_ended'] = Variable<bool>(hasEnded);
     if (!nullToAbsent || observation != null) {
       map['observation'] = Variable<String>(observation);
@@ -1872,9 +1843,7 @@ class Pregnancy extends DataClass implements Insertable<Pregnancy> {
       cow: Value(cow),
       date: Value(date),
       birthForecast: Value(birthForecast),
-      reproduction: reproduction == null && nullToAbsent
-          ? const Value.absent()
-          : Value(reproduction),
+      reproduction: Value(reproduction),
       hasEnded: Value(hasEnded),
       observation: observation == null && nullToAbsent
           ? const Value.absent()
@@ -1890,7 +1859,7 @@ class Pregnancy extends DataClass implements Insertable<Pregnancy> {
       cow: serializer.fromJson<int>(json['cow']),
       date: serializer.fromJson<DateTime>(json['date']),
       birthForecast: serializer.fromJson<DateTime>(json['birthForecast']),
-      reproduction: serializer.fromJson<int?>(json['reproduction']),
+      reproduction: serializer.fromJson<int>(json['reproduction']),
       hasEnded: serializer.fromJson<bool>(json['hasEnded']),
       observation: serializer.fromJson<String?>(json['observation']),
     );
@@ -1903,7 +1872,7 @@ class Pregnancy extends DataClass implements Insertable<Pregnancy> {
       'cow': serializer.toJson<int>(cow),
       'date': serializer.toJson<DateTime>(date),
       'birthForecast': serializer.toJson<DateTime>(birthForecast),
-      'reproduction': serializer.toJson<int?>(reproduction),
+      'reproduction': serializer.toJson<int>(reproduction),
       'hasEnded': serializer.toJson<bool>(hasEnded),
       'observation': serializer.toJson<String?>(observation),
     };
@@ -1914,7 +1883,7 @@ class Pregnancy extends DataClass implements Insertable<Pregnancy> {
           int? cow,
           DateTime? date,
           DateTime? birthForecast,
-          Value<int?> reproduction = const Value.absent(),
+          int? reproduction,
           bool? hasEnded,
           Value<String?> observation = const Value.absent()}) =>
       Pregnancy(
@@ -1922,8 +1891,7 @@ class Pregnancy extends DataClass implements Insertable<Pregnancy> {
         cow: cow ?? this.cow,
         date: date ?? this.date,
         birthForecast: birthForecast ?? this.birthForecast,
-        reproduction:
-            reproduction.present ? reproduction.value : this.reproduction,
+        reproduction: reproduction ?? this.reproduction,
         hasEnded: hasEnded ?? this.hasEnded,
         observation: observation.present ? observation.value : this.observation,
       );
@@ -1979,7 +1947,7 @@ class PregnanciesCompanion extends UpdateCompanion<Pregnancy> {
   final Value<int> cow;
   final Value<DateTime> date;
   final Value<DateTime> birthForecast;
-  final Value<int?> reproduction;
+  final Value<int> reproduction;
   final Value<bool> hasEnded;
   final Value<String?> observation;
   const PregnanciesCompanion({
@@ -1996,12 +1964,13 @@ class PregnanciesCompanion extends UpdateCompanion<Pregnancy> {
     required int cow,
     required DateTime date,
     required DateTime birthForecast,
-    this.reproduction = const Value.absent(),
+    required int reproduction,
     this.hasEnded = const Value.absent(),
     this.observation = const Value.absent(),
   })  : cow = Value(cow),
         date = Value(date),
-        birthForecast = Value(birthForecast);
+        birthForecast = Value(birthForecast),
+        reproduction = Value(reproduction);
   static Insertable<Pregnancy> custom({
     Expression<int>? id,
     Expression<int>? cow,
@@ -2027,7 +1996,7 @@ class PregnanciesCompanion extends UpdateCompanion<Pregnancy> {
       Value<int>? cow,
       Value<DateTime>? date,
       Value<DateTime>? birthForecast,
-      Value<int?>? reproduction,
+      Value<int>? reproduction,
       Value<bool>? hasEnded,
       Value<String?>? observation}) {
     return PregnanciesCompanion(
@@ -4858,7 +4827,6 @@ typedef $$BovinesEntryTableProcessedTableManager = ProcessedTableManager<
     BovineEntry,
     PrefetchHooks Function({bool bovine})>;
 typedef $$BreedersTableCreateCompanionBuilder = BreedersCompanion Function({
-  Value<int> id,
   required String name,
   Value<String?> father,
   Value<String?> mother,
@@ -4869,9 +4837,9 @@ typedef $$BreedersTableCreateCompanionBuilder = BreedersCompanion Function({
   Value<double?> epdBirthWeight,
   Value<double?> epdWeaningWeight,
   Value<double?> epdYearlingWeight,
+  Value<int> rowid,
 });
 typedef $$BreedersTableUpdateCompanionBuilder = BreedersCompanion Function({
-  Value<int> id,
   Value<String> name,
   Value<String?> father,
   Value<String?> mother,
@@ -4882,6 +4850,7 @@ typedef $$BreedersTableUpdateCompanionBuilder = BreedersCompanion Function({
   Value<double?> epdBirthWeight,
   Value<double?> epdWeaningWeight,
   Value<double?> epdYearlingWeight,
+  Value<int> rowid,
 });
 
 final class $$BreedersTableReferences
@@ -4928,9 +4897,6 @@ class $$BreedersTableFilterComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
-
   ColumnFilters<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnFilters(column));
 
@@ -5020,9 +4986,6 @@ class $$BreedersTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<String> get name => $composableBuilder(
       column: $table.name, builder: (column) => ColumnOrderings(column));
 
@@ -5070,9 +5033,6 @@ class $$BreedersTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  GeneratedColumn<int> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
@@ -5169,7 +5129,6 @@ class $$BreedersTableTableManager extends RootTableManager<
           createComputedFieldComposer: () =>
               $$BreedersTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
             Value<String> name = const Value.absent(),
             Value<String?> father = const Value.absent(),
             Value<String?> mother = const Value.absent(),
@@ -5180,9 +5139,9 @@ class $$BreedersTableTableManager extends RootTableManager<
             Value<double?> epdBirthWeight = const Value.absent(),
             Value<double?> epdWeaningWeight = const Value.absent(),
             Value<double?> epdYearlingWeight = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
           }) =>
               BreedersCompanion(
-            id: id,
             name: name,
             father: father,
             mother: mother,
@@ -5193,9 +5152,9 @@ class $$BreedersTableTableManager extends RootTableManager<
             epdBirthWeight: epdBirthWeight,
             epdWeaningWeight: epdWeaningWeight,
             epdYearlingWeight: epdYearlingWeight,
+            rowid: rowid,
           ),
           createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
             required String name,
             Value<String?> father = const Value.absent(),
             Value<String?> mother = const Value.absent(),
@@ -5206,9 +5165,9 @@ class $$BreedersTableTableManager extends RootTableManager<
             Value<double?> epdBirthWeight = const Value.absent(),
             Value<double?> epdWeaningWeight = const Value.absent(),
             Value<double?> epdYearlingWeight = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
           }) =>
               BreedersCompanion.insert(
-            id: id,
             name: name,
             father: father,
             mother: mother,
@@ -5219,6 +5178,7 @@ class $$BreedersTableTableManager extends RootTableManager<
             epdBirthWeight: epdBirthWeight,
             epdWeaningWeight: epdWeaningWeight,
             epdYearlingWeight: epdYearlingWeight,
+            rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) =>
@@ -5828,7 +5788,7 @@ typedef $$PregnanciesTableCreateCompanionBuilder = PregnanciesCompanion
   required int cow,
   required DateTime date,
   required DateTime birthForecast,
-  Value<int?> reproduction,
+  required int reproduction,
   Value<bool> hasEnded,
   Value<String?> observation,
 });
@@ -5838,7 +5798,7 @@ typedef $$PregnanciesTableUpdateCompanionBuilder = PregnanciesCompanion
   Value<int> cow,
   Value<DateTime> date,
   Value<DateTime> birthForecast,
-  Value<int?> reproduction,
+  Value<int> reproduction,
   Value<bool> hasEnded,
   Value<String?> observation,
 });
@@ -6155,7 +6115,7 @@ class $$PregnanciesTableTableManager extends RootTableManager<
             Value<int> cow = const Value.absent(),
             Value<DateTime> date = const Value.absent(),
             Value<DateTime> birthForecast = const Value.absent(),
-            Value<int?> reproduction = const Value.absent(),
+            Value<int> reproduction = const Value.absent(),
             Value<bool> hasEnded = const Value.absent(),
             Value<String?> observation = const Value.absent(),
           }) =>
@@ -6173,7 +6133,7 @@ class $$PregnanciesTableTableManager extends RootTableManager<
             required int cow,
             required DateTime date,
             required DateTime birthForecast,
-            Value<int?> reproduction = const Value.absent(),
+            required int reproduction,
             Value<bool> hasEnded = const Value.absent(),
             Value<String?> observation = const Value.absent(),
           }) =>

@@ -208,7 +208,7 @@ class BreederFormState extends State<BreederForm> {
 
     final column = <Widget>[
       header,
-      if (widget.breeder != null) ...[
+      if (widget.breeder == null) ...[
         nameField,
         divider,
       ],

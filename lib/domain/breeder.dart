@@ -2,9 +2,7 @@ import 'package:drift/drift.dart';
 
 
 class Breeders extends Table {
-  IntColumn get id => integer().autoIncrement()();
-
-  TextColumn get name => text().unique()();
+  TextColumn get name => text()();
 
   TextColumn get father => text().nullable()();
   TextColumn get mother => text().nullable()();
@@ -17,4 +15,7 @@ class Breeders extends Table {
   RealColumn get epdBirthWeight => real().nullable()();
   RealColumn get epdWeaningWeight => real().nullable()();
   RealColumn get epdYearlingWeight => real().nullable()();
+
+  @override
+  Set<Column> get primaryKey => { name };
 }
