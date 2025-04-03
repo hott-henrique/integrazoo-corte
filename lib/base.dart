@@ -13,7 +13,7 @@ class IntegrazooBaseApp extends StatefulWidget {
 }
 
 class _IntegrazooBaseAppState extends State<IntegrazooBaseApp> {
-  Widget body = const ArtificialInseminationForm();
+  Widget body = const FinishesPaginationView();
 
   @override
   Widget build(BuildContext context) {
@@ -142,7 +142,7 @@ class _IntegrazooBaseAppState extends State<IntegrazooBaseApp> {
           ),
           ListTile(
             title: const Text("Visualizar Finalizações"),
-            onTap: () => setState(() => body = const FinishesListView())
+            onTap: () => setState(() => body = const FinishesPaginationView())
           )
         ]
       ),

@@ -16,8 +16,8 @@ class FinishService {
     return FinishPersistence.countFinishes();
   }
 
-  static Future<List<Finish>> getFinishes(int pageSize, int page) {
-    return FinishPersistence.getFinishes(pageSize, page);
+  static Future<List<Finish>> getFinishes(int pageSize, int page, FinishesOrderField field, bool ascendent) {
+    return FinishPersistence.getFinishes(pageSize, page, field, ascendent);
   }
 
   static Future<void> delete(int earring) {

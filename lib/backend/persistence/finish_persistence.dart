@@ -46,8 +46,24 @@ class FinishPersistence {
     return result.read<int>("COUNT(*)");
   }
 
-  static Future<List<Finish>> getFinishes(int pageSize, int page) async {
-    return (database.select(database.finishes)..limit(pageSize, offset: page * pageSize)).get();
+  static Future<List<Finish>> getFinishes(int pageSize, int page, FinishesOrderField field, bool asc) async {
+    final mode = asc ? OrderingMode.asc : OrderingMode.desc;
+    return (
+      database.select(database.finishes)
+              ..limit(pageSize, offset: page * pageSize)
+              ..orderBy([
+                if (field == FinishesOrderField.earring)
+                  (u) => OrderingTerm(expression: u.bovine, mode: mode),
+                if (field == FinishesOrderField.reason)
+                  (u) => OrderingTerm(expression: u.reason, mode: mode),
+                if (field == FinishesOrderField.date)
+                  (u) => OrderingTerm(expression: u.date, mode: mode),
+                if (field == FinishesOrderField.weight)
+                  (u) => OrderingTerm(expression: u.weight, mode: mode),
+                if (field == FinishesOrderField.hotCarcassWeight)
+                  (u) => OrderingTerm(expression: u.hotCarcassWeight, mode: mode),
+              ])
+    ).get();
   }
 
   static Future<void> delete(int earring) async {

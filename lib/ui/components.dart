@@ -25,3 +25,4 @@ export 'package:integrazoo/ui/components/pagination/base/data_loader.dart';
 export 'package:integrazoo/ui/components/pagination/data_loaders/bovines_data_loader.dart';
 export 'package:integrazoo/ui/components/pagination/data_loaders/bovines_statistics_data_loader.dart';
 export 'package:integrazoo/ui/components/pagination/data_loaders/breeders_data_loader.dart';
+export 'package:integrazoo/ui/components/pagination/data_loaders/finishes_data_loader.dart';

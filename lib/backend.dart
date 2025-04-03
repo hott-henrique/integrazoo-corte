@@ -27,5 +27,6 @@ export 'package:integrazoo/backend/services/weaning_service.dart';
 export 'package:integrazoo/backend/services/yearling_weight_service.dart';
 
 export 'package:integrazoo/backend/search/bovines_search.dart';
+export 'package:integrazoo/backend/search/finishes_search.dart';
 
 export 'package:integrazoo/backend/database/transaction.dart';
