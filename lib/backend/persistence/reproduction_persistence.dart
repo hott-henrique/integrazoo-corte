@@ -91,7 +91,7 @@ class ReproductionPersistence {
         'earring': row.data["earring"] as int,
         'name': row.data["name"] as String?,
         'sex': row.data["sex"] as int,
-        'wasDiscarded': row.data["was_discarded"] == 0 ? false : true,
+        'wasFinished': row.data["was_discarded"] == 0 ? false : true,
         'isReproducing': row.data["is_reproducing"] == 0 ? false : true,
         'isPregnant': row.data["is_pregnant"] == 0 ? false : true,
         'hasBeenWeaned': row.data["has_been_weaned"] == 0 ? false : true,

@@ -13,7 +13,7 @@ class IntegrazooBaseApp extends StatefulWidget {
 }
 
 class _IntegrazooBaseAppState extends State<IntegrazooBaseApp> {
-  Widget body = const BreedersPaginationView();
+  Widget body = const BovinesPaginationView();
 
   @override
   Widget build(BuildContext context) {

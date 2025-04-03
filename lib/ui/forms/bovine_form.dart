@@ -281,7 +281,7 @@ class BovineFormState extends State<BovineForm> {
       'name': nameController.text.isEmpty ? null : nameController.text,
       'sex': bovineSex.index,
       'earring': int.parse(earringController.text),
-      'wasDiscarded': widget.bovine?.wasDiscarded ?? false,
+      'wasFinished': widget.bovine?.wasFinished ?? false,
       'isReproducing': widget.bovine?.isReproducing ?? false,
       'isPregnant': widget.bovine?.isPregnant ?? false,
       'hasBeenWeaned': widget.bovine?.hasBeenWeaned ?? false,

@@ -13,7 +13,7 @@ class BovinePersistence {
       earring: Value(bovine.earring),
       name: Value(bovine.name),
       sex: bovine.sex,
-      wasDiscarded: Value(bovine.wasDiscarded),
+      wasFinished: Value(bovine.wasFinished),
       isReproducing: Value(bovine.isReproducing),
       isPregnant: Value(bovine.isPregnant),
       hasBeenWeaned: Value(bovine.hasBeenWeaned),
@@ -50,8 +50,8 @@ class BovinePersistence {
       if (filter.isPregnant != null) {
         whereConditions.add('bovines.is_pregnant = ${filter.isPregnant! ? 1 : 0}');
       }
-      if (filter.wasDiscarded != null) {
-        whereConditions.add('bovines.was_discarded = ${filter.wasDiscarded! ? 1 : 0}');
+      if (filter.wasFinished != null) {
+        whereConditions.add('bovines.was_finished = ${filter.wasFinished! ? 1 : 0}');
       }
     }
 
@@ -147,7 +147,7 @@ class BovinePersistence {
         hasBeenWeaned: data["has_been_weaned"] == 1,
         isReproducing: data["is_reproducing"] == 1,
         isPregnant: data["is_pregnant"] == 1,
-        wasDiscarded: data["was_discarded"] == 1,
+        wasFinished: data["was_finished"] == 1,
       );
 
       return bovine;
@@ -179,7 +179,7 @@ class BovinePersistence {
   //           if (filter.hasBeenWeaned != null) database.bovines.hasBeenWeaned.equals(filter.hasBeenWeaned!),
   //           if (filter.isReproducing != null) database.bovines.isReproducing.equals(filter.isReproducing!),
   //           if (filter.isPregnant != null) database.bovines.isPregnant.equals(filter.isPregnant!),
-  //           if (filter.wasDiscarded != null) database.bovines.wasDiscarded.equals(filter.wasDiscarded!),
+  //           if (filter.wasFinished != null) database.bovines.wasFinished.equals(filter.wasFinished!),
   //         ]
   //       ])
   //     )
@@ -204,7 +204,7 @@ class BovinePersistence {
   //       hasBeenWeaned: data["bovines.has_been_weaned"] == 1,
   //       isReproducing: data["bovines.is_reproducing"] == 1,
   //       isPregnant: data["bovines.is_pregnant"] == 1,
-  //       wasDiscarded: data["bovines.was_discarded"] == 1,
+  //       wasFinished: data["bovines.was_discarded"] == 1,
   //     );
   //   }).toList();
 
@@ -229,7 +229,7 @@ class BovinePersistence {
             if (filter.hasBeenWeaned != null) database.bovines.hasBeenWeaned.equals(filter.hasBeenWeaned!),
             if (filter.isReproducing != null) database.bovines.isReproducing.equals(filter.isReproducing!),
             if (filter.isPregnant != null) database.bovines.isPregnant.equals(filter.isPregnant!),
-            if (filter.wasDiscarded != null) database.bovines.wasDiscarded.equals(filter.wasDiscarded!),
+            if (filter.wasFinished != null) database.bovines.wasFinished.equals(filter.wasFinished!),
           ]
         ])
       )
@@ -282,7 +282,7 @@ class BovinePersistence {
     String? query,
     int pageSz, int page,
     Sex? s,
-    bool? wasDiscarded,
+    bool? wasFinished,
     bool? isReproducing,
     bool? isPregnant,
     bool? hasBeenWeaned,
@@ -310,8 +310,8 @@ class BovinePersistence {
                           cond = cond & b.sex.equals(s.index);
                         }
 
-                        if (wasDiscarded != null) {
-                          cond = cond & b.wasDiscarded.equals(wasDiscarded);
+                        if (wasFinished != null) {
+                          cond = cond & b.wasFinished.equals(wasFinished);
                         }
 
                         if (isReproducing != null) {
@@ -339,7 +339,7 @@ class BovinePersistence {
     int pageSz,
     int page,
     Sex? s,
-    bool? wasDiscarded,
+    bool? wasFinished,
     bool? isReproducing,
     bool? isPregnant,
     bool? hasBeenWeaned,
@@ -357,9 +357,9 @@ class BovinePersistence {
       variables.insert(0, Variable(s.index));
     }
 
-    if (wasDiscarded != null) {
-      conditions.add("bo.wasDiscarded = ?");
-      variables.insert(0, Variable(wasDiscarded ? 1 : 0));
+    if (wasFinished != null) {
+      conditions.add("bo.wasFinished = ?");
+      variables.insert(0, Variable(wasFinished ? 1 : 0));
     }
 
     if (isReproducing != null) {
@@ -397,7 +397,7 @@ class BovinePersistence {
         'earring': row.data["earring"] as int,
         'name': row.data["name"] as String?,
         'sex': row.data["sex"] as int,
-        'wasDiscarded': row.data["was_discarded"] == 0 ? false : true,
+        'wasFinished': row.data["was_finished"] == 0 ? false : true,
         'isReproducing': row.data["is_reproducing"] == 0 ? false : true,
         'isPregnant': row.data["is_pregnant"] == 0 ? false : true,
         'hasBeenWeaned': row.data["has_been_weaned"] == 0 ? false : true,
@@ -411,7 +411,7 @@ class BovinePersistence {
     int pageSz,
     int page,
     Sex? s,
-    bool? wasDiscarded,
+    bool? wasFinished,
     bool? isReproducing,
     bool? isPregnant,
     bool? hasBeenWeaned,
@@ -429,9 +429,9 @@ class BovinePersistence {
       variables.insert(0, Variable(s.index));
     }
 
-    if (wasDiscarded != null) {
-      conditions.add("bo.wasDiscarded = ?");
-      variables.insert(0, Variable(wasDiscarded ? 1 : 0));
+    if (wasFinished != null) {
+      conditions.add("bo.wasFinished = ?");
+      variables.insert(0, Variable(wasFinished ? 1 : 0));
     }
 
     if (isReproducing != null) {
@@ -469,7 +469,7 @@ class BovinePersistence {
         'earring': row.data["earring"] as int,
         'name': row.data["name"] as String?,
         'sex': row.data["sex"] as int,
-        'wasDiscarded': row.data["was_discarded"] == 0 ? false : true,
+        'wasFinished': row.data["was_discarded"] == 0 ? false : true,
         'isReproducing': row.data["is_reproducing"] == 0 ? false : true,
         'isPregnant': row.data["is_pregnant"] == 0 ? false : true,
         'hasBeenWeaned': row.data["has_been_weaned"] == 0 ? false : true,
@@ -483,12 +483,12 @@ class BovinePersistence {
     int pageSz,
     int page,
     Sex? s,
-    bool? wasDiscarded,
+    bool? wasFinished,
     bool? isReproducing,
     bool? isPregnant,
     bool? hasBeenWeaned,
   ) async {
-    List<Bovine> bovines = await BovinePersistence.searchHerd(query, pageSz, page, s, wasDiscarded, isReproducing, isPregnant, hasBeenWeaned);
+    List<Bovine> bovines = await BovinePersistence.searchHerd(query, pageSz, page, s, wasFinished, isReproducing, isPregnant, hasBeenWeaned);
     Map<int, double> performance = {};
 
     bovines.where((b) {
@@ -504,8 +504,8 @@ class BovinePersistence {
         cond = cond || b.earring == queryAsNum;
       }
 
-      if (wasDiscarded != null) {
-        cond = cond && (b.wasDiscarded == wasDiscarded);
+      if (wasFinished != null) {
+        cond = cond && (b.wasFinished == wasFinished);
       }
 
       if (isReproducing != null) {
@@ -545,12 +545,12 @@ class BovinePersistence {
     int pageSz,
     int page,
     Sex? s,
-    bool? wasDiscarded,
+    bool? wasFinished,
     bool? isReproducing,
     bool? isPregnant,
     bool? hasBeenWeaned,
   ) async {
-    List<Bovine> bovines = await BovinePersistence.searchHerd(query, pageSz, page, s, wasDiscarded, isReproducing, isPregnant, hasBeenWeaned);
+    List<Bovine> bovines = await BovinePersistence.searchHerd(query, pageSz, page, s, wasFinished, isReproducing, isPregnant, hasBeenWeaned);
     Map<int, double> performance = {};
 
     bovines.where((b) {
@@ -566,8 +566,8 @@ class BovinePersistence {
         cond = cond || b.earring == queryAsNum;
       }
 
-      if (wasDiscarded != null) {
-        cond = cond && (b.wasDiscarded == wasDiscarded);
+      if (wasFinished != null) {
+        cond = cond && (b.wasFinished == wasFinished);
       }
 
       if (isReproducing != null) {

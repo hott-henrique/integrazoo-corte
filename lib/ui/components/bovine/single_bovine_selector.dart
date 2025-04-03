@@ -12,7 +12,7 @@ class SingleBovineSelector extends StatefulWidget {
   final EarringController earringController;
 
   final Sex? sex;
-  final bool? wasDiscarded;
+  final bool? wasFinished;
   final bool? isReproducing;
   final bool? isPregnant;
   final bool? hasBeenWeaned;
@@ -22,7 +22,7 @@ class SingleBovineSelector extends StatefulWidget {
     super.key,
     required this.earringController,
     this.sex,
-    this.wasDiscarded,
+    this.wasFinished,
     this.isReproducing,
     this.isPregnant,
     this.hasBeenWeaned,
@@ -49,7 +49,7 @@ class _SingleBovineSelector extends State<SingleBovineSelector> {
       widget.earringController.pageSize,
       widget.earringController.page,
       widget.sex,
-      widget.wasDiscarded,
+      widget.wasFinished,
       widget.isReproducing,
       widget.isPregnant,
       widget.hasBeenWeaned,

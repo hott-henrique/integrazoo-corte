@@ -61,7 +61,7 @@ class FinishPersistence {
 
     (database.delete(database.finishes)..where((d) => d.bovine.equals(earring))).go().then(
       (_) {
-        final bovineUpdate = r.copyWith(wasDiscarded: false);
+        final bovineUpdate = r.copyWith(wasFinished: false);
 
         BovinePersistence.saveBovine(bovineUpdate);
       }

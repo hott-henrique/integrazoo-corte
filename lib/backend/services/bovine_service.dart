@@ -72,7 +72,7 @@ class BovineService {
     String? query,
     int pageSz, int page,
     Sex? sex,
-    bool? wasDiscarded,
+    bool? wasFinished,
     bool? isReproducing,
     bool? isPregnant,
     bool? hasBeenWeaned,
@@ -80,19 +80,19 @@ class BovineService {
   ) async {
     switch (sortingOrder) {
       case SearchSorting.sortByEarring:
-        return searchHerdSortByEarring(query, pageSz, page, sex, wasDiscarded, isReproducing, isPregnant, hasBeenWeaned);
+        return searchHerdSortByEarring(query, pageSz, page, sex, wasFinished, isReproducing, isPregnant, hasBeenWeaned);
 
       case SearchSorting.sortByBirthWeight:
-        return searchHerdSortByBirthWeight(query, pageSz, page, sex, wasDiscarded, isReproducing, isPregnant, hasBeenWeaned);
+        return searchHerdSortByBirthWeight(query, pageSz, page, sex, wasFinished, isReproducing, isPregnant, hasBeenWeaned);
 
       case SearchSorting.sortByWeaningWeight:
-        return searchHerdSortByWeaningWeight(query, pageSz, page, sex, wasDiscarded, isReproducing, isPregnant, hasBeenWeaned);
+        return searchHerdSortByWeaningWeight(query, pageSz, page, sex, wasFinished, isReproducing, isPregnant, hasBeenWeaned);
 
       case SearchSorting.sortByAvgChildrenBirthWeight:
-        return searchHerdSortByChildrenBirthWeight(query, pageSz, page, sex, wasDiscarded, isReproducing, isPregnant, hasBeenWeaned);
+        return searchHerdSortByChildrenBirthWeight(query, pageSz, page, sex, wasFinished, isReproducing, isPregnant, hasBeenWeaned);
 
       case SearchSorting.sortByAvgChildrenWeaningWeight:
-        return searchHerdSortByChildrenWeaningWeight(query, pageSz, page, sex, wasDiscarded, isReproducing, isPregnant, hasBeenWeaned);
+        return searchHerdSortByChildrenWeaningWeight(query, pageSz, page, sex, wasFinished, isReproducing, isPregnant, hasBeenWeaned);
     }
   }
 
@@ -100,60 +100,60 @@ class BovineService {
     String? query,
     int pageSz, int page,
     Sex? sex,
-    bool? wasDiscarded,
+    bool? wasFinished,
     bool? isReproducing,
     bool? isPregnant,
     bool? hasBeenWeaned,
   ) async {
-    return BovinePersistence.searchHerd(query, pageSz, page, sex, wasDiscarded, isReproducing, isPregnant, hasBeenWeaned);
+    return BovinePersistence.searchHerd(query, pageSz, page, sex, wasFinished, isReproducing, isPregnant, hasBeenWeaned);
   }
 
   static Future<List<Bovine>> searchHerdSortByBirthWeight(
     String? query,
     int pageSz, int page,
     Sex? sex,
-    bool? wasDiscarded,
+    bool? wasFinished,
     bool? isReproducing,
     bool? isPregnant,
     bool? hasBeenWeaned,
   ) async {
-    return BovinePersistence.searchHerdSortByBirthWeight(query, pageSz, page, sex, wasDiscarded, isReproducing, isPregnant, hasBeenWeaned);
+    return BovinePersistence.searchHerdSortByBirthWeight(query, pageSz, page, sex, wasFinished, isReproducing, isPregnant, hasBeenWeaned);
   }
 
   static Future<List<Bovine>> searchHerdSortByWeaningWeight(
     String? query,
     int pageSz, int page,
     Sex? sex,
-    bool? wasDiscarded,
+    bool? wasFinished,
     bool? isReproducing,
     bool? isPregnant,
     bool? hasBeenWeaned,
   ) async {
-    return BovinePersistence.searchHerdSortByWeaningWeight(query, pageSz, page, sex, wasDiscarded, isReproducing, isPregnant, hasBeenWeaned);
+    return BovinePersistence.searchHerdSortByWeaningWeight(query, pageSz, page, sex, wasFinished, isReproducing, isPregnant, hasBeenWeaned);
   }
 
   static Future<List<Bovine>> searchHerdSortByChildrenBirthWeight(
     String? query,
     int pageSz, int page,
     Sex? sex,
-    bool? wasDiscarded,
+    bool? wasFinished,
     bool? isReproducing,
     bool? isPregnant,
     bool? hasBeenWeaned,
   ) async {
-    return BovinePersistence.searchHerdSortByChildrenBirthWeight(query, pageSz, page, sex, wasDiscarded, isReproducing, isPregnant, hasBeenWeaned);
+    return BovinePersistence.searchHerdSortByChildrenBirthWeight(query, pageSz, page, sex, wasFinished, isReproducing, isPregnant, hasBeenWeaned);
   }
 
   static Future<List<Bovine>> searchHerdSortByChildrenWeaningWeight(
     String? query,
     int pageSz, int page,
     Sex? sex,
-    bool? wasDiscarded,
+    bool? wasFinished,
     bool? isReproducing,
     bool? isPregnant,
     bool? hasBeenWeaned,
   ) async {
-    return BovinePersistence.searchHerdSortByChildrenWeaningWeight(query, pageSz, page, sex, wasDiscarded, isReproducing, isPregnant, hasBeenWeaned);
+    return BovinePersistence.searchHerdSortByChildrenWeaningWeight(query, pageSz, page, sex, wasFinished, isReproducing, isPregnant, hasBeenWeaned);
   }
 
   static Future<int> getCountBovines() {

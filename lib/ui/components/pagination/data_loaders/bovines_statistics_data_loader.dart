@@ -126,9 +126,9 @@ class BovinesStatisticsDataLoader extends DataLoader {
     _loadData();
   }
 
-  void setWasDiscarded(bool? value) {
+  void setwasFinished(bool? value) {
     _search.filter = _search.filter ?? BovinesFilter();
-    _search.filter!.wasDiscarded = value;
+    _search.filter!.wasFinished = value;
     _loadData();
   }
 

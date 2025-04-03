@@ -27,8 +27,8 @@ class BovineTile extends StatelessWidget {
       subtitle: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         Text('Sexo: ${bovine.sex.toString()}'),
         Text('$breederString: ${bovine.isBreeder ? "Sim" : "Não"}'),
-        Text('Finalizado: ${bovine.wasDiscarded ? "Sim" : "Não"}'),
-        if (!bovine.wasDiscarded) ...[
+        Text('Finalizado: ${bovine.wasFinished ? "Sim" : "Não"}'),
+        if (!bovine.wasFinished) ...[
           if (bovine.isReproducing) ...[
             Text('Reproduzindo: ${bovine.isReproducing ? "Sim" : "Não"}')
           ],

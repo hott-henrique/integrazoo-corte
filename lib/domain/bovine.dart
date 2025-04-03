@@ -15,7 +15,7 @@ class Bovines extends Table {
   BoolColumn get isReproducing => boolean().withDefault(const Constant(false))();
   BoolColumn get isPregnant => boolean().withDefault(const Constant(false))();
 
-  BoolColumn get wasDiscarded => boolean().withDefault(const Constant(false))();
+  BoolColumn get wasFinished => boolean().withDefault(const Constant(false))();
 
   @override
   Set<Column> get primaryKey => { earring };

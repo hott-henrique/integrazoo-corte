@@ -135,8 +135,8 @@ class _BovinesPaginationView extends State<BovinesPaginationView> {
                 name: "Descarte",
                 values: [ null, true, false ],
                 labels: [ "Todos", "Apenas descartados.", "Apenas não descartados." ],
-                value: search.search.filter?.wasDiscarded,
-                onChanged: search.setWasDiscarded,
+                value: search.search.filter?.wasFinished,
+                onChanged: search.setwasFinished,
               ),
               const Divider(height: 50, color: Colors.black),
               Row(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.end, children: [

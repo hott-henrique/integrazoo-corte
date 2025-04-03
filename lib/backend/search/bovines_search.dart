@@ -18,7 +18,7 @@ class BovinesFilter {
   bool? hasBeenWeaned;
   bool? isReproducing;
   bool? isPregnant;
-  bool? wasDiscarded;
+  bool? wasFinished;
 
   BovinesFilter({
     this.query = "",
@@ -27,7 +27,7 @@ class BovinesFilter {
     this.hasBeenWeaned,
     this.isReproducing,
     this.isPregnant,
-    this.wasDiscarded,
+    this.wasFinished,
   });
 }
 

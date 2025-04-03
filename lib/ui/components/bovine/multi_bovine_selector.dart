@@ -10,7 +10,7 @@ class MultiBovineSelector extends StatefulWidget {
   final MultiEarringController earringsService;
 
   final Sex? sex;
-  final bool? wasDiscarded;
+  final bool? wasFinished;
   final bool? isReproducing;
   final bool? isPregnant;
   final bool? hasBeenWeaned;
@@ -21,7 +21,7 @@ class MultiBovineSelector extends StatefulWidget {
     super.key,
     required this.earringsService,
     this.sex,
-    this.wasDiscarded,
+    this.wasFinished,
     this.isReproducing,
     this.isPregnant,
     this.hasBeenWeaned,
@@ -49,7 +49,7 @@ class _MultiBovineSelector extends State<MultiBovineSelector> {
       widget.earringsService.pageSize,
       widget.earringsService.page,
       widget.sex,
-      widget.wasDiscarded,
+      widget.wasFinished,
       widget.isReproducing,
       widget.isPregnant,
       widget.hasBeenWeaned)

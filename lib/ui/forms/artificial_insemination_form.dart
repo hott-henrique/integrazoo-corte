@@ -74,7 +74,7 @@ class _ArtificialInseminationForm extends State<ArtificialInseminationForm> {
     final cowSelector = MultiBovineSelector(
       earringsService: earringsService,
       sex: Sex.female,
-      wasDiscarded: false,
+      wasFinished: false,
       isReproducing: false,
       isPregnant: false,
       label: "Vacas",

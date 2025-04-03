@@ -51,7 +51,7 @@ class _BirthForm extends State<BirthForm> {
 
     final cowSelector = SingleBovineSelector(
       sex: Sex.female,
-      wasDiscarded: false,
+      wasFinished: false,
       isReproducing: false,
       isPregnant: true,
       label: "Vaca",
@@ -291,7 +291,7 @@ class _BirthForm extends State<BirthForm> {
       'name': newBornNameController.text.isEmpty ? null : newBornNameController.text,
       'sex': newBornSex!.index,
       'earring': newBornEarring,
-      'wasDiscarded': false,
+      'wasFinished': false,
       'isReproducing': false,
       'isPregnant': false,
       'hasBeenWeaned': false,

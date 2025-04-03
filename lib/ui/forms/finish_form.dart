@@ -62,7 +62,7 @@ class _FinishForm extends State<FinishForm> {
 
   @override
   Widget build(BuildContext context) {
-    final bovineSelector = SingleBovineSelector(earringController: earringController, wasDiscarded: false);
+    final bovineSelector = SingleBovineSelector(earringController: earringController, wasFinished: false);
 
     final reasonDropdown = DropdownMenu<FinishingReason>(
       initialSelection: reason,
@@ -260,7 +260,7 @@ class _FinishForm extends State<FinishForm> {
           return;
         }
 
-        final bovineUpdate = bovine.copyWith(wasDiscarded: true);
+        final bovineUpdate = bovine.copyWith(wasFinished: true);
 
         BovineService.saveBovine(bovineUpdate);
       }

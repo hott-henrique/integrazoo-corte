@@ -54,7 +54,7 @@ class _TreatmentFormState extends State<TreatmentForm> {
   Widget build(BuildContext context) {
     final bovineSelector = SingleBovineSelector(
       sex: null,
-      wasDiscarded: false,
+      wasFinished: false,
       isReproducing: null,
       isPregnant: null,
       label: "Animal",

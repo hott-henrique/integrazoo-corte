@@ -71,7 +71,7 @@ class _NaturalMatingForm extends State<NaturalMatingForm> {
     final cowSelector = SingleBovineSelector(
       earringController: cowEarringController,
       sex: Sex.female,
-      wasDiscarded: false,
+      wasFinished: false,
       isReproducing: false,
       isPregnant: false,
       label: "Vaca",
@@ -80,7 +80,7 @@ class _NaturalMatingForm extends State<NaturalMatingForm> {
     final bullSelector = SingleBovineSelector(
       earringController: bullEarringController,
       sex: Sex.male,
-      wasDiscarded: false,
+      wasFinished: false,
       isReproducing: false,
       label: "Touro",
     );

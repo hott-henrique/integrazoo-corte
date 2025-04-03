@@ -65,15 +65,15 @@ class $BovinesTable extends Bovines with TableInfo<$BovinesTable, Bovine> {
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('CHECK ("is_pregnant" IN (0, 1))'),
       defaultValue: const Constant(false));
-  static const VerificationMeta _wasDiscardedMeta =
-      const VerificationMeta('wasDiscarded');
+  static const VerificationMeta _wasFinishedMeta =
+      const VerificationMeta('wasFinished');
   @override
-  late final GeneratedColumn<bool> wasDiscarded = GeneratedColumn<bool>(
-      'was_discarded', aliasedName, false,
+  late final GeneratedColumn<bool> wasFinished = GeneratedColumn<bool>(
+      'was_finished', aliasedName, false,
       type: DriftSqlType.bool,
       requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("was_discarded" IN (0, 1))'),
+          'CHECK ("was_finished" IN (0, 1))'),
       defaultValue: const Constant(false));
   @override
   List<GeneratedColumn> get $columns => [
@@ -84,7 +84,7 @@ class $BovinesTable extends Bovines with TableInfo<$BovinesTable, Bovine> {
         hasBeenWeaned,
         isReproducing,
         isPregnant,
-        wasDiscarded
+        wasFinished
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -127,11 +127,11 @@ class $BovinesTable extends Bovines with TableInfo<$BovinesTable, Bovine> {
           isPregnant.isAcceptableOrUnknown(
               data['is_pregnant']!, _isPregnantMeta));
     }
-    if (data.containsKey('was_discarded')) {
+    if (data.containsKey('was_finished')) {
       context.handle(
-          _wasDiscardedMeta,
-          wasDiscarded.isAcceptableOrUnknown(
-              data['was_discarded']!, _wasDiscardedMeta));
+          _wasFinishedMeta,
+          wasFinished.isAcceptableOrUnknown(
+              data['was_finished']!, _wasFinishedMeta));
     }
     return context;
   }
@@ -156,8 +156,8 @@ class $BovinesTable extends Bovines with TableInfo<$BovinesTable, Bovine> {
           .read(DriftSqlType.bool, data['${effectivePrefix}is_reproducing'])!,
       isPregnant: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}is_pregnant'])!,
-      wasDiscarded: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}was_discarded'])!,
+      wasFinished: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}was_finished'])!,
     );
   }
 
@@ -178,7 +178,7 @@ class Bovine extends DataClass implements Insertable<Bovine> {
   final bool hasBeenWeaned;
   final bool isReproducing;
   final bool isPregnant;
-  final bool wasDiscarded;
+  final bool wasFinished;
   const Bovine(
       {required this.earring,
       this.name,
@@ -187,7 +187,7 @@ class Bovine extends DataClass implements Insertable<Bovine> {
       required this.hasBeenWeaned,
       required this.isReproducing,
       required this.isPregnant,
-      required this.wasDiscarded});
+      required this.wasFinished});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -202,7 +202,7 @@ class Bovine extends DataClass implements Insertable<Bovine> {
     map['has_been_weaned'] = Variable<bool>(hasBeenWeaned);
     map['is_reproducing'] = Variable<bool>(isReproducing);
     map['is_pregnant'] = Variable<bool>(isPregnant);
-    map['was_discarded'] = Variable<bool>(wasDiscarded);
+    map['was_finished'] = Variable<bool>(wasFinished);
     return map;
   }
 
@@ -215,7 +215,7 @@ class Bovine extends DataClass implements Insertable<Bovine> {
       hasBeenWeaned: Value(hasBeenWeaned),
       isReproducing: Value(isReproducing),
       isPregnant: Value(isPregnant),
-      wasDiscarded: Value(wasDiscarded),
+      wasFinished: Value(wasFinished),
     );
   }
 
@@ -231,7 +231,7 @@ class Bovine extends DataClass implements Insertable<Bovine> {
       hasBeenWeaned: serializer.fromJson<bool>(json['hasBeenWeaned']),
       isReproducing: serializer.fromJson<bool>(json['isReproducing']),
       isPregnant: serializer.fromJson<bool>(json['isPregnant']),
-      wasDiscarded: serializer.fromJson<bool>(json['wasDiscarded']),
+      wasFinished: serializer.fromJson<bool>(json['wasFinished']),
     );
   }
   @override
@@ -245,7 +245,7 @@ class Bovine extends DataClass implements Insertable<Bovine> {
       'hasBeenWeaned': serializer.toJson<bool>(hasBeenWeaned),
       'isReproducing': serializer.toJson<bool>(isReproducing),
       'isPregnant': serializer.toJson<bool>(isPregnant),
-      'wasDiscarded': serializer.toJson<bool>(wasDiscarded),
+      'wasFinished': serializer.toJson<bool>(wasFinished),
     };
   }
 
@@ -257,7 +257,7 @@ class Bovine extends DataClass implements Insertable<Bovine> {
           bool? hasBeenWeaned,
           bool? isReproducing,
           bool? isPregnant,
-          bool? wasDiscarded}) =>
+          bool? wasFinished}) =>
       Bovine(
         earring: earring ?? this.earring,
         name: name.present ? name.value : this.name,
@@ -266,7 +266,7 @@ class Bovine extends DataClass implements Insertable<Bovine> {
         hasBeenWeaned: hasBeenWeaned ?? this.hasBeenWeaned,
         isReproducing: isReproducing ?? this.isReproducing,
         isPregnant: isPregnant ?? this.isPregnant,
-        wasDiscarded: wasDiscarded ?? this.wasDiscarded,
+        wasFinished: wasFinished ?? this.wasFinished,
       );
   Bovine copyWithCompanion(BovinesCompanion data) {
     return Bovine(
@@ -282,9 +282,8 @@ class Bovine extends DataClass implements Insertable<Bovine> {
           : this.isReproducing,
       isPregnant:
           data.isPregnant.present ? data.isPregnant.value : this.isPregnant,
-      wasDiscarded: data.wasDiscarded.present
-          ? data.wasDiscarded.value
-          : this.wasDiscarded,
+      wasFinished:
+          data.wasFinished.present ? data.wasFinished.value : this.wasFinished,
     );
   }
 
@@ -298,14 +297,14 @@ class Bovine extends DataClass implements Insertable<Bovine> {
           ..write('hasBeenWeaned: $hasBeenWeaned, ')
           ..write('isReproducing: $isReproducing, ')
           ..write('isPregnant: $isPregnant, ')
-          ..write('wasDiscarded: $wasDiscarded')
+          ..write('wasFinished: $wasFinished')
           ..write(')'))
         .toString();
   }
 
   @override
   int get hashCode => Object.hash(earring, name, sex, isBreeder, hasBeenWeaned,
-      isReproducing, isPregnant, wasDiscarded);
+      isReproducing, isPregnant, wasFinished);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -317,7 +316,7 @@ class Bovine extends DataClass implements Insertable<Bovine> {
           other.hasBeenWeaned == this.hasBeenWeaned &&
           other.isReproducing == this.isReproducing &&
           other.isPregnant == this.isPregnant &&
-          other.wasDiscarded == this.wasDiscarded);
+          other.wasFinished == this.wasFinished);
 }
 
 class BovinesCompanion extends UpdateCompanion<Bovine> {
@@ -328,7 +327,7 @@ class BovinesCompanion extends UpdateCompanion<Bovine> {
   final Value<bool> hasBeenWeaned;
   final Value<bool> isReproducing;
   final Value<bool> isPregnant;
-  final Value<bool> wasDiscarded;
+  final Value<bool> wasFinished;
   const BovinesCompanion({
     this.earring = const Value.absent(),
     this.name = const Value.absent(),
@@ -337,7 +336,7 @@ class BovinesCompanion extends UpdateCompanion<Bovine> {
     this.hasBeenWeaned = const Value.absent(),
     this.isReproducing = const Value.absent(),
     this.isPregnant = const Value.absent(),
-    this.wasDiscarded = const Value.absent(),
+    this.wasFinished = const Value.absent(),
   });
   BovinesCompanion.insert({
     this.earring = const Value.absent(),
@@ -347,7 +346,7 @@ class BovinesCompanion extends UpdateCompanion<Bovine> {
     this.hasBeenWeaned = const Value.absent(),
     this.isReproducing = const Value.absent(),
     this.isPregnant = const Value.absent(),
-    this.wasDiscarded = const Value.absent(),
+    this.wasFinished = const Value.absent(),
   }) : sex = Value(sex);
   static Insertable<Bovine> custom({
     Expression<int>? earring,
@@ -357,7 +356,7 @@ class BovinesCompanion extends UpdateCompanion<Bovine> {
     Expression<bool>? hasBeenWeaned,
     Expression<bool>? isReproducing,
     Expression<bool>? isPregnant,
-    Expression<bool>? wasDiscarded,
+    Expression<bool>? wasFinished,
   }) {
     return RawValuesInsertable({
       if (earring != null) 'earring': earring,
@@ -367,7 +366,7 @@ class BovinesCompanion extends UpdateCompanion<Bovine> {
       if (hasBeenWeaned != null) 'has_been_weaned': hasBeenWeaned,
       if (isReproducing != null) 'is_reproducing': isReproducing,
       if (isPregnant != null) 'is_pregnant': isPregnant,
-      if (wasDiscarded != null) 'was_discarded': wasDiscarded,
+      if (wasFinished != null) 'was_finished': wasFinished,
     });
   }
 
@@ -379,7 +378,7 @@ class BovinesCompanion extends UpdateCompanion<Bovine> {
       Value<bool>? hasBeenWeaned,
       Value<bool>? isReproducing,
       Value<bool>? isPregnant,
-      Value<bool>? wasDiscarded}) {
+      Value<bool>? wasFinished}) {
     return BovinesCompanion(
       earring: earring ?? this.earring,
       name: name ?? this.name,
@@ -388,7 +387,7 @@ class BovinesCompanion extends UpdateCompanion<Bovine> {
       hasBeenWeaned: hasBeenWeaned ?? this.hasBeenWeaned,
       isReproducing: isReproducing ?? this.isReproducing,
       isPregnant: isPregnant ?? this.isPregnant,
-      wasDiscarded: wasDiscarded ?? this.wasDiscarded,
+      wasFinished: wasFinished ?? this.wasFinished,
     );
   }
 
@@ -416,8 +415,8 @@ class BovinesCompanion extends UpdateCompanion<Bovine> {
     if (isPregnant.present) {
       map['is_pregnant'] = Variable<bool>(isPregnant.value);
     }
-    if (wasDiscarded.present) {
-      map['was_discarded'] = Variable<bool>(wasDiscarded.value);
+    if (wasFinished.present) {
+      map['was_finished'] = Variable<bool>(wasFinished.value);
     }
     return map;
   }
@@ -432,7 +431,7 @@ class BovinesCompanion extends UpdateCompanion<Bovine> {
           ..write('hasBeenWeaned: $hasBeenWeaned, ')
           ..write('isReproducing: $isReproducing, ')
           ..write('isPregnant: $isPregnant, ')
-          ..write('wasDiscarded: $wasDiscarded')
+          ..write('wasFinished: $wasFinished')
           ..write(')'))
         .toString();
   }
@@ -3860,7 +3859,7 @@ typedef $$BovinesTableCreateCompanionBuilder = BovinesCompanion Function({
   Value<bool> hasBeenWeaned,
   Value<bool> isReproducing,
   Value<bool> isPregnant,
-  Value<bool> wasDiscarded,
+  Value<bool> wasFinished,
 });
 typedef $$BovinesTableUpdateCompanionBuilder = BovinesCompanion Function({
   Value<int> earring,
@@ -3870,7 +3869,7 @@ typedef $$BovinesTableUpdateCompanionBuilder = BovinesCompanion Function({
   Value<bool> hasBeenWeaned,
   Value<bool> isReproducing,
   Value<bool> isPregnant,
-  Value<bool> wasDiscarded,
+  Value<bool> wasFinished,
 });
 
 final class $$BovinesTableReferences
@@ -4016,8 +4015,8 @@ class $$BovinesTableFilterComposer
   ColumnFilters<bool> get isPregnant => $composableBuilder(
       column: $table.isPregnant, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<bool> get wasDiscarded => $composableBuilder(
-      column: $table.wasDiscarded, builder: (column) => ColumnFilters(column));
+  ColumnFilters<bool> get wasFinished => $composableBuilder(
+      column: $table.wasFinished, builder: (column) => ColumnFilters(column));
 
   Expression<bool> bovinesEntryRefs(
       Expression<bool> Function($$BovinesEntryTableFilterComposer f) f) {
@@ -4199,9 +4198,8 @@ class $$BovinesTableOrderingComposer
   ColumnOrderings<bool> get isPregnant => $composableBuilder(
       column: $table.isPregnant, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get wasDiscarded => $composableBuilder(
-      column: $table.wasDiscarded,
-      builder: (column) => ColumnOrderings(column));
+  ColumnOrderings<bool> get wasFinished => $composableBuilder(
+      column: $table.wasFinished, builder: (column) => ColumnOrderings(column));
 }
 
 class $$BovinesTableAnnotationComposer
@@ -4234,8 +4232,8 @@ class $$BovinesTableAnnotationComposer
   GeneratedColumn<bool> get isPregnant => $composableBuilder(
       column: $table.isPregnant, builder: (column) => column);
 
-  GeneratedColumn<bool> get wasDiscarded => $composableBuilder(
-      column: $table.wasDiscarded, builder: (column) => column);
+  GeneratedColumn<bool> get wasFinished => $composableBuilder(
+      column: $table.wasFinished, builder: (column) => column);
 
   Expression<T> bovinesEntryRefs<T extends Object>(
       Expression<T> Function($$BovinesEntryTableAnnotationComposer a) f) {
@@ -4422,7 +4420,7 @@ class $$BovinesTableTableManager extends RootTableManager<
             Value<bool> hasBeenWeaned = const Value.absent(),
             Value<bool> isReproducing = const Value.absent(),
             Value<bool> isPregnant = const Value.absent(),
-            Value<bool> wasDiscarded = const Value.absent(),
+            Value<bool> wasFinished = const Value.absent(),
           }) =>
               BovinesCompanion(
             earring: earring,
@@ -4432,7 +4430,7 @@ class $$BovinesTableTableManager extends RootTableManager<
             hasBeenWeaned: hasBeenWeaned,
             isReproducing: isReproducing,
             isPregnant: isPregnant,
-            wasDiscarded: wasDiscarded,
+            wasFinished: wasFinished,
           ),
           createCompanionCallback: ({
             Value<int> earring = const Value.absent(),
@@ -4442,7 +4440,7 @@ class $$BovinesTableTableManager extends RootTableManager<
             Value<bool> hasBeenWeaned = const Value.absent(),
             Value<bool> isReproducing = const Value.absent(),
             Value<bool> isPregnant = const Value.absent(),
-            Value<bool> wasDiscarded = const Value.absent(),
+            Value<bool> wasFinished = const Value.absent(),
           }) =>
               BovinesCompanion.insert(
             earring: earring,
@@ -4452,7 +4450,7 @@ class $$BovinesTableTableManager extends RootTableManager<
             hasBeenWeaned: hasBeenWeaned,
             isReproducing: isReproducing,
             isPregnant: isPregnant,
-            wasDiscarded: wasDiscarded,
+            wasFinished: wasFinished,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) =>
