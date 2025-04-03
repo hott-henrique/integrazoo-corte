@@ -46,7 +46,7 @@ class BreederPersistence {
     return (database.select(database.breeders)..limit(pageSz, offset: page * pageSz)).get();
   }
 
-  static Future<List<Breeder>> searchBreeder(String? query, int pageSz, int page) async {
+  static Future<List<Breeder>> searchBreeder(String? query) async {
     return (database.select(database.breeders)
                     ..where(
                       (b) {
@@ -56,8 +56,7 @@ class BreederPersistence {
 
                         return cond;
                       }
-                    )
-                    ..limit(pageSz, offset: page * pageSz))
+                    ))
                     .get();
   }
 

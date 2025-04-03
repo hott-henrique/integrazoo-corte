@@ -20,8 +20,8 @@ class BreederService {
     return BreederPersistence.getBreeders(pageSz, page);
   }
 
-  static Future<List<Breeder>> searchBreeders(String? query, int pageSz, int page) async {
-    return BreederPersistence.searchBreeder(query, pageSz, page);
+  static Future<List<Breeder>> searchBreeders(String? query) async {
+    return BreederPersistence.searchBreeder(query);
   }
 
   static Future<int> deleteBreeder(String name) {

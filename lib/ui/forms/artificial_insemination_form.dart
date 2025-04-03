@@ -73,7 +73,7 @@ class _ArtificialInseminationForm extends State<ArtificialInseminationForm> {
 
     final cowSelector = MultiBovineSelector(earringsController: earringsController);
 
-    final breederSelector = SingleBreederSelector(breederService: breederController);
+    final breederSelector = SingleBreederSelector(breederController: breederController);
 
     final strawNumberField = TextFormField(
       keyboardType: TextInputType.number,
