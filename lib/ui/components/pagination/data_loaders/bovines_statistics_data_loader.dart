@@ -3,7 +3,7 @@ import 'package:integrazoo/backend.dart';
 import 'package:integrazoo/ui/components.dart';
 
 
-class BovineStatisticsDataLoader extends DataLoader {
+class BovinesStatisticsDataLoader extends DataLoader {
   BovinesSearch _search = BovinesSearch();
 
   bool _isLoading = true;

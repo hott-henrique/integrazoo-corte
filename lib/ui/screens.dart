@@ -17,5 +17,5 @@ export 'package:integrazoo/ui/screens/finishes_list_view.dart';
 export 'package:integrazoo/ui/screens/treatments_list_view.dart';
 export 'package:integrazoo/ui/screens/weanings_list_view.dart';
 
-export 'package:integrazoo/ui/screens/bovines_statistics_relatory.dart';
-export 'package:integrazoo/ui/screens/bovines_pagination_view.dart';
+export 'package:integrazoo/ui/screens/pagination/bovines_statistics_pagination_view.dart';
+export 'package:integrazoo/ui/screens/pagination/bovines_pagination_view.dart';

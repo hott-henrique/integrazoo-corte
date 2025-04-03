@@ -21,5 +21,5 @@ export 'package:integrazoo/ui/components/search/bovines_search_notifier.dart';
 export 'package:integrazoo/ui/components/pagination/base/paginator.dart';
 export 'package:integrazoo/ui/components/pagination/base/data_loader.dart';
 
-export 'package:integrazoo/ui/components/pagination/data_loaders/bovine_statistics_data_loader.dart';
 export 'package:integrazoo/ui/components/pagination/data_loaders/bovines_data_loader.dart';
+export 'package:integrazoo/ui/components/pagination/data_loaders/bovines_statistics_data_loader.dart';

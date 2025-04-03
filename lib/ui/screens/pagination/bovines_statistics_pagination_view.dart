@@ -6,15 +6,15 @@ import 'package:integrazoo/backend.dart';
 import 'package:integrazoo/ui/components.dart';
 
 
-class BovinesRelatoryTableView extends StatefulWidget {
-  const BovinesRelatoryTableView({ super.key });
+class BovinesStatisticsPaginationView extends StatefulWidget {
+  const BovinesStatisticsPaginationView({ super.key });
 
   @override
-  State<BovinesRelatoryTableView> createState() => _BovinesRelatoryTableView();
+  State<BovinesStatisticsPaginationView> createState() => _BovinesStatisticsPaginationView();
 }
 
-class _BovinesRelatoryTableView extends State<BovinesRelatoryTableView> {
-  late BovineStatisticsDataLoader _dataSource;
+class _BovinesStatisticsPaginationView extends State<BovinesStatisticsPaginationView> {
+  late BovinesStatisticsDataLoader _dataSource;
 
   final search = BovinesSearchNotifier();
 
@@ -22,8 +22,7 @@ class _BovinesRelatoryTableView extends State<BovinesRelatoryTableView> {
   void initState() {
     super.initState();
 
-    _dataSource = BovineStatisticsDataLoader();
-    // _dataSource.initialize();
+    _dataSource = BovinesStatisticsDataLoader();
   }
 
   @override
