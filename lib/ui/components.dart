@@ -3,6 +3,7 @@ library components.dart;
 export 'package:integrazoo/ui/components/titled_card.dart';
 
 export 'package:integrazoo/ui/components/bovine/bovine_expansion_tile.dart';
+export 'package:integrazoo/ui/components/bovine/bovine_tile.dart';
 
 export 'package:integrazoo/ui/components/bovine/earring_controller.dart';
 export 'package:integrazoo/ui/components/bovine/single_bovine_selector.dart';
@@ -21,3 +22,4 @@ export 'package:integrazoo/ui/components/pagination/base/paginator.dart';
 export 'package:integrazoo/ui/components/pagination/base/data_loader.dart';
 
 export 'package:integrazoo/ui/components/pagination/data_loaders/bovine_statistics_data_loader.dart';
+export 'package:integrazoo/ui/components/pagination/data_loaders/bovines_data_loader.dart';

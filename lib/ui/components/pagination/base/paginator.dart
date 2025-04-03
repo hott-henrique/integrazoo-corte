@@ -42,7 +42,7 @@ class _Paginator extends State<Paginator> {
     return ListenableBuilder(
       listenable: widget.loader,
       builder: (BuildContext context, Widget? child) {
-      return Column(children: [
+      return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           const Padding(padding: EdgeInsets.only(top: 2.0, bottom: 2.0), child: Divider(color: Colors.transparent, height: 1)),
           if (widget.rowsPerPage != null && widget.rowsPerPage!.isNotEmpty)

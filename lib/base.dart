@@ -13,7 +13,7 @@ class IntegrazooBaseApp extends StatefulWidget {
 }
 
 class _IntegrazooBaseAppState extends State<IntegrazooBaseApp> {
-  Widget body = const BovinesRelatoryTableView();
+  Widget body = const BovinesPaginationView();
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +69,7 @@ class _IntegrazooBaseAppState extends State<IntegrazooBaseApp> {
           ),
           ListTile(
             title: const Text("Visualizar Rebanho"),
-            onTap: () => setState(() => body = const BovinesListView())
+            onTap: () => setState(() => body = const BovinesPaginationView())
           )
         ]
       ),
