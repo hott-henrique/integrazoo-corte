@@ -74,7 +74,7 @@ class BovinesDataLoader extends DataLoader {
 
     _data.clear();
 
-    _rowCount = await BovineService.countBovines_(filter: _search.filter);
+    _rowCount = await BovineService.countBovines_(search: _search);
 
     final bovines = await BovineService.getBovines_(_rowsPerPage, _page, search: _search);
 

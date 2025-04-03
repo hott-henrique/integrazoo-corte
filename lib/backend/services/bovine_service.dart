@@ -1,34 +1,6 @@
 import 'package:integrazoo/backend.dart';
 
 
-enum SearchSorting {
-  sortByEarring,
-  sortByBirthWeight,
-  sortByWeaningWeight,
-  sortByAvgChildrenBirthWeight,
-  sortByAvgChildrenWeaningWeight;
-
-  @override
-  String toString() {
-    switch (this) {
-      case SearchSorting.sortByEarring:
-        return "Brinco";
-
-      case SearchSorting.sortByBirthWeight:
-        return "Peso ao Nascimento";
-
-      case SearchSorting.sortByWeaningWeight:
-        return "Peso a Desmama";
-
-      case SearchSorting.sortByAvgChildrenBirthWeight:
-        return "Peso Médio ao Nascimento (Cria)";
-
-      case SearchSorting.sortByAvgChildrenWeaningWeight:
-        return "Peso Médio a Desmama (Cria)";
-    }
-  }
-}
-
 class BovineService {
   BovineService();
 
@@ -40,20 +12,12 @@ class BovineService {
     return BovinePersistence.getBovine(earring);
   }
 
-  static Future<int> countBovines_({ BovinesFilter? filter }) async {
-    return BovinePersistence.countBovines_(filter: filter);
+  static Future<int> countBovines_({ BovinesSearch? search }) async {
+    return BovinePersistence.countBovines_(search: search);
   }
 
   static Future<List<Bovine>> getBovines_(int pageSize, int page, { BovinesSearch? search }) async {
     return BovinePersistence.getBovines_(pageSize, page, search: search);
-  }
-
-  static Future<int> countBovines() async {
-    return BovinePersistence.countBovines();
-  }
-
-  static Future<List<Bovine>> getBovines(int pageSize, int page) async {
-    return BovinePersistence.getBovines(pageSize, page);
   }
 
   static Future<int> deleteBovine(int earring) async {
@@ -66,98 +30,6 @@ class BovineService {
 
   static Future<BovineEntry?> getBovineEntry(int earring) async {
     return BovinePersistence.getBovineEntry(earring);
-  }
-
-  static Future<List<Bovine>> searchHerd(
-    String? query,
-    int pageSz, int page,
-    Sex? sex,
-    bool? wasFinished,
-    bool? isReproducing,
-    bool? isPregnant,
-    bool? hasBeenWeaned,
-    { SearchSorting sortingOrder = SearchSorting.sortByEarring }
-  ) async {
-    switch (sortingOrder) {
-      case SearchSorting.sortByEarring:
-        return searchHerdSortByEarring(query, pageSz, page, sex, wasFinished, isReproducing, isPregnant, hasBeenWeaned);
-
-      case SearchSorting.sortByBirthWeight:
-        return searchHerdSortByBirthWeight(query, pageSz, page, sex, wasFinished, isReproducing, isPregnant, hasBeenWeaned);
-
-      case SearchSorting.sortByWeaningWeight:
-        return searchHerdSortByWeaningWeight(query, pageSz, page, sex, wasFinished, isReproducing, isPregnant, hasBeenWeaned);
-
-      case SearchSorting.sortByAvgChildrenBirthWeight:
-        return searchHerdSortByChildrenBirthWeight(query, pageSz, page, sex, wasFinished, isReproducing, isPregnant, hasBeenWeaned);
-
-      case SearchSorting.sortByAvgChildrenWeaningWeight:
-        return searchHerdSortByChildrenWeaningWeight(query, pageSz, page, sex, wasFinished, isReproducing, isPregnant, hasBeenWeaned);
-    }
-  }
-
-  static Future<List<Bovine>> searchHerdSortByEarring(
-    String? query,
-    int pageSz, int page,
-    Sex? sex,
-    bool? wasFinished,
-    bool? isReproducing,
-    bool? isPregnant,
-    bool? hasBeenWeaned,
-  ) async {
-    return BovinePersistence.searchHerd(query, pageSz, page, sex, wasFinished, isReproducing, isPregnant, hasBeenWeaned);
-  }
-
-  static Future<List<Bovine>> searchHerdSortByBirthWeight(
-    String? query,
-    int pageSz, int page,
-    Sex? sex,
-    bool? wasFinished,
-    bool? isReproducing,
-    bool? isPregnant,
-    bool? hasBeenWeaned,
-  ) async {
-    return BovinePersistence.searchHerdSortByBirthWeight(query, pageSz, page, sex, wasFinished, isReproducing, isPregnant, hasBeenWeaned);
-  }
-
-  static Future<List<Bovine>> searchHerdSortByWeaningWeight(
-    String? query,
-    int pageSz, int page,
-    Sex? sex,
-    bool? wasFinished,
-    bool? isReproducing,
-    bool? isPregnant,
-    bool? hasBeenWeaned,
-  ) async {
-    return BovinePersistence.searchHerdSortByWeaningWeight(query, pageSz, page, sex, wasFinished, isReproducing, isPregnant, hasBeenWeaned);
-  }
-
-  static Future<List<Bovine>> searchHerdSortByChildrenBirthWeight(
-    String? query,
-    int pageSz, int page,
-    Sex? sex,
-    bool? wasFinished,
-    bool? isReproducing,
-    bool? isPregnant,
-    bool? hasBeenWeaned,
-  ) async {
-    return BovinePersistence.searchHerdSortByChildrenBirthWeight(query, pageSz, page, sex, wasFinished, isReproducing, isPregnant, hasBeenWeaned);
-  }
-
-  static Future<List<Bovine>> searchHerdSortByChildrenWeaningWeight(
-    String? query,
-    int pageSz, int page,
-    Sex? sex,
-    bool? wasFinished,
-    bool? isReproducing,
-    bool? isPregnant,
-    bool? hasBeenWeaned,
-  ) async {
-    return BovinePersistence.searchHerdSortByChildrenWeaningWeight(query, pageSz, page, sex, wasFinished, isReproducing, isPregnant, hasBeenWeaned);
-  }
-
-  static Future<int> getCountBovines() {
-    return BovinePersistence.getCountBovines();
   }
 
   static Future<bool> doesEarringExists(int earring) {
